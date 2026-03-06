@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logout } from '../../store/slices/authSlice';
-import { FiShoppingBag, FiX, FiLogOut, FiChevronDown, FiMapPin } from 'react-icons/fi';
+import { FiShoppingBag, FiX, FiLogOut, FiChevronDown, FiMapPin, FiUser } from 'react-icons/fi';
 
 /* ─── PALETTE ─────────────────────────────────────────────── */
 const C = {
@@ -26,9 +26,17 @@ const NAV_LINKS = [
   { label: 'My Orders',  to: '/orders'    },
 ];
 
-/* ─── SVG MICRO-COMPONENTS ────────────────────────────────── */
+/* ─── HELPERS ─────────────────────────────────────────────── */
+const getAvatarUrl = (profileImage) => {
+  if (!profileImage || profileImage === 'default-avatar.png') return null;
+  // Handle both absolute URLs and relative paths from backend
+  if (profileImage.startsWith('http')) return profileImage;
+  const base = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api')
+    .replace('/api', '');
+  return `${base}${profileImage}`;
+};
 
-/* Rotating diamond logo mark */
+/* ─── SVG MICRO-COMPONENTS ────────────────────────────────── */
 const Mark = () => (
   <svg width="32" height="32" viewBox="0 0 32 32" style={{ display:'block' }}>
     <polygon points="16,2 30,16 16,30 2,16"
@@ -45,7 +53,6 @@ const Mark = () => (
   </svg>
 );
 
-/* Torana bead strip — decorative top border */
 const ToranaStrip = () => (
   <div style={{ position:'absolute', top:0, left:0, right:0, height:5,
     overflow:'hidden', pointerEvents:'none', zIndex:1 }}>
@@ -67,7 +74,6 @@ const ToranaStrip = () => (
   </div>
 );
 
-/* Scalloped arch bottom border — visible when scrolled */
 const ScallopBorder = ({ visible }) => (
   <div style={{ position:'absolute', bottom:-7, left:0, right:0, height:7,
     overflow:'hidden', pointerEvents:'none',
@@ -82,7 +88,6 @@ const ScallopBorder = ({ visible }) => (
   </div>
 );
 
-/* Thread-stitch active underline */
 const StitchUnderline = () => (
   <motion.div layoutId="nav-active"
     style={{ position:'absolute', bottom:-5, left:0, right:0, height:4 }}>
@@ -96,7 +101,6 @@ const StitchUnderline = () => (
   </motion.div>
 );
 
-/* Rangoli dot separator */
 const RangDot = () => (
   <svg width="14" height="14" viewBox="0 0 14 14" style={{ flexShrink:0 }}>
     <circle cx="7" cy="7" r="5.5" stroke={C.gold} strokeWidth="0.6" fill="none" opacity="0.35" />
@@ -105,7 +109,6 @@ const RangDot = () => (
   </svg>
 );
 
-/* Mini arch frame above avatar */
 const ArchFrame = ({ size = 36 }) => {
   const w = size * 1.35;
   return (
@@ -120,7 +123,6 @@ const ArchFrame = ({ size = 36 }) => {
   );
 };
 
-/* Hanging-bell torana for mobile drawer */
 const DrawerBells = () => (
   <svg width="100%" height="28" viewBox="0 0 360 28" preserveAspectRatio="none"
     style={{ display:'block', opacity:0.75 }}>
@@ -142,29 +144,36 @@ const DrawerBells = () => (
   </svg>
 );
 
-/* Shared avatar with arch halo */
-const Avatar = ({ name, size = 36 }) => (
-  <div style={{ position:'relative', width:size, height:size, flexShrink:0 }}>
-    <ArchFrame size={size} />
-    <div style={{
-      width:size, height:size, borderRadius:'50%',
-      background:`linear-gradient(135deg, ${C.maroon}, ${C.maroonL})`,
-      border:`1.5px solid ${C.gold}60`,
-      display:'flex', alignItems:'center', justifyContent:'center',
-      fontFamily:"'Cormorant Garamond', serif",
-      fontSize:size * 0.44, color:C.goldL, fontWeight:700,
-    }}>
-      {name?.charAt(0).toUpperCase()}
+/* ─── AVATAR — shows real photo or initial ────────────────── */
+const Avatar = ({ user, size = 36 }) => {
+  const imgUrl = getAvatarUrl(user?.profileImage);
+  return (
+    <div style={{ position:'relative', width:size, height:size, flexShrink:0 }}>
+      <ArchFrame size={size} />
+      <div style={{
+        width:size, height:size, borderRadius:'50%',
+        background:`linear-gradient(135deg, ${C.maroon}, ${C.maroonL})`,
+        border:`1.5px solid ${C.gold}60`, overflow:'hidden',
+        display:'flex', alignItems:'center', justifyContent:'center',
+        fontFamily:"'Cormorant Garamond', serif",
+        fontSize:size * 0.44, color:C.goldL, fontWeight:700,
+      }}>
+        {imgUrl
+          ? <img src={imgUrl} alt={user?.name}
+              style={{ width:'100%', height:'100%', objectFit:'cover' }}
+              onError={e => { e.target.style.display='none'; }}/>
+          : user?.name?.charAt(0).toUpperCase()
+        }
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
-/* Desktop CTA button with arch crown */
+/* ─── DESKTOP CTA ─────────────────────────────────────────── */
 function JoinBtn({ to, children }) {
   const [hov, setHov] = useState(false);
   return (
     <Link to={to} style={{ textDecoration:'none', display:'block', position:'relative', paddingTop:8 }}>
-      {/* Arch crown */}
       <div style={{ position:'absolute', top:0, left:0, right:0, height:8,
         overflow:'visible', pointerEvents:'none' }}>
         <svg width="100%" height="8" viewBox="0 0 120 8" preserveAspectRatio="none">
@@ -189,7 +198,6 @@ function JoinBtn({ to, children }) {
         <motion.div animate={{ x: hov ? '0%' : '-101%' }}
           transition={{ duration:0.38, ease:[0.22,1,0.36,1] }}
           style={{ position:'absolute', inset:0, background:C.maroonL }} />
-        {/* Stitch bottom */}
         <div style={{ position:'absolute', bottom:0, left:0, right:0, height:2 }}>
           <svg width="100%" height="2" preserveAspectRatio="none">
             {Array.from({ length: 12 }).map((_, i) => (
@@ -239,8 +247,11 @@ export default function Navbar() {
   };
 
   const pending = orders.filter(o =>
-    ['Pending', 'Confirmed', 'In Progress'].includes(o.status)
+    ['ORDER_CREATED','ORDER_VERIFIED','FABRIC_PICKUP_SCHEDULED',
+     'FABRIC_RECEIVED','STITCHING_IN_PROGRESS'].includes(o.status)
   ).length;
+
+  const avatarUrl = getAvatarUrl(user?.profileImage);
 
   return (
     <>
@@ -340,14 +351,34 @@ export default function Navbar() {
                   style={{ display:'flex', alignItems:'center', gap:9,
                     background:'none', border:'none', cursor:'pointer', padding:0 }}>
 
+                  {/* Avatar — real photo or initial */}
                   <div style={{ position:'relative', flexShrink:0 }}>
-                    <Avatar name={user.name} size={34} />
+                    <div style={{ position:'relative', width:36, height:36 }}>
+                      {/* Arch halo */}
+                      <ArchFrame size={36} />
+                      <div style={{
+                        width:36, height:36, borderRadius:'50%',
+                        background:`linear-gradient(135deg,${C.maroon},${C.maroonL})`,
+                        border:`1.5px solid ${C.gold}60`, overflow:'hidden',
+                        display:'flex', alignItems:'center', justifyContent:'center',
+                        fontFamily:"'Cormorant Garamond',serif",
+                        fontSize:16, color:C.goldL, fontWeight:700,
+                      }}>
+                        {avatarUrl
+                          ? <img src={avatarUrl} alt={user.name}
+                              style={{ width:'100%', height:'100%', objectFit:'cover' }}
+                              onError={e => { e.target.style.display='none'; }}/>
+                          : user.name?.charAt(0).toUpperCase()
+                        }
+                      </div>
+                    </div>
+                    {/* Pending badge */}
                     {pending > 0 && (
                       <motion.span initial={{ scale:0 }} animate={{ scale:1 }}
-                        style={{ position:'absolute', top:-2, right:-2,
+                        style={{ position:'absolute', top:-2, right:-2, zIndex:2,
                           width:14, height:14, borderRadius:'50%', background:C.gold,
                           display:'flex', alignItems:'center', justifyContent:'center',
-                          fontFamily:"'Montserrat', sans-serif",
+                          fontFamily:"'Montserrat',sans-serif",
                           fontSize:6.5, fontWeight:700, color:C.ink,
                           border:`1.5px solid ${C.white}` }}>
                         {pending}
@@ -355,8 +386,9 @@ export default function Navbar() {
                     )}
                   </div>
 
+                  {/* Name + role */}
                   <div style={{ textAlign:'left' }}>
-                    <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:14,
+                    <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:14,
                       color:C.ink, fontWeight:600, lineHeight:1 }}>
                       {user.name?.split(' ')[0]}
                     </div>
@@ -370,7 +402,7 @@ export default function Navbar() {
                   </motion.div>
                 </motion.button>
 
-                {/* Dropdown */}
+                {/* ── DROPDOWN PANEL ── */}
                 <AnimatePresence>
                   {dropOpen && (
                     <motion.div
@@ -379,16 +411,17 @@ export default function Navbar() {
                       exit={{  opacity:0, y:7,  scale:0.97 }}
                       transition={{ duration:0.22, ease:[0.22,1,0.36,1] }}
                       style={{ position:'absolute', right:0, top:'calc(100% + 12px)',
-                        width:230, background:C.white,
+                        width:246, background:C.white,
                         border:`1px solid ${C.border}`,
                         boxShadow:`0 18px 48px ${C.maroon}12`,
                         overflow:'hidden' }}>
 
-                      {/* Header */}
-                      <div style={{ background:C.parchment, padding:'12px 14px 10px',
+                      {/* Dropdown header — shows avatar + name */}
+                      <div style={{ background:C.parchment, padding:'14px 16px 12px',
                         borderBottom:`1px solid ${C.border}` }}>
+                        {/* Mini torana bells */}
                         <svg width="100%" height="12" viewBox="0 0 200 12"
-                          preserveAspectRatio="none" style={{ display:'block', marginBottom:8 }}>
+                          preserveAspectRatio="none" style={{ display:'block', marginBottom:10 }}>
                           {Array.from({ length: 12 }).map((_, i) => (
                             <g key={i}>
                               <line x1={i*17+8} y1="1" x2={i*17+8} y2="7"
@@ -399,17 +432,58 @@ export default function Navbar() {
                             </g>
                           ))}
                         </svg>
-                        <div style={{ fontSize:7, letterSpacing:'0.45em', color:C.muted,
-                          textTransform:'uppercase', marginBottom:3 }}>Tailor24 Patron</div>
-                        <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:17,
-                          color:C.ink, fontWeight:600,
-                          overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-                          {user.name}
+
+                        {/* Avatar + user info row */}
+                        <div style={{ display:'flex', alignItems:'center', gap:11 }}>
+                          {/* Profile image circle */}
+                          <div style={{ width:42, height:42, borderRadius:'50%', flexShrink:0,
+                            background:`linear-gradient(135deg,${C.maroon},${C.maroonL})`,
+                            border:`2px solid ${C.gold}50`, overflow:'hidden',
+                            display:'flex', alignItems:'center', justifyContent:'center',
+                            fontFamily:"'Cormorant Garamond',serif",
+                            fontSize:20, color:C.goldL, fontWeight:700 }}>
+                            {avatarUrl
+                              ? <img src={avatarUrl} alt={user.name}
+                                  style={{ width:'100%', height:'100%', objectFit:'cover' }}
+                                  onError={e => { e.target.style.display='none'; }}/>
+                              : user.name?.charAt(0).toUpperCase()
+                            }
+                          </div>
+                          <div style={{ flex:1, minWidth:0 }}>
+                            <div style={{ fontSize:7, letterSpacing:'0.4em', color:C.muted,
+                              textTransform:'uppercase', marginBottom:3 }}>Tailor24 Patron</div>
+                            <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:17,
+                              color:C.ink, fontWeight:600,
+                              overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                              {user.name}
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Rows */}
+                      {/* Dropdown rows */}
                       <div style={{ padding:'5px' }}>
+
+                        {/* ── My Profile (NEW) ── */}
+                        <Link to="/profile" onClick={() => setDropOpen(false)}
+                          className="t24-dr"
+                          style={{ display:'flex', alignItems:'center', gap:9,
+                            padding:'10px 11px', textDecoration:'none' }}>
+                          <FiUser size={13} color={C.maroon} />
+                          <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:9.5,
+                            letterSpacing:'0.08em', color:C.ink }}>My Profile</span>
+                          {/* Small "new" indicator if no profile image yet */}
+                          {!avatarUrl && (
+                            <span style={{ marginLeft:'auto', background:`${C.gold}20`,
+                              color:C.gold, fontFamily:"'Montserrat',sans-serif",
+                              fontSize:6.5, padding:'2px 6px', fontWeight:700,
+                              letterSpacing:'0.2em' }}>
+                              SETUP
+                            </span>
+                          )}
+                        </Link>
+
+                        {/* ── Order History ── */}
                         <Link to="/orders" onClick={() => setDropOpen(false)}
                           className="t24-dr"
                           style={{ display:'flex', alignItems:'center',
@@ -417,24 +491,25 @@ export default function Navbar() {
                             padding:'10px 11px', textDecoration:'none' }}>
                           <div style={{ display:'flex', alignItems:'center', gap:9 }}>
                             <FiShoppingBag size={13} color={C.gold} />
-                            <span style={{ fontFamily:"'Montserrat', sans-serif", fontSize:9.5,
+                            <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:9.5,
                               letterSpacing:'0.08em', color:C.ink }}>Order History</span>
                           </div>
                           {pending > 0 && (
                             <span style={{ background:`${C.maroon}14`, color:C.maroon,
-                              fontFamily:"'Montserrat', sans-serif", fontSize:7,
+                              fontFamily:"'Montserrat',sans-serif", fontSize:7,
                               padding:'2px 7px', fontWeight:700, letterSpacing:'0.18em' }}>
                               {pending} ACTIVE
                             </span>
                           )}
                         </Link>
 
+                        {/* ── Visit Atelier ── */}
                         <Link to="/showrooms" onClick={() => setDropOpen(false)}
                           className="t24-dr"
                           style={{ display:'flex', alignItems:'center', gap:9,
                             padding:'10px 11px', textDecoration:'none' }}>
                           <FiMapPin size={13} color={C.gold} />
-                          <span style={{ fontFamily:"'Montserrat', sans-serif", fontSize:9.5,
+                          <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:9.5,
                             letterSpacing:'0.08em', color:C.ink }}>Visit Atelier</span>
                         </Link>
 
@@ -449,12 +524,13 @@ export default function Navbar() {
                           </svg>
                         </div>
 
+                        {/* ── Sign Out ── */}
                         <button onClick={handleLogout} className="t24-dr"
                           style={{ display:'flex', alignItems:'center', gap:9,
                             width:'100%', padding:'10px 11px',
                             background:'none', border:'none', cursor:'pointer' }}>
                           <FiLogOut size={13} color={C.maroon} />
-                          <span style={{ fontFamily:"'Montserrat', sans-serif", fontSize:9.5,
+                          <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:9.5,
                             letterSpacing:'0.08em', color:C.maroon }}>Sign Out</span>
                         </button>
                       </div>
@@ -475,10 +551,9 @@ export default function Navbar() {
               </div>
 
             ) : (
-              /* ── AUTH: logged out ── */
               <div style={{ display:'flex', alignItems:'center', gap:14 }}>
                 <Link to="/login" className="t24-nl"
-                  style={{ fontFamily:"'Montserrat', sans-serif", fontSize:8.5,
+                  style={{ fontFamily:"'Montserrat',sans-serif", fontSize:8.5,
                     letterSpacing:'0.38em', textTransform:'uppercase',
                     color:C.muted, textDecoration:'none' }}>
                   Login
@@ -522,7 +597,6 @@ export default function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <>
-            {/* Dimmed backdrop */}
             <motion.div
               initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
               transition={{ duration:0.3 }}
@@ -530,7 +604,6 @@ export default function Navbar() {
               style={{ position:'fixed', inset:0, zIndex:110,
                 background:`${C.maroon}38`, backdropFilter:'blur(5px)' }} />
 
-            {/* Slide-in panel */}
             <motion.div
               initial={{ x:'100%' }} animate={{ x:'0%' }} exit={{ x:'100%' }}
               transition={{ type:'spring', damping:28, stiffness:230 }}
@@ -545,7 +618,7 @@ export default function Navbar() {
                 <div style={{ display:'flex', alignItems:'center', gap:10, marginTop:4 }}>
                   <Mark />
                   <div>
-                    <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:18,
+                    <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18,
                       letterSpacing:'0.14em', color:'#FFFDF5', fontWeight:700, lineHeight:1 }}>
                       Tailor<em style={{ color:C.goldL, fontStyle:'italic' }}>24</em>
                     </div>
@@ -587,10 +660,9 @@ export default function Navbar() {
                             </svg>
                           </div>
                           <div>
-                            <div style={{ fontFamily:"'Cormorant Garamond', serif",
+                            <div style={{ fontFamily:"'Cormorant Garamond',serif",
                               fontSize:26, fontWeight:600, lineHeight:1,
-                              color: isActive ? C.maroon : C.ink,
-                              transition:'color .25s' }}>
+                              color: isActive ? C.maroon : C.ink, transition:'color .25s' }}>
                               {label}
                             </div>
                             {isActive && (
@@ -612,24 +684,40 @@ export default function Navbar() {
                 {/* Auth section */}
                 <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }}
                   transition={{ delay:0.28 }}
-                  style={{ marginTop:22, paddingTop:18,
-                    borderTop:`1px solid ${C.border}` }}>
+                  style={{ marginTop:22, paddingTop:18, borderTop:`1px solid ${C.border}` }}>
 
                   {user ? (
                     <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                      {/* User card */}
-                      <div style={{ display:'flex', alignItems:'center', gap:12,
-                        padding:'12px 14px', background:C.white,
-                        border:`1px solid ${C.border}` }}>
-                        <Avatar name={user.name} size={34} />
+
+                      {/* User card with real photo */}
+                      <Link to="/profile" onClick={() => setMenuOpen(false)}
+                        style={{ display:'flex', alignItems:'center', gap:12,
+                          padding:'12px 14px', background:C.white,
+                          border:`1px solid ${C.border}`, textDecoration:'none' }}>
+                        {/* Photo circle */}
+                        <div style={{ width:40, height:40, borderRadius:'50%', flexShrink:0,
+                          background:`linear-gradient(135deg,${C.maroon},${C.maroonL})`,
+                          border:`1.5px solid ${C.gold}55`, overflow:'hidden',
+                          display:'flex', alignItems:'center', justifyContent:'center',
+                          fontFamily:"'Cormorant Garamond',serif",
+                          fontSize:18, color:C.goldL, fontWeight:700 }}>
+                          {avatarUrl
+                            ? <img src={avatarUrl} alt={user.name}
+                                style={{ width:'100%', height:'100%', objectFit:'cover' }}
+                                onError={e => { e.target.style.display='none'; }}/>
+                            : user.name?.charAt(0).toUpperCase()
+                          }
+                        </div>
                         <div style={{ flex:1, minWidth:0 }}>
-                          <div style={{ fontFamily:"'Cormorant Garamond', serif",
+                          <div style={{ fontFamily:"'Cormorant Garamond',serif",
                             fontSize:17, color:C.ink, fontWeight:600,
                             overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                             {user.name}
                           </div>
-                          <div style={{ fontSize:6.5, letterSpacing:'0.3em', color:C.muted,
-                            textTransform:'uppercase', marginTop:2 }}>Patron</div>
+                          <div style={{ fontSize:7, letterSpacing:'0.3em', color:C.maroon,
+                            textTransform:'uppercase', marginTop:2, fontWeight:700 }}>
+                            View Profile →
+                          </div>
                         </div>
                         {pending > 0 && (
                           <div style={{ background:C.maroon, padding:'2px 7px', flexShrink:0 }}>
@@ -637,7 +725,7 @@ export default function Navbar() {
                               color:'white', fontWeight:700 }}>{pending}</span>
                           </div>
                         )}
-                      </div>
+                      </Link>
 
                       <button onClick={handleLogout}
                         style={{ display:'flex', alignItems:'center', gap:10,
@@ -645,7 +733,7 @@ export default function Navbar() {
                           border:`1px solid ${C.maroon}40`,
                           cursor:'pointer', width:'100%' }}>
                         <FiLogOut size={13} color={C.maroon} />
-                        <span style={{ fontFamily:"'Montserrat', sans-serif", fontSize:9,
+                        <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:9,
                           letterSpacing:'0.35em', color:C.maroon,
                           textTransform:'uppercase', fontWeight:700 }}>Sign Out</span>
                       </button>
@@ -655,7 +743,7 @@ export default function Navbar() {
                       <Link to="/login" onClick={() => setMenuOpen(false)}
                         style={{ display:'flex', alignItems:'center', justifyContent:'center',
                           padding:'12px', border:`1.5px solid ${C.maroon}`,
-                          fontFamily:"'Montserrat', sans-serif", fontSize:9,
+                          fontFamily:"'Montserrat',sans-serif", fontSize:9,
                           letterSpacing:'0.38em', fontWeight:700,
                           color:C.maroon, textTransform:'uppercase', textDecoration:'none' }}>
                         Client Login
@@ -663,7 +751,7 @@ export default function Navbar() {
                       <Link to="/register" onClick={() => setMenuOpen(false)}
                         style={{ display:'flex', alignItems:'center', justifyContent:'center',
                           padding:'12px', background:C.maroon,
-                          fontFamily:"'Montserrat', sans-serif", fontSize:9,
+                          fontFamily:"'Montserrat',sans-serif", fontSize:9,
                           letterSpacing:'0.38em', fontWeight:700,
                           color:'white', textTransform:'uppercase', textDecoration:'none' }}>
                         Join Studio

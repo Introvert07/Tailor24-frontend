@@ -798,39 +798,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ══ ATELIERS ══ */}
-      <section style={{ padding:"100px 0",background:C.ink,color:"white",position:"relative" }}>
-        <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:`linear-gradient(to right,${C.maroon},${C.gold},${C.maroon})` }}/>
-        
-        <div style={{ maxWidth:1280,margin:"0 auto",padding:"0 24px" }}>
-          <div style={{ textAlign:"center",marginBottom:60 }}>
-            <div style={{ fontSize:8,letterSpacing:"0.5em",color:C.gold,textTransform:"uppercase",marginBottom:16 }}>Presence</div>
-            <h2 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:48,fontWeight:600 }}>The <em style={{ color:C.goldL }}>Studios</em></h2>
-          </div>
-
-          <div className="atelier-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:24 }}>
-            {ATELIERS.map((a,i)=>(
-              <FUp key={a.city} delay={i*.1}>
-                <div style={{ border:`1px solid ${C.gold}30`,padding:32,background:`${C.white}03`,position:"relative",overflow:"hidden" }}>
-                  {a.flagship && <div style={{ position:"absolute",top:16,right:16,background:C.maroon,color:"white",
-                    fontSize:7,padding:"4px 8px",letterSpacing:"0.2em",textTransform:"uppercase",fontWeight:700 }}>Flagship</div>}
-                  
-                  <h3 style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:32,color:C.parchment,marginBottom:12 }}>{a.city}</h3>
-                  <div style={{ width:30,height:1,background:C.gold,marginBottom:20,opacity:0.5 }}/>
-                  
-                  <p style={{ fontFamily:"'Montserrat',sans-serif",fontSize:11,color:`${C.white}90`,marginBottom:8,lineHeight:1.6 }}>{a.addr}</p>
-                  <p style={{ fontFamily:"'Montserrat',sans-serif",fontSize:10,color:`${C.gold}AA`,letterSpacing:"0.1em" }}>{a.timing}</p>
-                  
-                  <div style={{ marginTop:24 }}>
-                    <a href="#" style={{ color:C.goldL,fontSize:9,textTransform:"uppercase",letterSpacing:"0.2em",
-                      textDecoration:"none",borderBottom:`1px solid ${C.goldL}` }}>Get Directions</a>
-                  </div>
-                </div>
-              </FUp>
-            ))}
-          </div>
-        </div>
-      </section>
+      
 
     </div>
   );

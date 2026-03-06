@@ -14,6 +14,10 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import OrdersPage      from './pages/OrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
 import ShowroomsPage   from './pages/ShowroomsPage';
+import AdminPage from './pages/AdminPage';
+import ProfilePage from './pages/ProfilePage';
+
+
 
 // Pages that hide the Navbar/Footer (auth pages)
 const FULLSCREEN_PAGES = ['/login', '/register'];
@@ -41,6 +45,9 @@ function AppLayout() {
             <Route path="/catalog"  element={<CatalogPage />} />
             <Route path="/catalog/:id" element={<ProductDetailPage />} />
             <Route path="/showrooms" element={<ShowroomsPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+<Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+
 
             {/* Protected routes */}
             <Route path="/orders" element={
