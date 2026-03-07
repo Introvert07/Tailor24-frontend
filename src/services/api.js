@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-baseURL: import.meta.env.VITE_API_URL || 'https://tailor24-backend.vercel.app/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://tailor24-backend.vercel.app/api',
   headers: { 'Content-Type': 'application/json' },
   timeout: 10000,
 });
@@ -26,17 +26,13 @@ API.interceptors.response.use(
       error.message ||
       'Something went wrong';
 
-    // Only redirect to login if token is truly missing/expired
-    // NOT on every 401 (e.g. wrong password on login also returns 401)
     if (error.response?.status === 401) {
       const isAuthRoute = error.config?.url?.includes('/auth/login') ||
                           error.config?.url?.includes('/auth/register');
 
       if (!isAuthRoute) {
-        // Token expired or invalid — clear and redirect
         localStorage.removeItem('tailor24_token');
         localStorage.removeItem('tailor24_user');
-        // Use replace so user can't go back to broken page
         window.location.replace('/login');
       }
     }
@@ -44,15 +40,33 @@ API.interceptors.response.use(
     return Promise.reject({ ...error, message });
   }
 );
-// POST /api/consultation/book
-export const bookHomeConsultation = async (consultationData) => {
-  const { data } = await API.post('/consultation/book', consultationData);
-  return data;
+
+/**
+ * SERVICE EXPORTS
+ * Grouped to match frontend component imports
+ */
+
+export const contactService = {
+  // Renamed to sendMessage to match Contact.jsx usage
+  sendMessage: async (formData) => {
+    const { data } = await API.post('/contact/submit', formData);
+    return data;
+  }
 };
 
-// POST /api/contact/submit
-export const submitContactInquiry = async (formData) => {
-  const { data } = await API.post('/contact/submit', formData);
-  return data;
+export const consultationService = {
+  book: async (consultationData) => {
+    const { data } = await API.post('/consultation/book', consultationData);
+    return data;
+  }
 };
+
+export const showroomService = {
+  // Added to support your ShowroomsPage
+  getAll: async () => {
+    const { data } = await API.get('/showrooms');
+    return data;
+  }
+};
+
 export default API;

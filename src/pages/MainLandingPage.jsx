@@ -1,43 +1,67 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import HomePage from './HomePage';
-import AboutPage from './AboutPage';
-import VarietyPage from './VarietyPage';
-import TestimonialsPage from './TestimonialsPage.jsx';
+import { motion } from 'framer-motion';
+
+import HomePage         from './HomePage';
+import AboutPage        from './AboutPage';
+import VarietyPage      from './VarietyPage';
+import TestimonialsPage from './TestimonialsPage';
+
+/* ─── REUSABLE ANIMATION WRAPPER ─────────────────────────── */
+// This creates a smooth fade-and-slide up effect as the section enters the viewport
+const SectionWrapper = ({ id, children }) => (
+  <motion.section
+    id={id}
+    initial={{ opacity: 0, y: 60 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    // "once: true" ensures it doesn't replay annoyingly if they scroll up and down
+    // "margin" triggers the animation slightly before the section fully enters the screen
+    viewport={{ once: true, margin: "-100px" }}
+    transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+  >
+    {children}
+  </motion.section>
+);
 
 export default function MainLandingPage() {
-  const location = useLocation();
+  const { hash } = useLocation();
 
-  // Handle smooth scrolling when navigating to hash links (e.g., /#about)
   useEffect(() => {
-    if (location.hash) {
-      const element = document.getElementById(location.hash.substring(1));
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+    // A slight delay ensures Framer Motion has mounted the DOM nodes 
+    // before we try to calculate their position for scrolling.
+    const scrollTimeout = setTimeout(() => {
+      if (hash) {
+        const el = document.getElementById(hash.slice(1));
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [location]);
+    }, 100);
+
+    return () => clearTimeout(scrollTimeout);
+  }, [hash]);
 
   return (
-    <div className="scroll-smooth">
-      {/* Give each section an ID that matches your anchor links */}
-      <section id="home">
+    // Set the overall background to your heritage page color (#FBF4E8) 
+    // to prevent any harsh white flashes between the animated sections
+    <div style={{ backgroundColor: "#FBF4E8", overflowX: "hidden" }}>
+      <SectionWrapper id="home">
         <HomePage />
-      </section>
+      </SectionWrapper>
       
-      <section id="about">
+      <SectionWrapper id="about">
         <AboutPage />
-      </section>
+      </SectionWrapper>
       
-      <section id="variety">
+      <SectionWrapper id="variety">
         <VarietyPage />
-      </section>
+      </SectionWrapper>
       
-      <section id="testimonials">
+      <SectionWrapper id="testimonials">
         <TestimonialsPage />
-      </section>
+      </SectionWrapper>
     </div>
   );
 }

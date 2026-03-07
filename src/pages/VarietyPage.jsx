@@ -1,180 +1,211 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const C = {
-  gold: "#D4A017", 
-  maroon: "#5D0E16", 
-  ink: "#1A0800", 
-  paper: "#FBF4E8", 
-  silk: "#FFFDF5", 
-  shadow: "rgba(26, 8, 0, 0.05)"
-};
+const fonts = `@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');`;
 
 const CATS = [
-  { l: "Men", s: "Sherwanis", tag: "The Maharaja", img: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1200", color: "#F4EBD0" },
-  { l: "Women", s: "Lehengas", tag: "The Noor Suite", img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=1200", color: "#EEDFCC" },
-  { l: "Kids", s: "Festive", tag: "Little Royals", img: "https://images.unsplash.com/photo-1589310243389-96a5483213a8?auto=format&fit=crop&w=1200", color: "#E5DACE" }
+  {
+    l:'Men', q:'men', num:'120+', symbol:'I',
+    s:'Sherwanis & Achkans',
+    desc:'From classic ivory to deep maroon — every sherwani a statement of lineage.',
+    detail:'Hand-embroidered. Individually fitted. Eternally yours.',
+    img:'https://images.unsplash.com/photo-1610189020017-7d44682f53d4?w=800&q=85',
+    accent:'rgba(139,26,40,0.7)',
+    tall:true,
+  },
+  {
+    l:'Women', q:'women', num:'85+', symbol:'II',
+    s:'Anarkalis & Gharara',
+    desc:'Flowing silhouettes in Chanderi silk — grace made wearable.',
+    detail:'Resham embroidery. Maheshwari weaves. Bespoke cuts.',
+    img:'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800&q=85',
+    accent:'rgba(107,45,94,0.7)',
+    tall:false,
+  },
+  {
+    l:'Bridal', q:'bridal', num:'60+', symbol:'III',
+    s:'Lehengas & Ensembles',
+    desc:'The most sacred of occasions deserves the finest of cloth.',
+    detail:'Zardozi. Gota patti. Mukaish. Crafted over weeks.',
+    img:'https://images.unsplash.com/photo-1594552072238-b8a33785b6cd?w=800&q=85',
+    accent:'rgba(26,58,92,0.7)',
+    tall:false,
+  },
+  {
+    l:'Girls', q:'girls', num:'55+', symbol:'IV',
+    s:'Festive Lehengas',
+    desc:'Soft pastels and golden gota — for every little princess.',
+    detail:'Lightweight fabrics. Playful motifs. Royal finishes.',
+    img:'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=800&q=85',
+    accent:'rgba(92,58,26,0.7)',
+    tall:false,
+  },
+  {
+    l:'Kids', q:'kids', num:'40+', symbol:'V',
+    s:'Mini Sherwanis & Kurtas',
+    desc:'The youngest royals, dressed with the same care as the elders.',
+    detail:'Soft linings. Easy buttons. Full heirloom quality.',
+    img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=85',
+    accent:'rgba(26,74,46,0.7)',
+    tall:false,
+  },
 ];
 
-export default function RoyalAtelier() {
-  const [active, setActive] = useState(0);
+export default function VarietyPage() {
+  const [hov, setHov] = useState(null);
 
   return (
-    <div style={{ 
-      height: "100vh", width: "100vw", overflow: "hidden", 
-      background: C.paper, color: C.ink, fontFamily: "'Cormorant Garamond', serif",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      position: "relative"
-    }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,500&family=Montserrat:wght@200;400;600&display=swap');
-        
-        .main-container {
-          width: 94%; height: 90%; display: flex; align-items: center; 
-          background: ${C.silk}; z-index: 1; boxShadow: 0 40px 100px ${C.shadow};
-          position: relative; overflow: hidden;
-        }
-
-        .nav-item { 
-          font-family: 'Montserrat'; font-size: 10px; letter-spacing: 4px; 
-          cursor: pointer; padding: 15px 0; opacity: 0.3; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-          position: relative; display: flex; align-items: center; width: fit-content;
-        }
-
-        .nav-item.active { opacity: 1; transform: translateX(20px); color: ${C.maroon}; }
-        
-        .nav-item::after {
-          content: ""; position: absolute; bottom: 10px; left: 0; width: 0; height: 1px;
-          background: ${C.maroon}; transition: 0.5s;
-        }
-        .nav-item.active::after { width: 40px; left: -50px; }
-
-        .btn-atelier {
-          background: ${C.maroon}; color: white; border: none; padding: 16px 40px; 
-          font-family: 'Montserrat'; font-size: 9px; letter-spacing: 3px; cursor: pointer;
-          transition: 0.4s; margin-top: 10px;
-        }
-        .btn-atelier:hover { background: ${C.ink}; transform: translateY(-2px); }
-
-        @media (max-width: 1200px) {
-          .text-content { padding-left: 40px !important; flex: 0 0 350px !important; }
-          .main-title { font-size: 60px !important; }
-        }
+    <section style={{ background:'#060201', minHeight:'100vh', position:'relative', overflow:'hidden' }}>
+      <style>{fonts}{`
+        * { box-sizing:border-box; }
+        .vp-img { transition: transform 0.8s cubic-bezier(0.22,1,0.36,1), filter 0.6s; }
+        .vp-card:hover .vp-img { transform:scale(1.07); filter:brightness(0.3) sepia(20%)!important; }
+        @media(max-width:1024px){ .vp-bento{ grid-template-columns:repeat(2,1fr)!important; grid-template-rows:auto!important; } .vp-tall{ grid-row:span 1!important; height:320px!important; } .vp-cell{ height:280px!important; } }
+        @media(max-width:560px){ .vp-bento{ grid-template-columns:1fr!important; } }
       `}</style>
 
-      {/* ── AMBIENT BACKGROUND ── */}
-      <motion.div 
-        animate={{ backgroundColor: CATS[active].color }}
-        transition={{ duration: 1.2 }}
-        style={{ position: "absolute", inset: 0, opacity: 0.3, zIndex: 0 }}
-      />
+      <div style={{ position:'absolute', inset:0, pointerEvents:'none',
+        background:'radial-gradient(ellipse 70% 50% at 50% 10%, rgba(139,26,40,0.1), transparent 65%)' }} />
 
-      <div className="main-container">
-        
-        {/* LEFT: CONTENT LAYER */}
-        <div className="text-content" style={{ 
-          flex: "0 0 500px", paddingLeft: "80px", zIndex: 10, position: "relative",
-          display: "flex", flexDirection: "column", justifyContent: "center", height: "100%"
-        }}>
-          <header style={{ marginBottom: "5vh" }}>
-            <motion.div
-               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-               style={{ fontSize: 9, letterSpacing: 8, color: C.gold, fontFamily: 'Montserrat', fontWeight: 600, marginBottom: 15 }}
-            >
-              EST. MCMXCVII
+      <div style={{ height:1, background:'linear-gradient(90deg,transparent,rgba(201,151,42,0.45) 25%,rgba(201,151,42,0.45) 75%,transparent)' }} />
+
+      <div style={{ maxWidth:1400, margin:'0 auto', padding:'88px 48px 80px', position:'relative', zIndex:1 }}>
+
+        {/* Header */}
+        <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
+          viewport={{ once:true }} transition={{ duration:0.65, ease:[0.22,1,0.36,1] }}
+          style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', marginBottom:72, flexWrap:'wrap', gap:24 }}>
+          <div>
+            <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:18 }}>
+              <div style={{ width:28, height:1, background:'#C9972A' }} />
+              <span style={{ fontFamily:'Raleway, sans-serif', fontSize:9, letterSpacing:6, color:'#C9972A', textTransform:'uppercase' }}>Our Collections</span>
+              <div style={{ width:28, height:1, background:'rgba(201,151,42,0.3)' }} />
+            </div>
+            <h2 style={{ fontFamily:'Cinzel, serif', fontSize:'clamp(30px,4vw,56px)', color:'#FFFDF5', fontWeight:400, lineHeight:1.08, margin:0 }}>
+              Dressed for Every<br />
+              <em style={{ color:'#C9972A', fontWeight:600, fontStyle:'italic' }}>Royal Occasion</em>
+            </h2>
+            <p style={{ fontFamily:'Raleway, sans-serif', fontSize:12, fontStyle:'italic',
+              color:'rgba(201,151,42,0.4)', letterSpacing:3, marginTop:14 }}>— Crafted for You</p>
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:6 }}>
+            <p style={{ fontFamily:'Cinzel, serif', fontSize:40, fontWeight:700,
+              color:'rgba(201,151,42,0.15)', lineHeight:1, margin:0 }}>360+</p>
+            <p style={{ fontFamily:'Raleway, sans-serif', fontSize:9, letterSpacing:4,
+              color:'rgba(201,151,42,0.4)', textTransform:'uppercase' }}>Pieces in Catalogue</p>
+            <Link to="/catalog"
+              style={{ fontFamily:'Raleway, sans-serif', fontSize:9, letterSpacing:4, color:'rgba(201,151,42,0.7)',
+                textDecoration:'none', textTransform:'uppercase', borderBottom:'1px solid rgba(201,151,42,0.3)',
+                paddingBottom:4, marginTop:8 }}>
+              Browse All →
+            </Link>
+          </div>
+        </motion.div>
+
+        {/* Bento Grid: Men spans 2 rows on left, 4 others fill right 2 cols */}
+        <div className="vp-bento" style={{ display:'grid', gridTemplateColumns:'1.2fr 1fr 1fr', gridTemplateRows:'340px 300px', gap:2 }}>
+          {CATS.map((cat, i) => (
+            <motion.div key={cat.l}
+              initial={{ opacity:0, y:32 }} whileInView={{ opacity:1, y:0 }}
+              transition={{ delay:i*0.07, duration:0.7, ease:[0.22,1,0.36,1] }}
+              viewport={{ once:true }}
+              className={cat.tall ? 'vp-tall' : 'vp-cell'}
+              style={{ gridRow: cat.tall ? 'span 2' : 'span 1' }}
+              onMouseEnter={() => setHov(cat.l)}
+              onMouseLeave={() => setHov(null)}>
+
+              <Link to={`/catalog?cat=${cat.q}`} style={{ textDecoration:'none', display:'block', height:'100%' }}>
+                <div className="vp-card"
+                  style={{ position:'relative', overflow:'hidden', height:'100%', cursor:'pointer', background:'#0A0402' }}>
+
+                  <img src={cat.img} alt={cat.l} className="vp-img"
+                    style={{ position:'absolute', inset:0, width:'100%', height:'100%',
+                      objectFit:'cover', objectPosition:'top center',
+                      filter:'brightness(0.48) sepia(15%)' }} />
+
+                  {/* Dark gradient */}
+                  <div style={{ position:'absolute', inset:0,
+                    background:'linear-gradient(to top, rgba(6,2,1,0.97) 0%, rgba(6,2,1,0.5) 45%, rgba(6,2,1,0.05) 100%)' }} />
+
+                  {/* Accent colour glow on hover */}
+                  <motion.div animate={{ opacity: hov === cat.l ? 1 : 0 }}
+                    transition={{ duration:0.5 }}
+                    style={{ position:'absolute', inset:0, pointerEvents:'none',
+                      background:`radial-gradient(ellipse 120% 55% at 50% 110%, ${cat.accent}, transparent 65%)` }} />
+
+                  {/* Border on hover */}
+                  <motion.div animate={{ opacity: hov === cat.l ? 1 : 0 }}
+                    style={{ position:'absolute', inset:0, pointerEvents:'none',
+                      border:'1px solid rgba(201,151,42,0.22)' }} />
+
+                  {/* Symbol + count top-right */}
+                  <div style={{ position:'absolute', top:20, right:22, textAlign:'right' }}>
+                    <p style={{ fontFamily:'Cinzel, serif', fontSize:9, letterSpacing:4,
+                      color:'rgba(201,151,42,0.28)', margin:0, marginBottom:5 }}>{cat.symbol}</p>
+                    <motion.p
+                      animate={{ color: hov === cat.l ? '#C9972A' : 'rgba(201,151,42,0.38)' }}
+                      style={{ fontFamily:'Cinzel, serif', fontSize: cat.tall ? 30 : 22,
+                        fontWeight:700, lineHeight:1, margin:0 }}>
+                      {cat.num}
+                    </motion.p>
+                  </div>
+
+                  {/* Bottom content */}
+                  <div style={{ position:'absolute', bottom:0, left:0, right:0,
+                    padding: cat.tall ? '0 32px 36px' : '0 24px 24px' }}>
+
+                    <p style={{ fontFamily:'Cinzel, serif', fontSize: cat.tall ? 34 : 22,
+                      color:'#FFFDF5', fontWeight:600, letterSpacing:3, marginBottom:6, lineHeight:1.1 }}>
+                      {cat.l}
+                    </p>
+
+                    <p style={{ fontFamily:'Raleway, sans-serif', fontSize:10, letterSpacing:2,
+                      color:'rgba(201,151,42,0.5)', textTransform:'uppercase', marginBottom:0 }}>
+                      {cat.s}
+                    </p>
+
+                    <AnimatePresence>
+                      {hov === cat.l && (
+                        <motion.div initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
+                          exit={{ opacity:0, y:6 }} transition={{ duration:0.32 }}>
+                          <p style={{ fontFamily:'Raleway, sans-serif', fontSize:12, fontStyle:'italic',
+                            color:'rgba(244,232,208,0.5)', lineHeight:1.7, marginTop:10, marginBottom:10 }}>
+                            {cat.desc}
+                          </p>
+                          <p style={{ fontFamily:'Raleway, sans-serif', fontSize:9, letterSpacing:2.5,
+                            color:'rgba(201,151,42,0.55)', textTransform:'uppercase', margin:0 }}>
+                            {cat.detail}
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <motion.div
+                      animate={{ width: hov === cat.l ? '100%' : 28 }}
+                      transition={{ duration:0.45, ease:[0.22,1,0.36,1] }}
+                      style={{ height:1, background:'rgba(201,151,42,0.5)', marginTop:16 }} />
+                  </div>
+                </div>
+              </Link>
             </motion.div>
-            <h1 className="main-title" style={{ 
-              fontSize: "clamp(60px, 6vw, 84px)", 
-              margin: 0, lineHeight: 0.9, fontWeight: 500, letterSpacing: "-1px" 
-            }}>
-              Atelier <br/><i style={{ fontWeight: 300, color: C.gold }}>Archive</i>
-            </h1>
-          </header>
-
-          {/* SELECTOR */}
-          <div style={{ marginBottom: "5vh" }}>
-            {CATS.map((c, i) => (
-              <div key={i} onClick={() => setActive(i)} className={`nav-item ${active === i ? 'active' : ''}`}>
-                {c.l.toUpperCase()}
-              </div>
-            ))}
-          </div>
-
-          {/* DESCRIPTION */}
-          <div style={{ minHeight: "180px" }}>
-            <AnimatePresence mode="wait">
-              <motion.div 
-                key={active} 
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-              >
-                <h3 style={{ fontSize: 28, marginBottom: 15, color: C.maroon, fontStyle: "italic" }}>{CATS[active].tag}</h3>
-                <p style={{ 
-                  fontFamily: 'Montserrat', fontSize: 13, lineHeight: 1.8, opacity: 0.6, 
-                  fontWeight: 300, marginBottom: 30, maxWidth: "340px" 
-                }}>
-                  Crafted with precision in our flagship atelier. The {CATS[active].s} series represents the pinnacle of bespoke tradition.
-                </p>
-                <button className="btn-atelier">EXPLORE PIECES</button>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          ))}
         </div>
 
-        {/* RIGHT: IMAGE LAYER */}
-        <div style={{ 
-          flex: 1, height: "100%", position: "relative", 
-          overflow: "hidden", background: "#f0f0f0" 
-        }}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.2, ease: "circOut" }}
-              style={{ width: "100%", height: "100%", position: "relative" }}
-            >
-              <img 
-                src={CATS[active].img}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                alt="Collection"
-              />
-              {/* VIGNETTE MASK TO PREVENT TEXT CLASH */}
-              <div style={{ 
-                position: "absolute", inset: 0, 
-                background: `linear-gradient(to right, ${C.silk} 0%, transparent 60%)` 
-              }} />
-            </motion.div>
-          </AnimatePresence>
-
-          {/* FLOATING BADGE */}
-          <div style={{ 
-            position: "absolute", top: "40px", right: "40px", 
-            padding: "20px", border: `1px solid ${C.gold}30`,
-            backdropFilter: "blur(10px)", zIndex: 5
-          }}>
-            <div style={{ fontFamily: 'Montserrat', fontSize: 8, letterSpacing: 3, color: C.gold }}>COLLECTION</div>
-            <div style={{ fontSize: 18, color: C.ink }}>2024 / 25</div>
-          </div>
-        </div>
-
-        {/* BOTTOM NAVIGATION / STATS */}
-        <div style={{ 
-          position: "absolute", bottom: 40, left: 80, 
-          display: "flex", gap: 60, fontFamily: 'Montserrat', fontSize: 9, 
-          letterSpacing: 3, zIndex: 20
-        }}>
-          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <span style={{ color: C.gold }}>•</span>
-            <span style={{ opacity: 0.4 }}>AUTHENTIC HAND-STITCHED</span>
-          </div>
-          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <span style={{ color: C.gold }}>•</span>
-            <span style={{ opacity: 0.4 }}>GLOBAL SHIPPING AVAILABLE</span>
-          </div>
-        </div>
+        {/* Footer tagline */}
+        <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }}
+          transition={{ delay:0.4 }}
+          style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:16, marginTop:56 }}>
+          <div style={{ flex:1, height:1, background:'linear-gradient(to right, transparent, rgba(201,151,42,0.1))' }} />
+          <p style={{ fontFamily:'Raleway, sans-serif', fontSize:11, fontStyle:'italic',
+            color:'rgba(201,151,42,0.28)', letterSpacing:4, margin:0, whiteSpace:'nowrap' }}>
+            Every piece is made-to-order — no two alike
+          </p>
+          <div style={{ flex:1, height:1, background:'linear-gradient(to left, transparent, rgba(201,151,42,0.1))' }} />
+        </motion.div>
       </div>
-    </div>
+
+      <div style={{ height:1, background:'linear-gradient(90deg,transparent,rgba(201,151,42,0.45) 25%,rgba(201,151,42,0.45) 75%,transparent)' }} />
+    </section>
   );
 }

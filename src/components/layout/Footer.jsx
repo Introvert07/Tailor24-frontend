@@ -1,180 +1,218 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiInstagram, FiTwitter, FiPhone, FiMail, FiChevronUp, FiMapPin } from 'react-icons/fi';
+import { FiInstagram, FiPhone, FiMail, FiMapPin, FiArrowUpRight } from 'react-icons/fi';
 
-/* ─── PALETTE (Consistent with Navbar) ─── */
-const C = {
-  parchment: '#F4E8D0',
-  white:     '#FFFDF5',
-  maroon:    '#8d0919',
-  maroonL:   '#8B1A28',
-  gold:      '#B5892E',
-  goldB:     '#D4A017',
-  goldL:     '#F2C84B',
-  ink:       '#1A0800',
-  muted:     '#7A6040',
-  border:    '#D4BC94',
-};
+const fonts = `@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');`;
 
-/* ─── DECORATIVE COMPONENTS ─── */
-const Mark = () => (
-  <svg width="40" height="40" viewBox="0 0 32 32">
-    <polygon points="16,2 30,16 16,30 2,16" stroke={C.gold} strokeWidth="1.2" fill="none" />
-    <circle cx="16" cy="16" r="3.5" fill={C.maroon} opacity="0.85" />
-    <circle cx="16" cy="16" r="1.6" fill={C.gold} />
-  </svg>
-);
+const NAV = [
+  { label: 'Collection', to: '/catalog'   },
+  { label: 'About',      to: '/about'     },
+  { label: 'Showrooms',  to: '/showrooms' },
+  { label: 'Contact',    to: '/contact'   },
+];
 
-const ScallopBorder = () => (
-  <div style={{ position:'absolute', top:0, left:0, right:0, height:7, overflow:'hidden' }}>
-    <svg width="100%" height="7" viewBox="0 0 1440 7" preserveAspectRatio="none">
-      {Array.from({ length: 48 }).map((_, i) => (
-        <path key={i} d={`M${i * 30} 7 Q${i * 30 + 15} -2 ${i * 30 + 30} 7`}
-          stroke={C.gold} strokeWidth="0.7" fill="none" opacity="0.4" />
-      ))}
-    </svg>
-  </div>
-);
+const ACCOUNT = [
+  { label: 'Sign In',   to: '/login'    },
+  { label: 'Register',  to: '/register' },
+  { label: 'My Orders', to: '/orders'   },
+  { label: 'Profile',   to: '/profile'  },
+];
 
-const RangDot = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" className="inline-block mr-2">
-    <circle cx="7" cy="7" r="5.5" stroke={C.gold} strokeWidth="0.6" fill="none" opacity="0.35" />
-    <circle cx="7" cy="7" r="0.8" fill={C.maroon} opacity="0.6" />
-  </svg>
-);
+const CITIES = ['Bhopal', 'Indore', 'Vidisha'];
+
+function FooterLink({ to, children }) {
+  return (
+    <Link to={to}
+      style={{ fontFamily: 'Raleway, sans-serif', fontSize: 13,
+        color: 'rgba(212,188,148,0.4)', textDecoration: 'none', transition: 'color 0.25s' }}
+      onMouseEnter={e => e.currentTarget.style.color = 'rgba(201,151,42,0.9)'}
+      onMouseLeave={e => e.currentTarget.style.color = 'rgba(212,188,148,0.4)'}>
+      {children}
+    </Link>
+  );
+}
+
+function ColLabel({ text }) {
+  return (
+    <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 5,
+      color: 'rgba(201,151,42,0.45)', textTransform: 'uppercase',
+      marginBottom: 24, fontWeight: 600 }}>
+      {text}
+    </p>
+  );
+}
 
 export default function Footer() {
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
   return (
-    <footer className="relative overflow-hidden pt-24 pb-12" style={{ background: C.ink, color: C.white }}>
-      {/* Decorative Elements */}
-      <ScallopBorder />
-      <div className="absolute bottom-0 left-0 w-full h-1" style={{ background: `linear-gradient(90deg, transparent, ${C.gold}, transparent)`, opacity: 0.3 }} />
+    <footer style={{ background: '#060201', position: 'relative', overflow: 'hidden' }}>
+      <style>{fonts}{`
+        * { box-sizing: border-box; }
+        .ft-grid { display:grid; grid-template-columns:1.6fr 1fr 1fr 1.2fr; gap:64px; }
+        @media(max-width:1024px){ .ft-grid{ grid-template-columns:1fr 1fr!important; gap:48px!important; } }
+        @media(max-width:560px) { .ft-grid{ grid-template-columns:1fr!important; gap:40px!important; } }
+      `}</style>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-12">
-          
-          {/* ── BRAND ATELIER ── */}
-          <div className="lg:col-span-5">
-            <div className="flex items-center gap-4 mb-8">
-              <Mark />
-              <div>
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-3xl tracking-wider font-bold">
-                  Tailor<span style={{ color: C.goldL }}>24</span>
-                </h2>
-                <p style={{ fontSize: '8px', letterSpacing: '0.4em', color: C.gold }} className="uppercase">
-                  Central India · Est. 1997
-                </p>
-              </div>
+      {/* Ambient glow from bottom */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'radial-gradient(ellipse 80% 50% at 50% 110%, rgba(139,26,40,0.14) 0%, transparent 60%)' }} />
+
+      {/* Top rule */}
+      <div style={{ height: 1, background: 'linear-gradient(90deg,transparent,rgba(201,151,42,0.4) 25%,rgba(201,151,42,0.4) 75%,transparent)' }} />
+
+      {/* ── Hero band ── */}
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '72px 48px 0' }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
+            paddingBottom: 56, borderBottom: '1px solid rgba(201,151,42,0.07)',
+            flexWrap: 'wrap', gap: 36 }}>
+
+          {/* Brand */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+              <div style={{ width: 20, height: 1, background: '#C9972A' }} />
+              <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 6,
+                color: 'rgba(201,151,42,0.45)', textTransform: 'uppercase' }}>Est. 2004 · Madhya Pradesh</span>
             </div>
-            
-            <p style={{ fontFamily: "'Montserrat', sans-serif", color: `${C.parchment}90` }} className="text-sm leading-relaxed max-w-sm mb-8 italic font-light">
-              "Legacy-grade tailoring for the modern Indian visionary. 
-              Our artisans in Indore, Bhopal, and Vidisha transform pure silk 
-              and heritage weaves into personal armor."
+            <h2 style={{ fontFamily: 'Cinzel, serif', fontSize: 'clamp(30px,4vw,54px)',
+              color: '#FFFDF5', fontWeight: 700, letterSpacing: 6, lineHeight: 1, margin: 0 }}>
+              TAILOR<span style={{ color: '#C9972A' }}> 24</span>
+            </h2>
+            <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 12, letterSpacing: 5,
+              color: 'rgba(201,151,42,0.4)', fontStyle: 'italic', marginTop: 12 }}>
+              Crafted for You
             </p>
+          </div>
 
-            <div className="flex gap-4">
+          {/* Right: tagline + CTA */}
+          <div style={{ maxWidth: 460 }}>
+            <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 14,
+              color: 'rgba(244,232,208,0.4)', lineHeight: 1.9, fontWeight: 300, marginBottom: 28 }}>
+              Traditional craft. Modern speed. Bespoke garments delivered in 24 hours —
+              across three showrooms in Madhya Pradesh.
+            </p>
+            <Link to="/catalog"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 10,
+                fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 4, fontWeight: 600,
+                textTransform: 'uppercase', color: '#060201', background: '#C9972A',
+                padding: '12px 26px', textDecoration: 'none', transition: 'background 0.3s' }}
+              onMouseEnter={e => e.currentTarget.style.background = '#D4A017'}
+              onMouseLeave={e => e.currentTarget.style.background = '#C9972A'}>
+              Start Your Order <FiArrowUpRight size={12} />
+            </Link>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* ── Main columns ── */}
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '56px 48px' }}>
+        <div className="ft-grid">
+
+          {/* Col 1 — Craft + cities */}
+          <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.5 }}>
+            <ColLabel text="Our Craft" />
+            <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 13,
+              color: 'rgba(212,188,148,0.35)', lineHeight: 1.85, fontWeight: 300, marginBottom: 28 }}>
+              Master karigars with 20–35 years of classical artistry. Six embroidery traditions.
+              One 24-hour promise.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {CITIES.map(c => (
+                <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ width: 4, height: 4, borderRadius: '50%',
+                    background: 'rgba(201,151,42,0.4)', flexShrink: 0 }} />
+                  <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 12,
+                    color: 'rgba(201,151,42,0.38)', letterSpacing: 2 }}>{c}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Col 2 — Navigate */}
+          <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.07 }}>
+            <ColLabel text="Navigate" />
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0,
+              display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {NAV.map(item => (
+                <li key={item.label}><FooterLink to={item.to}>{item.label}</FooterLink></li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Col 3 — Account */}
+          <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.13 }}>
+            <ColLabel text="Account" />
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0,
+              display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {ACCOUNT.map(item => (
+                <li key={item.label}><FooterLink to={item.to}>{item.label}</FooterLink></li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Col 4 — Contact + Social */}
+          <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.18 }}>
+            <ColLabel text="Reach Us" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 32 }}>
               {[
-                { Icon: FiInstagram, link: '#' },
-                { Icon: FiTwitter, link: '#' },
-                { Icon: FiMail, link: 'mailto:hello@tailor24.com' }
-              ].map((social, i) => (
-                <a key={i} href={social.link} 
-                  className="w-10 h-10 border flex items-center justify-center transition-all duration-500 hover:scale-110"
-                  style={{ borderColor: `${C.gold}40`, color: C.gold }}>
-                  <social.Icon size={16} />
+                { Icon: FiPhone,  text: '+91 98765 43210',    href: 'tel:+919876543210' },
+                { Icon: FiMail,   text: 'hello@tailor24.in',  href: 'mailto:hello@tailor24.in' },
+                { Icon: FiMapPin, text: 'Bhopal · Indore · Vidisha', href: '/showrooms' },
+              ].map(({ Icon, text, href }) => (
+                <a key={text} href={href}
+                  style={{ display: 'flex', gap: 12, alignItems: 'flex-start',
+                    color: 'rgba(212,188,148,0.38)', textDecoration: 'none', transition: 'color 0.25s' }}
+                  onMouseEnter={e => e.currentTarget.style.color = 'rgba(201,151,42,0.8)'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'rgba(212,188,148,0.38)'}>
+                  <Icon size={13} style={{ marginTop: 3, flexShrink: 0, color: 'rgba(201,151,42,0.38)' }} />
+                  <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 13 }}>{text}</span>
                 </a>
               ))}
             </div>
-          </div>
 
-          {/* ── NAVIGATION ── */}
-          <div className="lg:col-span-3">
-            <div className="flex items-center mb-8">
-              <RangDot />
-              <h4 style={{ color: C.gold, fontSize: '10px' }} className="uppercase tracking-[0.4em] font-bold">Navigation</h4>
-            </div>
-            <ul className="space-y-4">
+            {/* Social icons */}
+            <div style={{ display: 'flex', gap: 10 }}>
               {[
-                ['Sovereign Collection', '/catalog'],
-                ['The Ateliers', '/showrooms'],
-                ['Bespoke Process', '/process'],
-                ['Client Login', '/login']
-              ].map(([label, to]) => (
-                <li key={to}>
-                  <Link to={to} 
-                    className="text-xs transition-all duration-300 hover:translate-x-2 inline-block font-medium tracking-widest uppercase"
-                    style={{ color: `${C.parchment}60` }}>
-                    <span className="hover:text-[#F2C84B] transition-colors">{label}</span>
-                  </Link>
-                </li>
+                { href: '#', label: 'IG', icon: <FiInstagram size={14} /> },
+                { href: 'https://wa.me/919876543210', label: 'WA', icon: <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 10, fontWeight: 600 }}>WA</span> },
+              ].map(({ href, label, icon }) => (
+                <motion.a key={label} href={href} whileHover={{ scale: 1.08 }}
+                  style={{ width: 36, height: 36, border: '1px solid rgba(201,151,42,0.18)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'rgba(201,151,42,0.4)', textDecoration: 'none', transition: 'all 0.25s' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#C9972A'; e.currentTarget.style.color = '#C9972A'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,151,42,0.18)'; e.currentTarget.style.color = 'rgba(201,151,42,0.4)'; }}>
+                  {icon}
+                </motion.a>
               ))}
-            </ul>
-          </div>
-
-          {/* ── CONCIERGE ── */}
-          <div className="lg:col-span-4">
-            <div className="flex items-center mb-8">
-              <RangDot />
-              <h4 style={{ color: C.gold, fontSize: '10px' }} className="uppercase tracking-[0.4em] font-bold">Concierge</h4>
             </div>
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <FiPhone style={{ color: C.gold }} className="mt-1" size={16} />
-                <div>
-                  <p style={{ color: `${C.parchment}40` }} className="text-[10px] uppercase tracking-widest mb-1">Private Appointment</p>
-                  <p className="text-sm font-bold tracking-widest">+91 98765 43210</p>
-                </div>
-              </div>
-
-              <div className="p-6 relative group border" style={{ background: 'rgba(255,255,255,0.02)', borderColor: `${C.gold}20` }}>
-                <div className="flex items-center gap-2 mb-2">
-                  <FiMapPin size={12} style={{ color: C.gold }} />
-                  <p style={{ color: C.gold }} className="text-[10px] uppercase tracking-widest font-bold">Presence In</p>
-                </div>
-                <p style={{ fontFamily: "'Cormorant Garamond', serif" }} className="text-lg tracking-wide text-white/90 italic">
-                  Indore • Bhopal • Vidisha
-                </p>
-                {/* Decorative corner stitch */}
-                <div className="absolute top-0 right-0 w-8 h-8 border-t border-r transition-all duration-500 group-hover:w-full group-hover:h-full" 
-                  style={{ borderColor: `${C.gold}40` }} />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── BOTTOM BAR ── */}
-        <div className="mt-24 pt-12 border-t flex flex-col md:flex-row justify-between items-center gap-8"
-          style={{ borderColor: 'rgba(181, 137, 46, 0.15)' }}>
-          
-          <p style={{ fontSize: '9px', letterSpacing: '0.3em', color: `${C.parchment}40` }} className="uppercase text-center md:text-left">
-            © {new Date().getFullYear()} Tailor24. Engineered for Heritage. 
-            <span className="block md:inline md:ml-4" style={{ color: C.maroonL }}>Made in Central India.</span>
-          </p>
-          
-          <button 
-            onClick={scrollToTop}
-            className="flex items-center gap-3 transition-colors group"
-            style={{ fontSize: '10px', color: C.gold, letterSpacing: '0.2em', textTransform: 'uppercase' }}
-          >
-            Back to Summit 
-            <motion.div
-              animate={{ y: [0, -4, 0] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-            >
-              <FiChevronUp />
-            </motion.div>
-          </button>
+          </motion.div>
         </div>
       </div>
 
-      {/* Final decorative stitch line at the very bottom */}
-      <div className="h-1 w-full flex overflow-hidden opacity-20">
-        {Array.from({ length: 100 }).map((_, i) => (
-          <div key={i} className="h-full w-4 flex-shrink-0" style={{ borderRight: `1px solid ${C.gold}`, marginRight: '4px' }} />
-        ))}
+      {/* ── Bottom bar ── */}
+      <div style={{ borderTop: '1px solid rgba(201,151,42,0.06)' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '22px 48px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          flexWrap: 'wrap', gap: 10 }}>
+          <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 11,
+            color: 'rgba(201,151,42,0.22)', letterSpacing: 1 }}>
+            © {new Date().getFullYear()} Tailor 24. All rights reserved.
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 18, height: 1, background: 'rgba(201,151,42,0.12)' }} />
+            <span style={{ fontFamily: 'Cinzel, serif', fontSize: 9, color: 'rgba(201,151,42,0.18)', letterSpacing: 4 }}>✦</span>
+            <div style={{ width: 18, height: 1, background: 'rgba(201,151,42,0.12)' }} />
+          </div>
+          <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 11,
+            color: 'rgba(201,151,42,0.22)', letterSpacing: 1, fontStyle: 'italic' }}>
+            Crafted for You · Made in India
+          </p>
+        </div>
       </div>
     </footer>
   );

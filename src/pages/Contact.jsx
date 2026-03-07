@@ -1,207 +1,107 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { 
-  Phone, 
-  Mail, 
-  MapPin, 
-  MessageSquare, 
-  Instagram, 
-  Clock, 
-  Scissors,
-  Loader2
-} from "lucide-react";
-// Import your central API service
-import { submitContactInquiry } from '../services/api'; 
+import { Phone, Mail, MapPin, Instagram, Clock, Send, ShieldCheck } from 'lucide-react';
+import { contactService } from '../services/api'; 
+import { RoyalInput, RoyalBtn } from '../components/ui/Atoms';
+
+const INFO = [
+  { Icon: Phone,     label: 'Phone',     value: '+91 98765 43210' },
+  { Icon: Mail,      label: 'Email',     value: 'care@shahikar.com' },
+  { Icon: MapPin,    label: 'Flagship Presence', value: 'Vidisha · Bhopal · Indore' },
+  { Icon: Clock,     label: 'Atelier Hours',    value: 'Mon–Sat 10am – 7pm' },
+  { Icon: Instagram, label: 'Instagram', value: '@shahikar.official' },
+];
 
 export default function Contact() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    subject: 'General Design Inquiry',
-    message: ''
-  });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
 
-  const handleSubmit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
+    setLoading(true);
     try {
-      // Using the service function that pulls from your environment variables
-      await submitContactInquiry(formData);
-
-      toast.success("Message received. Our lead designer will be in touch.");
-      
-      // Reset form on success
-      setFormData({
-        name: '',
-        phone: '',
-        subject: 'General Design Inquiry',
-        message: ''
-      });
-    } catch (error) {
-      // Error message is extracted by your Axios interceptor in api.js
-      toast.error(error.message || "Could not connect to the atelier server.");
+      await contactService.sendMessage(form);
+      toast.success("Our master tailor has received your inquiry.");
+      setForm({ name: '', email: '', phone: '', message: '' });
+    } catch (err) {
+      toast.error('Connection interrupted. Please try again.');
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-heritage-plum text-heritage-sand">
-      <div className="max-w-6xl mx-auto px-6">
-        
-        {/* Editorial Header */}
-        <div className="text-center mb-20">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <span className="h-[1px] w-12 bg-heritage-gold/60"></span>
-            <Scissors className="text-heritage-gold" size={22} />
-            <span className="h-[1px] w-12 bg-heritage-gold/60"></span>
-          </div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-6xl font-serif text-heritage-gold italic"
-          >
-            The Concierge
-          </motion.h1>
-          <p className="mt-6 text-heritage-sand/80 font-light max-w-xl mx-auto italic leading-relaxed text-lg">
-            From fitting inquiries to grand celebrations, our master tailors are at your service.
-          </p>
-        </div>
+    <div className="min-h-screen bg-[#FBF4E8] pt-24 font-sans selection:bg-gold-500/30 relative">
+      <div className="fixed inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url("https://www.transparenttextures.com/patterns/paper-fibers.png")` }} />
+      
+      {/* ── SIMPLE MAROON HERO ── */}
+      <header className="bg-[#6B0F1A] py-28 px-6 text-center relative border-b-4 border-[#B5892E]">
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="relative z-10">
+          <span className="text-[10px] tracking-[0.5em] text-[#D4A017] font-bold uppercase mb-4 block">
+            The House of Shahikar
+          </span>
+          <h1 className="font-serif text-5xl md:text-7xl text-white font-light">
+            Crafting <span className="text-[#D4A017] italic font-serif">Connections</span>
+          </h1>
+          <p className="text-white/60 font-serif text-lg mt-4 italic">Bespoke excellence across Madhya Pradesh</p>
+        </motion.div>
+      </header>
 
-        <div className="grid lg:grid-cols-12 gap-12 items-start">
+      <main className="max-w-7xl mx-auto px-6 py-20 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
           
-          {/* Left: Contact Details */}
-          <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white/5 border border-heritage-gold/20 p-8 backdrop-blur-sm">
-              <Phone className="text-heritage-gold mb-4" size={24} />
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-heritage-gold mb-2">Voice Consultation</h3>
-              <p className="text-white font-serif text-2xl">+91 98765 43210</p>
+          {/* ── INFO SECTION ── */}
+          <section className="space-y-12">
+            <div className="relative pl-6 border-l-4 border-[#6B0F1A]">
+              <h2 className="font-serif text-4xl text-[#1A0800] mb-4">Heritage Centres</h2>
+              <p className="text-[#1A0800]/70 leading-relaxed max-w-md text-lg font-light">
+                From our roots in <span className="text-[#6B0F1A] font-semibold">Vidisha</span> to the hubs of 
+                <span className="text-[#6B0F1A] font-semibold"> Bhopal</span> and Indore, we bring 24 years of tailoring mastery to you.
+              </p>
             </div>
 
-            <div className="bg-white/5 border border-heritage-gold/20 p-8 backdrop-blur-sm">
-              <Mail className="text-heritage-gold mb-4" size={24} />
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-heritage-gold mb-2">Digital Inquiry</h3>
-              <p className="text-white font-serif text-2xl">concierge@tailor24.com</p>
+            <div className="space-y-6">
+              {INFO.map(({ Icon, label, value }) => (
+                <div key={label} className="flex items-center gap-6 group">
+                  <div className="w-12 h-12 bg-[#1A0800] flex items-center justify-center border border-[#B5892E]/30 rotate-45 group-hover:rotate-0 transition-all duration-500">
+                    <Icon size={18} className="text-[#B5892E] -rotate-45 group-hover:rotate-0 transition-all" />
+                  </div>
+                  <div>
+                    <p className="text-[9px] tracking-[0.2em] text-[#B5892E] font-bold uppercase">{label}</p>
+                    <p className="text-[#1A0800] text-lg font-serif">{value}</p>
+                  </div>
+                </div>
+              ))}
             </div>
+          </section>
 
-            <div className="bg-heritage-gold p-8 text-heritage-plum relative overflow-hidden">
-               <div className="relative z-10">
-                <Clock className="mb-4" size={24} />
-                <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] mb-3">Measurement Visits</h3>
-                <p className="font-medium text-sm leading-relaxed italic">
-                  Our traveling tailors bring the atelier to your doorstep. Available 7 days a week.
-                </p>
-               </div>
-               <Scissors className="absolute -bottom-8 -right-8 text-heritage-plum opacity-10" size={140} />
-            </div>
-          </div>
-
-          {/* Right: The Inquiry Form */}
-          <div className="lg:col-span-8">
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-heritage-sand p-1 border border-heritage-gold/30 shadow-2xl"
-            >
-              <div className="border border-heritage-gold/20 p-8 md:p-12">
-                <h2 className="text-3xl font-serif text-heritage-plum mb-8">Direct Inquiry</h2>
-                <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-x-8 gap-y-10">
-                  
-                  <div className="relative">
-                    <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-heritage-plum/60 block mb-1">Identity</label>
-                    <input 
-                      required
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      type="text" 
-                      placeholder="Full Name"
-                      className="w-full bg-transparent border-b-2 border-heritage-plum/10 py-2 text-heritage-plum font-medium focus:border-heritage-plum outline-none transition-all placeholder:text-gray-400"
-                    />
-                  </div>
-
-                  <div className="relative">
-                    <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-heritage-plum/60 block mb-1">Connection</label>
-                    <input 
-                      required
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      type="tel" 
-                      placeholder="Phone Number"
-                      className="w-full bg-transparent border-b-2 border-heritage-plum/10 py-2 text-heritage-plum font-medium focus:border-heritage-plum outline-none transition-all placeholder:text-gray-400"
-                    />
-                  </div>
-
-                  <div className="md:col-span-2 relative">
-                    <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-heritage-plum/60 block mb-1">Nature of Inquiry</label>
-                    <select 
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      className="w-full bg-transparent border-b-2 border-heritage-plum/10 py-2 text-heritage-plum font-medium focus:border-heritage-plum outline-none cursor-pointer"
-                    >
-                      <option>General Design Inquiry</option>
-                      <option>Bridal & Wedding Trousseau</option>
-                      <option>Corporate & Executive Tailoring</option>
-                      <option>Alteration & Fitting Support</option>
-                    </select>
-                  </div>
-
-                  <div className="md:col-span-2 relative">
-                    <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-heritage-plum/60 block mb-1">Your Requirements</label>
-                    <textarea 
-                      required
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      rows="3"
-                      placeholder="Please share details regarding your bespoke needs..."
-                      className="w-full bg-transparent border-b-2 border-heritage-plum/10 py-2 text-heritage-plum font-medium focus:border-heritage-plum outline-none transition-all resize-none placeholder:text-gray-400"
-                    ></textarea>
-                  </div>
-
-                  <div className="md:col-span-2 pt-4">
-                    <button 
-                      disabled={isSubmitting}
-                      type="submit"
-                      className="w-full md:w-auto inline-flex items-center justify-center gap-3 bg-heritage-plum text-heritage-gold px-12 py-4 rounded-none font-bold uppercase tracking-[0.3em] text-[11px] hover:bg-black hover:text-white transition-all duration-300 disabled:opacity-50 shadow-lg"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="animate-spin" size={16} />
-                          Sending Inquiry...
-                        </>
-                      ) : "Send Message"}
-                    </button>
-                  </div>
-                </form>
+          {/* ── INQUIRY FORM ── */}
+          <section className="bg-white border border-[#D4BC94] p-10 md:p-14 shadow-xl relative">
+            <h2 className="font-serif text-3xl text-[#1A0800] mb-8">Private Inquiry</h2>
+            <form onSubmit={submit} className="space-y-6">
+              <RoyalInput label="Full Name" value={form.name} onChange={set('name')} placeholder="Mahesh Kushwah" required />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <RoyalInput label="Email" value={form.email} onChange={set('email')} type="email" required />
+                <RoyalInput label="Phone" value={form.phone} onChange={set('phone')} type="tel" />
               </div>
-            </motion.div>
-          </div>
+              <textarea 
+                value={form.message} 
+                onChange={set('message')} 
+                required 
+                rows={4} 
+                placeholder="Describe your bespoke requirements..."
+                className="w-full bg-[#FBF4E8]/30 border-b border-[#D4BC94] p-3 focus:border-[#6B0F1A] outline-none transition-all font-serif italic"
+              />
+              <RoyalBtn type="submit" disabled={loading} className="w-full py-4 bg-[#1A0800] text-[#B5892E] hover:bg-[#B5892E] hover:text-white transition-all uppercase tracking-widest text-xs font-bold">
+                {loading ? 'Submitting...' : 'Request Consultation'}
+              </RoyalBtn>
+            </form>
+          </section>
         </div>
-
-        {/* Footer Icons */}
-        <div className="mt-24 text-center">
-          <div className="flex justify-center gap-12 border-t border-heritage-gold/20 pt-12">
-            <a href="#" className="group flex flex-col items-center gap-2">
-              <Instagram className="text-heritage-gold group-hover:scale-110 transition-transform" size={28} />
-              <span className="text-[9px] uppercase tracking-widest text-heritage-gold/60">Instagram</span>
-            </a>
-            <a href="#" className="group flex flex-col items-center gap-2">
-              <MessageSquare className="text-heritage-gold group-hover:scale-110 transition-transform" size={28} />
-              <span className="text-[9px] uppercase tracking-widest text-heritage-gold/60">WhatsApp</span>
-            </a>
-          </div>
-        </div>
-      </div>
+      </main>
     </div>
   );
 }

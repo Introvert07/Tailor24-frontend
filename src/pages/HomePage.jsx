@@ -1,368 +1,338 @@
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 
-/* ─── PALETTE ────────────────────────────────────────────── */
-const C = {
-  page:"#FBF4E8",parchment:"#F4E8D0",sand:"#EDD9B2",white:"#FFFDF5",
-  maroon:"#6B0F1A",maroonL:"#8B1A28",maroonD:"#4A0A10",
-  gold:"#B5892E",goldB:"#D4A017",goldL:"#F2C84B",
-  teal:"#1A5C5C",ink:"#1A0800",inkMid:"#3D2008",
-  muted:"#7A6040",border:"#D4BC94",threadR:"#6B0F1A",threadG:"#1A5C5C",
-};
-
-/* ─── DATA ───────────────────────────────────────────────── */
-const HERO_SLIDES = [
-  { src:"https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=1200&auto=format&fit=crop", label:"Jodhpuri Bandhgala", for:"Men" },
-  { src:"https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=1200&auto=format&fit=crop", label:"Bridal Anarkali",    for:"Women" },
-  { src:"https://images.unsplash.com/photo-1593033516514-60e5aa277467?q=80&w=1200&auto=format&fit=crop", label:"Festive Lehenga",    for:"Women" },
-  { src:"https://images.unsplash.com/photo-1589310243389-96a5483213a8?q=80&w=1200&auto=format&fit=crop", label:"Little Royals",      for:"Kids" },
+const SLIDES = [
+  {
+    tag: 'New Arrival — 2025',
+    title: ['The', 'Maharaja', 'Collection'],
+    sub: 'Sherwanis woven with Banarasi silk & hand-embroidered zardozi',
+    cta: 'Explore Men\'s', to: '/catalog?cat=men',
+    accent: '#8B1A28',
+    category: 'Men',
+    img: 'https://images.unsplash.com/photo-1610189020017-7d44682f53d4?w=800&q=80',
+    imgLabel: 'Maharaja Sherwani',
+  },
+  {
+    tag: 'Royal Femininity',
+    title: ['Women\'s', 'Splendour', 'Edit'],
+    sub: 'Anarkalis & gharara sets in Chanderi silk — crafted for the modern queen',
+    cta: 'Shop Women\'s', to: '/catalog?cat=women',
+    accent: '#6B2D5E',
+    category: 'Women',
+    img: 'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800&q=80',
+    imgLabel: 'Women\'s Anarkali',
+  },
+  {
+    tag: 'Exclusively Crafted',
+    title: ['Bridal', 'Lehengas', ''],
+    sub: 'Timeless silhouettes for the most sacred of ceremonies',
+    cta: 'View Bridal', to: '/catalog?cat=bridal',
+    accent: '#1A3A5C',
+    category: 'Bridal',
+    img: 'https://images.unsplash.com/photo-1594552072238-b8a33785b6cd?w=800&q=80',
+    imgLabel: 'Bridal Lehenga',
+  },
+  {
+    tag: 'Little Royals',
+    title: ['Girls\'', 'Festive', 'Collection'],
+    sub: 'Lehengas & salwar sets in soft pastels — for your little princess',
+    cta: 'Shop Girls\'', to: '/catalog?cat=girls',
+    accent: '#5C3A1A',
+    category: 'Girls',
+    img: 'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=800&q=80',
+    imgLabel: 'Girls Lehenga',
+  },
+  {
+    tag: 'Mini Maharajas',
+    title: ['Kids\'', 'Royal', 'Wear'],
+    sub: 'Sherwanis & kurta sets for the youngest members of the royal family',
+    cta: 'Shop Kids\'', to: '/catalog?cat=kids',
+    accent: '#1A4A2E',
+    category: 'Kids',
+    img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+    imgLabel: 'Kids Sherwani',
+  },
 ];
 
-const MARQUEE_ITEMS = ["Banarasi Silk","·","Zardozi Embroidery","·","Bridal Lehengas","·","Jodhpuri Suits","·","Anarkali Sets","·","Kids Festive","·","Kashmiri Pashmina","·","Chanderi Brocade","·"];
+const TICKER_ITEMS = [
+  { icon: '✦', text: 'New Stock — Chanderi & Maheshwari Collection Now In' },
+  { icon: '◈', text: 'Wedding Season — 20% Off All Sherwanis' },
+  { icon: '✦', text: 'Girls\' Festive Edit — New Lehengas Starting ₹2,999' },
+  { icon: '◈', text: 'Bhopal Showroom Open 7 Days a Week' },
+  { icon: '✦', text: 'Free Alteration on Orders Above ₹15,000' },
+  { icon: '◈', text: 'Women\'s Anarkali Collection — Limited Pieces Available' },
+  { icon: '✦', text: 'Kids\' Sherwani Sets Now Available in All Sizes' },
+  { icon: '◈', text: 'Bridal Lehenga Booking Open — Book 3 Months Ahead' },
+  { icon: '✦', text: 'New in Vidisha — Heritage Handloom Sherwani Line' },
+  { icon: '◈', text: 'Summer Clearance — Up to 30% Off Select Pieces' },
+];
 
-/* ─── SVG ATOMS ──────────────────────────────────────────── */
-const Rangoli = ({ s = 48 }) => (
-  <svg width={s} height={s} viewBox="0 0 52 52" style={{ flexShrink:0 }}>
-    <circle cx="26" cy="26" r="23" stroke={C.gold}  strokeWidth="0.8" fill="none" opacity="0.4"/>
-    <circle cx="26" cy="26" r="16" stroke={C.gold}  strokeWidth="0.6" fill="none" opacity="0.3"/>
-    <circle cx="26" cy="26" r="9"  stroke={C.maroon} strokeWidth="0.8" fill="none" opacity="0.4"/>
-    <circle cx="26" cy="26" r="4"  fill={C.gold}  opacity="0.45"/>
-    <circle cx="26" cy="26" r="2"  fill={C.maroon} opacity="0.8"/>
-    {[...Array(8)].map((_,i)=>{
-      const a=(i/8)*Math.PI*2, x1=26+9*Math.cos(a), y1=26+9*Math.sin(a),
-            x2=26+16*Math.cos(a), y2=26+16*Math.sin(a),
-            px=26+21*Math.cos(a), py=26+21*Math.sin(a);
-      return <g key={i}>
-        <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={C.gold} strokeWidth="0.7" opacity="0.45"/>
-        <ellipse cx={px} cy={py} rx="2.5" ry="4" transform={`rotate(${i*45+90},${px},${py})`} fill={`${C.maroon}55`} stroke={C.gold} strokeWidth="0.5"/>
-      </g>;
-    })}
-    {[...Array(8)].map((_,i)=>{
-      const a=((i+0.5)/8)*Math.PI*2;
-      return <circle key={i} cx={26+13*Math.cos(a)} cy={26+13*Math.sin(a)} r="1.5" fill={C.teal} opacity="0.5"/>;
-    })}
-  </svg>
-);
+const TICKER_DOUBLED = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
-const Corner = ({ flip=false, s=64 }) => (
-  <svg width={s} height={s} viewBox="0 0 64 64" style={{ transform:flip?"scaleX(-1)":"none", display:"block" }}>
-    <path d="M2 62 L2 20 Q2 2 20 2 L62 2" stroke={C.gold}   strokeWidth="1.2" fill="none" opacity="0.5"/>
-    <path d="M7 62 L7 24 Q7 7 24 7 L62 7" stroke={C.maroon} strokeWidth="0.6" fill="none" opacity="0.3"/>
-    <path d="M2 22 Q9 14 16 22 Q9 30 2 22Z" fill={`${C.gold}45`} stroke={C.gold} strokeWidth="0.7"/>
-    <circle cx="9" cy="22" r="2" fill={C.gold} opacity="0.5"/>
-    {[12,22,32,42,52].map(v=><g key={v}>
-      <circle cx="2"  cy={v} r="1" fill={C.gold} opacity="0.3"/>
-      <circle cx={v}  cy="2" r="1" fill={C.gold} opacity="0.3"/>
-    </g>)}
-    <path d="M20 8 Q24 3 28 8 Q24 13 20 8Z" fill={`${C.teal}55`}/>
-    <path d="M8 20 Q3 24 8 28 Q13 24 8 20Z" fill={`${C.teal}55`}/>
-  </svg>
-);
+const fonts = `@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');`;
 
-const Torana = ({ color=C.gold, w=1200 }) => (
-  <svg width={w} height={52} viewBox={`0 0 ${w} 52`} style={{ display:"block", overflow:"visible" }}>
-    <line x1="0" y1="26" x2={w} y2="26" stroke={color} strokeWidth="0.8" opacity="0.35"/>
-    <path d={`M0 21 Q${w*.25} 40 ${w*.5} 21 Q${w*.75} 2 ${w} 21`} stroke={color} strokeWidth="1" fill="none" opacity="0.5"/>
-    {[...Array(9)].map((_,i)=>{
-      const x=(w/8)*i+w/16, y=21+18*Math.sin((i/8)*Math.PI);
-      return <g key={i} transform={`translate(${x},${y})`}>
-        <ellipse cx="0" cy="5" rx="4" ry="7" fill={i%2===0?`${C.teal}55`:`${color}45`} stroke={color} strokeWidth="0.5"/>
-        <line x1="0" y1="-2" x2="0" y2="12" stroke={color} strokeWidth="0.4" opacity="0.5"/>
-      </g>;
-    })}
-    <g transform={`translate(${w/2},8)`}>
-      <ellipse cx="0" cy="8" rx="7" ry="9" fill={`${color}20`} stroke={color} strokeWidth="0.9"/>
-      <ellipse cx="0" cy="3" rx="5" ry="3" fill={`${color}35`} stroke={color} strokeWidth="0.7"/>
-      <line x1="-4" y1="16" x2="4" y2="16" stroke={color} strokeWidth="1"/>
-      <circle cx="0" cy="-3" r="2.5" fill={color} opacity="0.7"/>
-      {[-8,-4,0,4,8].map(dx=><circle key={dx} cx={dx} cy="-6" r="1.2" fill={color} opacity="0.5"/>)}
-    </g>
-    {[...Array(14)].map((_,i)=><circle key={i} cx={(w/13)*i+w/26} cy="26" r="1.2" fill={color} opacity="0.28"/>)}
-  </svg>
-);
-
-const ArchOverlay = ({ w=340, color=C.gold }) => {
-  const h = w*0.54;
-  return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ position:"absolute",top:0,left:0,zIndex:3,pointerEvents:"none" }}>
-      <path d={`M8 ${h} L8 ${h*.5} Q${w/2} ${-h*.12} ${w-8} ${h*.5} L${w-8} ${h}`}
-        stroke={color} strokeWidth="1.5" fill="none" opacity="0.85"/>
-      <path d={`M20 ${h} L20 ${h*.54} Q${w/2} ${h*.04} ${w-20} ${h*.54} L${w-20} ${h}`}
-        stroke={color} strokeWidth="0.8" fill="none" opacity="0.5"/>
-      <circle cx={w/2} cy={h*.07} r="6" stroke={color} strokeWidth="1" fill={`${color}30`}/>
-      <circle cx={w/2} cy={h*.07} r="2.5" fill={color} opacity="0.8"/>
-      {[-22,-11,0,11,22].map(dx=><circle key={dx} cx={w/2+dx} cy={h*.01} r="1.4" fill={color} opacity="0.45"/>)}
-    </svg>
-  );
-};
-
-const Jaali = ({ h=14 }) => (
-  <div style={{ height:h, overflow:"hidden", width:"100%" }}>
-    <svg width="100%" height={h} preserveAspectRatio="none">
-      {[...Array(80)].map((_,i)=><g key={i}>
-        <circle cx={`${i*1.3+.65}%`} cy={h/2} r="3.5" stroke={C.gold} strokeWidth="0.6" fill="none" opacity="0.35"/>
-        <circle cx={`${i*1.3+.65}%`} cy={h/2} r="1"   fill={C.gold} opacity="0.25"/>
-      </g>)}
-    </svg>
-  </div>
-);
-
-const SpinningSeal = () => (
-  <motion.div
-    animate={{ rotate: 360 }}
-    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-    style={{ position: "absolute", bottom: -20, right: -40, zIndex: 20, width: 120, height: 120, opacity: 0.8 }}
-  >
-    <svg viewBox="0 0 100 100" width="100%" height="100%">
-      <path id="curve" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="transparent" />
-      <text fontSize="10" fill={C.gold} letterSpacing="3" fontFamily="'Montserrat', sans-serif" fontWeight="700">
-        <textPath href="#curve" startOffset="50%" textAnchor="middle">
-          EST. 1997 • BESPOKE TAILORS •
-        </textPath>
-      </text>
-      <circle cx="50" cy="50" r="22" stroke={C.gold} strokeWidth="0.5" fill="none" />
-      <circle cx="50" cy="50" r="18" fill={`${C.gold}20`} />
-      <text x="50" y="54" fontSize="14" fill={C.gold} fontFamily="'Cormorant Garamond', serif" fontStyle="italic" textAnchor="middle">
-        T24
-      </text>
-    </svg>
-  </motion.div>
-);
-
-/* ─── COMPONENTS ─────────────────────────────────────────── */
-function RoyalCursor() {
-  const mx=useMotionValue(-200), my=useMotionValue(-200);
-  const sx=useSpring(mx,{stiffness:150,damping:20}), sy=useSpring(my,{stiffness:150,damping:20});
-  useEffect(()=>{
-    const h=e=>{mx.set(e.clientX);my.set(e.clientY);};
-    window.addEventListener("mousemove",h);
-    return ()=>window.removeEventListener("mousemove",h);
-  },[]);
-  return <>
-    <motion.div style={{ position:"fixed",top:0,left:0,zIndex:9999,pointerEvents:"none",
-      width:8,height:8,borderRadius:"50%",background:C.gold,boxShadow:`0 0 10px ${C.gold}`,x:mx,y:my,translateX:"-50%",translateY:"-50%"}}/>
-    <motion.div style={{ position:"fixed",top:0,left:0,zIndex:9998,pointerEvents:"none",
-      width:40,height:40,borderRadius:"50%",border:`1.5px solid ${C.maroon}AA`,background:"rgba(107, 15, 26, 0.05)",
-      backdropFilter:"blur(2px)",x:sx,y:sy,translateX:"-50%",translateY:"-50%"}}/>
-  </>;
-}
-
-function RBtn({ children, filled=false, onClick }) {
-  const [hov,setHov] = useState(false);
-  return (
-    <motion.button onHoverStart={()=>setHov(true)} onHoverEnd={()=>setHov(false)}
-      whileTap={{ scale:.95 }} onClick={onClick}
-      style={{ position:"relative",overflow:"hidden",padding:"14px 36px",
-        border:`1.5px solid ${C.maroon}`,background:filled?C.maroon:"transparent",
-        fontFamily:"'Montserrat',sans-serif",fontSize:10,letterSpacing:"0.4em",
-        fontWeight:700,textTransform:"uppercase",cursor:"none",
-        color:filled?"white":C.maroon,
-        boxShadow: hov && filled ? `0 10px 30px ${C.maroon}50` : "none",
-        transition: "box-shadow 0.3s ease"
-      }}>
-      <motion.div animate={{ x:hov?"0%":"-101%" }} transition={{ duration:.4,ease:[.22,1,.36,1] }}
-        style={{ position:"absolute",inset:0,background:filled?C.maroonL:C.maroon }}/>
-      <span style={{ position:"relative",zIndex:1,transition:"color .25s",
-        color:hov?"white":(filled?"white":C.maroon) }}>{children}</span>
-    </motion.button>
-  );
-}
-
-function MarqueeStrip() {
-  const items=[...MARQUEE_ITEMS,...MARQUEE_ITEMS];
-  return (
-    <div style={{ overflow:"hidden",background:`linear-gradient(to right, ${C.parchment}, ${C.sand}, ${C.parchment})`,position:"relative" }}>
-      <Jaali/>
-      <div style={{ padding:"14px 0",overflow:"hidden", background: "rgba(255,255,255,0.2)" }}>
-        <motion.div style={{ display:"flex",gap:28,whiteSpace:"nowrap" }}
-          animate={{ x:["0%","-50%"] }} transition={{ duration:35,repeat:Infinity,ease:"linear" }}>
-          {items.map((t,i)=>(
-            <span key={i} style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:14,
-              letterSpacing:"0.45em",textTransform:"uppercase", fontWeight: 600,
-              color:t==="·"?C.gold:C.maroonD, textShadow: t==="·" ? `0 0 8px ${C.gold}80` : "none" }}>{t}</span>
-          ))}
-        </motion.div>
-      </div>
-      <Jaali/>
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════
-   HOME PAGE
-══════════════════════════════════════════════════════════ */
 export default function HomePage() {
-  const [heroIdx, setHeroIdx] = useState(0);
-  const { scrollY } = useScroll();
-  const heroY  = useTransform(scrollY,[0,600],[0,-50]);
-  const heroOp = useTransform(scrollY,[0,500],[1,0]);
+  const [idx, setIdx]     = useState(0);
+  const [paused, setPaused] = useState(false);
+  const { scrollY }       = useScroll();
+  const bgY  = useTransform(scrollY, [0, 600], [0, 110]);
+  const txtY = useTransform(scrollY, [0, 600], [0, 50]);
 
-  useEffect(()=>{
-    const t=setInterval(()=>setHeroIdx(p=>(p+1)%HERO_SLIDES.length),6000);
-    return ()=>clearInterval(t);
-  },[]);
+  const goTo = useCallback((i) => setIdx(i), []);
+
+  useEffect(() => {
+    if (paused) return;
+    const t = setInterval(() => setIdx(i => (i + 1) % SLIDES.length), 4000);
+    return () => clearInterval(t);
+  }, [paused]);
+
+  const slide = SLIDES[idx];
 
   return (
-    <div style={{ background:C.page,color:C.ink,fontFamily:"'Montserrat',sans-serif",overflowX:"hidden",cursor:"none" }}>
-      <RoyalCursor/>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Montserrat:wght@400;600;700&display=swap');
-        *{cursor:none!important;box-sizing:border-box;margin:0;padding:0;}
-        ::selection{background:#6B0F1A44; color: #FFFDF5;}
-        html{scroll-behavior:smooth;}
-        .glass-panel { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.3); }
-        @media(max-width:768px){
-          .hero-grid{grid-template-columns:1fr!important;}
-          .hero-arch{display:none!important;}
-          .hero-copy{padding-top:0!important;}
-        }
+    <section style={{ minHeight: '100vh', background: '#060201', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <style>{fonts}{`
+        .hero-btn-p { transition: all 0.35s ease; }
+        .hero-btn-p:hover { background: #D4A017 !important; letter-spacing: 5px !important; }
+        .hero-btn-g:hover { background: rgba(201,151,42,0.1) !important; }
+        .cat-dot { transition: all 0.3s ease; cursor: pointer; }
+        .cat-dot:hover { opacity: 1 !important; }
+        @keyframes marquee { 0%{ transform:translateX(0); } 100%{ transform:translateX(-50%); } }
+        .mq-track { display:flex; animation:marquee 44s linear infinite; width:max-content; }
+        .mq-track:hover { animation-play-state:paused; }
+        @keyframes imgReveal { from{ clip-path:inset(0 100% 0 0); } to{ clip-path:inset(0 0 0 0); } }
+        .img-reveal { animation: imgReveal 0.85s cubic-bezier(0.22,1,0.36,1) forwards; }
+        @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.35; } }
+        @media(max-width:900px){ .hero-grid{ grid-template-columns:1fr!important; } .img-col{ display:none!important; } }
+        @media(max-width:600px){ .cat-nav{ bottom:60px!important; gap:8px!important; } }
       `}</style>
 
-      {/* ══ HERO ══ */}
-      <section style={{ position:"relative",minHeight:"100vh",display:"flex",
-        alignItems:"center",overflow:"hidden",background:`linear-gradient(180deg, ${C.white} 0%, ${C.parchment} 100%)`,paddingTop:20 }}>
+      {/* ── Parallax radial glow ── */}
+      <motion.div style={{ y: bgY, position: 'absolute', inset: '-20%', zIndex: 0, pointerEvents: 'none' }}>
+        <AnimatePresence mode="wait">
+          <motion.div key={idx}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 1.4 }}
+            style={{ position: 'absolute', inset: 0,
+              background: `radial-gradient(ellipse 75% 75% at 30% 40%, ${slide.accent}65 0%, transparent 68%)` }} />
+        </AnimatePresence>
+        {/* Grain texture */}
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.055,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
+      </motion.div>
 
-        {/* Noise Overlay for Silk Texture */}
-        <div style={{ position: "absolute", inset: 0, opacity: 0.4, pointerEvents: "none",
-          backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')", 
-          mixBlendMode: "overlay" }}/>
+      {/* ── Geometric ornaments ── */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 1,
+          background: 'linear-gradient(to bottom, transparent, rgba(201,151,42,0.1) 25%, rgba(201,151,42,0.1) 75%, transparent)' }} />
+        <div style={{ position: 'absolute', top: 90, right: 44, width: 52, height: 52,
+          borderTop: '1px solid rgba(201,151,42,0.28)', borderRight: '1px solid rgba(201,151,42,0.28)' }} />
+        <div style={{ position: 'absolute', bottom: 108, left: 44, width: 52, height: 52,
+          borderBottom: '1px solid rgba(201,151,42,0.28)', borderLeft: '1px solid rgba(201,151,42,0.28)' }} />
+      </div>
 
-        {/* Watermark */}
-        <motion.div style={{ position:"absolute",bottom:-40,right:-50,userSelect:"none",pointerEvents:"none",
-          fontFamily:"'Cormorant Garamond',serif",fontSize:"20vw",color:`${C.gold}10`,
-          lineHeight:1,fontStyle:"italic",whiteSpace:"nowrap" }}
-          animate={{ x: [-20, 0, -20] }} transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}>
-          Tailor24
-        </motion.div>
+      {/* ── Hero: text + image ── */}
+      <motion.div style={{ y: txtY, flex: 1, display: 'flex', alignItems: 'center', position: 'relative', zIndex: 2 }}>
+        <div className="hero-grid"
+          style={{ maxWidth: 1280, margin: '0 auto', padding: '100px 48px 96px', width: '100%',
+            display: 'grid', gridTemplateColumns: '1fr 400px', gap: 56, alignItems: 'center' }}>
 
-        {/* Radial glow */}
-        <div style={{ position:"absolute",top:"15%",right:"8%",width:500,height:500,
-          borderRadius:"50%",pointerEvents:"none",
-          background:`radial-gradient(circle,${C.goldB}15,transparent 70%)`, filter: "blur(40px)" }}/>
+          {/* LEFT — text */}
+          <div>
+            {/* Tag line */}
+            <AnimatePresence mode="wait">
+              <motion.div key={`tag-${idx}`}
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.4 }}
+                style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 26 }}>
+                <div style={{ width: 28, height: 1, background: '#C9972A' }} />
+                <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 5,
+                  color: '#C9972A', textTransform: 'uppercase', fontWeight: 500 }}>
+                  {slide.tag}
+                </span>
+                <div style={{ width: 28, height: 1, background: '#C9972A' }} />
+              </motion.div>
+            </AnimatePresence>
 
-        {/* Torana top */}
-        <div style={{ position:"absolute",top:0,left:0,right:0,overflow:"hidden",zIndex:4 }}>
-          <Torana color={C.gold} w={1600}/>
-        </div>
-
-        <div className="hero-grid" style={{ maxWidth:1280,margin:"0 auto",padding:"80px 24px 40px",
-          display:"grid",gridTemplateColumns:"1fr 1fr",gap:48,
-          alignItems:"center",position:"relative",zIndex:10,width:"100%" }}>
-
-          {/* LEFT COPY */}
-          <motion.div className="hero-copy" style={{ y:heroY,opacity:heroOp }}>
-            <motion.div initial={{ opacity:0,x:-18 }} animate={{ opacity:1,x:0 }}
-              transition={{ duration:.9,delay:.3 }}
-              style={{ display:"flex",alignItems:"center",gap:10,marginBottom:22 }}>
-              <div style={{ width:40,height:1.5,background:C.maroon }}/>
-              <span style={{ fontSize:9,letterSpacing:"0.6em",color:C.maroon,
-                textTransform:"uppercase",fontWeight:700 }}>Heritage Tailoring</span>
-            </motion.div>
-
-            {/* Typography updated for heavier, more royal feel */}
-            {[["Bespoke",C.ink,700],["for All.",C.maroon,400]].map(([text,color,weight],i)=>(
-              <div key={i} style={{ overflow:"hidden",marginBottom:4 }}>
-                <motion.h1 initial={{ y:100 }} animate={{ y:0 }}
-                  transition={{ duration:1.2,delay:.5+i*.15,ease:[.22,1,.36,1] }}
-                  style={{ fontFamily:"'Cormorant Garamond',serif",
-                    fontSize:"clamp(56px,8.5vw,116px)",color,lineHeight:.9,fontWeight:weight,
-                    fontStyle:i===1?"italic":"normal", textShadow: i===0 ? `4px 4px 12px ${C.gold}20` : "none" }}>{text}</motion.h1>
-              </div>
-            ))}
-
-            <motion.p initial={{ opacity:0,y:15 }} animate={{ opacity:1,y:0 }}
-              transition={{ duration:1,delay:.9 }}
-              style={{ color:C.inkMid,fontSize:15,lineHeight:1.8,maxWidth:420,
-                marginTop: 24, marginBottom:40,letterSpacing:"0.03em", fontWeight: 500 }}>
-              From a groom's sherwani to a bride's lehenga to a child's first festive outfit — every thread carries the weight of your occasion.
-            </motion.p>
-
-            <motion.div initial={{ opacity:0,y:15 }} animate={{ opacity:1,y:0 }}
-              transition={{ delay:1.05 }}
-              style={{ display:"flex",gap:16,flexWrap:"wrap" }}>
-              <RBtn filled>Explore Lookbook</RBtn>
-              <RBtn>Book Fitting</RBtn>
-            </motion.div>
-
-            {/* Glassmorphism Slide indicators */}
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:1.4 }}
-              className="glass-panel"
-              style={{ display:"inline-flex",alignItems:"center",gap:12,marginTop:48, padding: "10px 20px", borderRadius: 30 }}>
-              {HERO_SLIDES.map((s,i)=>(
-                <button key={i} onClick={()=>setHeroIdx(i)} style={{ border:"none",background:"none",padding:0,cursor:"none" }}>
-                  <motion.div animate={{ width:i===heroIdx?32:8,background:i===heroIdx?C.maroon:C.muted }}
-                    style={{ height:3,borderRadius:3 }} transition={{ duration:.5, type:"spring" }}/>
-                </button>
-              ))}
-              <div style={{ width: 1, height: 12, background: C.border, margin: "0 8px" }} />
+            {/* Title — word-by-word slide up */}
+            <div style={{ overflow: 'hidden', marginBottom: 22 }}>
               <AnimatePresence mode="wait">
-                 <motion.span key={heroIdx} initial={{opacity:0, y:5}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-5}}
-                   style={{ fontSize:9,letterSpacing:"0.3em",color:C.maroon,
-                   textTransform:"uppercase",fontWeight:700 }}>
-                   {HERO_SLIDES[heroIdx].for}
-                 </motion.span>
-              </AnimatePresence>
-            </motion.div>
-          </motion.div>
-
-          {/* RIGHT — Arch Frame */}
-          <motion.div className="hero-arch" initial={{ opacity:0,x:40 }} animate={{ opacity:1,x:0 }}
-            transition={{ duration:1.3,delay:.4,ease:[.22,1,.36,1] }}
-            style={{ position:"relative",display:"flex",justifyContent:"center",paddingTop:20 }}>
-            
-            <SpinningSeal />
-
-            <div style={{ position:"absolute",top:18,left:18,right:-18,bottom:-18,
-              border:`2px solid ${C.gold}40`, boxShadow: `inset 0 0 20px ${C.gold}20` }}/>
-            
-            <div style={{ position:"relative",zIndex:1,maxWidth:360,width:"100%" }}>
-              <ArchOverlay w={360} color={C.gold}/>
-              <div style={{ background:C.white,padding:6,boxShadow:`0 30px 60px ${C.maroonD}25`, borderRadius: 2 }}>
-                
-                {/* Image Container with Ken Burns Effect */}
-                <div style={{ overflow: "hidden", position: "relative", borderRadius: "2px 2px 0 0" }}>
-                  <AnimatePresence mode="wait">
-                    <motion.img key={heroIdx} src={HERO_SLIDES[heroIdx].src}
-                      initial={{ opacity:0,scale:1.15 }} 
-                      animate={{ opacity:1,scale:1 }} 
-                      exit={{ opacity:0, transition: { duration: 0.8 } }}
-                      transition={{ duration: 7, ease: "easeOut" }}
-                      style={{ width:"100%",aspectRatio:"3/4",objectFit:"cover",display:"block" }}/>
-                  </AnimatePresence>
-                </div>
-
-                <div className="glass-panel" style={{ padding:"14px 18px", borderTop:`1px solid ${C.border}`,
-                  display:"flex",justifyContent:"space-between",alignItems:"center" }}>
-                  <AnimatePresence mode="wait">
-                    <motion.span key={heroIdx} initial={{ opacity:0,x:-10 }} animate={{ opacity:1,x:0 }} exit={{ opacity:0 }}
-                      style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:16,color:C.ink,fontStyle:"italic", fontWeight: 600 }}>
-                      {HERO_SLIDES[heroIdx].label}
+                <motion.div key={`title-${idx}`} style={{ display: 'flex', flexDirection: 'column' }}>
+                  {slide.title.filter(Boolean).map((word, i) => (
+                    <motion.span key={`${word}-${i}`}
+                      initial={{ y: '110%', opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: '-20%', opacity: 0 }}
+                      transition={{ duration: 0.6, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] }}
+                      style={{ fontFamily: 'Cinzel, serif', display: 'block',
+                        fontSize: 'clamp(38px, 6.5vw, 90px)', lineHeight: 1.05,
+                        color: i === 1 ? '#C9972A' : '#FFFDF5',
+                        fontWeight: i === 1 ? 600 : 400,
+                        letterSpacing: i === 1 ? 3 : 7 }}>
+                      {word}
                     </motion.span>
-                  </AnimatePresence>
-                  <div style={{ display:"flex",gap:8 }}>
-                    {[["‹",()=>setHeroIdx(p=>(p-1+HERO_SLIDES.length)%HERO_SLIDES.length)],
-                      ["›",()=>setHeroIdx(p=>(p+1)%HERO_SLIDES.length)]].map(([ch,fn])=>(
-                      <motion.button key={ch} whileHover={{ backgroundColor: C.maroon, color: "white", borderColor: C.maroon }} onClick={fn} 
-                        style={{ width:30,height:30,border:`1px solid ${C.border}`, borderRadius: "50%",
-                        background:"none",color:C.maroon,fontSize:16,cursor:"none", transition: "all 0.3s" }}>{ch}</motion.button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
             </div>
-          </motion.div>
+
+            {/* Subtitle */}
+            <AnimatePresence mode="wait">
+              <motion.p key={`sub-${idx}`}
+                initial={{ opacity: 0, x: -14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.45, delay: 0.26 }}
+                style={{ fontFamily: 'Raleway, sans-serif', fontSize: 15, color: 'rgba(244,232,208,0.58)',
+                  maxWidth: 370, lineHeight: 1.9, marginBottom: 38, fontStyle: 'italic', fontWeight: 300 }}>
+                {slide.sub}
+              </motion.p>
+            </AnimatePresence>
+
+            {/* CTAs */}
+            <AnimatePresence mode="wait">
+              <motion.div key={`cta-${idx}`}
+                initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.4, delay: 0.34 }}
+                style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
+                <Link to={slide.to} className="hero-btn-p"
+                  style={{ background: '#C9972A', color: '#060201', padding: '13px 34px',
+                    fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 4,
+                    fontWeight: 700, textTransform: 'uppercase', textDecoration: 'none' }}>
+                  {slide.cta}
+                </Link>
+                <Link to="/showrooms" className="hero-btn-g"
+                  style={{ border: '1px solid rgba(201,151,42,0.3)', color: 'rgba(244,232,208,0.72)',
+                    padding: '13px 28px', fontFamily: 'Raleway, sans-serif', fontSize: 10,
+                    letterSpacing: 4, fontWeight: 400, textTransform: 'uppercase', textDecoration: 'none' }}>
+                  Visit Showroom
+                </Link>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* RIGHT — image */}
+          <div className="img-col" style={{ position: 'relative', height: 500 }}>
+            {/* Double frame */}
+            <div style={{ position: 'absolute', inset: 0, border: '1px solid rgba(201,151,42,0.18)', zIndex: 3, pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', inset: 10, border: '1px solid rgba(201,151,42,0.09)', zIndex: 3, pointerEvents: 'none' }} />
+
+            <AnimatePresence mode="wait">
+              <motion.div key={`img-${idx}`} className="img-reveal"
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.1 }}
+                style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 1 }}>
+                <img src={slide.img} alt={slide.imgLabel}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center',
+                    filter: 'sepia(12%) brightness(0.86) contrast(1.06)' }} />
+                <div style={{ position: 'absolute', inset: 0,
+                  background: 'linear-gradient(to right, rgba(6,2,1,0.45) 0%, transparent 55%), linear-gradient(to top, rgba(6,2,1,0.55) 0%, transparent 45%)' }} />
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Category label — top left */}
+            <div style={{ position: 'absolute', top: 20, left: 20, zIndex: 4,
+              background: 'rgba(6,2,1,0.65)', backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(201,151,42,0.25)', padding: '5px 14px' }}>
+              <span style={{ fontFamily: 'Cinzel, serif', fontSize: 9, letterSpacing: 4,
+                color: '#C9972A', textTransform: 'uppercase' }}>{slide.category}</span>
+            </div>
+
+            {/* Counter — top right */}
+            <div style={{ position: 'absolute', top: 20, right: 20, zIndex: 4,
+              fontFamily: 'Cinzel, serif', fontSize: 10, color: 'rgba(201,151,42,0.45)', letterSpacing: 2 }}>
+              0{idx + 1}<span style={{ opacity: 0.4 }}> / 0{SLIDES.length}</span>
+            </div>
+
+            {/* Image label — bottom */}
+            <div style={{ position: 'absolute', bottom: 18, left: 20, zIndex: 4,
+              display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 18, height: 1, background: '#C9972A' }} />
+              <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 4,
+                color: 'rgba(201,151,42,0.65)', textTransform: 'uppercase' }}>{slide.imgLabel}</span>
+            </div>
+          </div>
         </div>
-      </section>
+      </motion.div>
 
-      {/* ══ MARQUEE ══ */}
-      <MarqueeStrip/>
+      {/* ── Category nav pills ── */}
+      <div className="cat-nav"
+        style={{ position: 'absolute', bottom: 72, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 3, display: 'flex', gap: 12, alignItems: 'center' }}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}>
+        {SLIDES.map((s, i) => (
+          <button key={s.category} onClick={() => goTo(i)} className="cat-dot"
+            style={{ background: 'none', border: 'none', padding: '6px 4px', cursor: 'pointer',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
+              opacity: i === idx ? 1 : 0.4 }}>
+            <motion.div
+              animate={{ width: i === idx ? 36 : 16, background: i === idx ? '#C9972A' : 'rgba(201,151,42,0.5)' }}
+              transition={{ duration: 0.3 }}
+              style={{ height: 1 }} />
+            <span style={{ fontFamily: 'Cinzel, serif', fontSize: 8, letterSpacing: 3,
+              color: i === idx ? '#C9972A' : 'rgba(255,253,245,0.5)', textTransform: 'uppercase',
+              transition: 'color 0.3s', whiteSpace: 'nowrap' }}>
+              {s.category}
+            </span>
+          </button>
+        ))}
+      </div>
 
-      {/* ══ FEATURED TEASER STRIP ══ */}
-     
+      {/* ── Right edge progress bars ── */}
+      <div style={{ position: 'absolute', right: 24, top: '50%', transform: 'translateY(-50%)',
+        zIndex: 3, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {SLIDES.map((_, i) => (
+          <button key={i} onClick={() => goTo(i)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 3 }}>
+            <motion.div
+              animate={{ height: i === idx ? 34 : 7, background: i === idx ? '#C9972A' : 'rgba(201,151,42,0.22)' }}
+              transition={{ duration: 0.3 }}
+              style={{ width: 1 }} />
+          </button>
+        ))}
+      </div>
 
-      {/* ══ QUICK STATS BAND ══ */}
-      
+      {/* ══ MARQUEE TICKER ══ */}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
+        style={{ position: 'relative', zIndex: 2, overflow: 'hidden',
+          borderTop: '1px solid rgba(201,151,42,0.12)',
+          background: 'rgba(6,2,1,0.78)', backdropFilter: 'blur(14px)' }}>
 
-    </div>
+        <div style={{ height: 1, position: 'absolute', top: 0, left: 0, right: 0,
+          background: 'linear-gradient(90deg, transparent, rgba(201,151,42,0.45) 25%, rgba(201,151,42,0.45) 75%, transparent)' }} />
+
+        <div style={{ padding: '13px 0', display: 'flex', alignItems: 'center', position: 'relative' }}>
+          {/* Live badge */}
+          <div style={{ flexShrink: 0, padding: '0 18px', borderRight: '1px solid rgba(201,151,42,0.18)',
+            display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#C9972A', flexShrink: 0,
+              boxShadow: '0 0 8px rgba(201,151,42,0.8)', animation: 'pulse 2s ease-in-out infinite', display: 'inline-block' }} />
+            <span style={{ fontFamily: 'Cinzel, serif', fontSize: 8, letterSpacing: 4,
+              color: '#C9972A', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+              Live Offers
+            </span>
+          </div>
+
+          {/* Scroll track */}
+          <div style={{ overflow: 'hidden', flex: 1 }}>
+            <div className="mq-track">
+              {TICKER_DOUBLED.map((item, i) => (
+                <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 10,
+                  fontFamily: 'Raleway, sans-serif', fontSize: 12, fontWeight: 400,
+                  color: 'rgba(244,232,208,0.72)', whiteSpace: 'nowrap', padding: '0 32px' }}>
+                  <span style={{ color: '#C9972A', fontSize: 10, flexShrink: 0 }}>{item.icon}</span>
+                  {item.text}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Edge fade masks */}
+          <div style={{ position: 'absolute', left: 110, top: 0, bottom: 0, width: 56, pointerEvents: 'none',
+            background: 'linear-gradient(to right, rgba(6,2,1,0.78), transparent)' }} />
+          <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 56, pointerEvents: 'none',
+            background: 'linear-gradient(to left, rgba(6,2,1,0.78), transparent)' }} />
+        </div>
+      </motion.div>
+    </section>
   );
 }
