@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fetchProducts, setActiveCategory } from '../store/slices/catalogSlice';
 import ProductCard from '../components/catalog/ProductCard';
 import { SkeletonCard } from '../components/ui/Loader';
+import ConsultationModal from '../components/ui/ConsultationModal';
 import { FiSearch, FiChevronDown, FiTrendingUp } from 'react-icons/fi';
 
 /* ─── TAILOR24 THEME CONFIG ──────────────────────────────── */
@@ -46,6 +47,9 @@ export default function CatalogPage() {
   const [sort, setSort] = useState('');
   const [visibleCount, setVisibleCount] = useState(6);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  
+  // Modal State
+  const [isConsultModalOpen, setIsConsultModalOpen] = useState(false);
 
   useEffect(() => {
     const params = {};
@@ -67,7 +71,7 @@ export default function CatalogPage() {
   };
 
   return (
-    <div className="min-h-screen pb-20" style={{ backgroundColor: C.page }}>
+    <div className="min-h-screen pb-20 relative" style={{ backgroundColor: C.page }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;600&display=swap');
         .font-display { font-family: 'Cormorant Garamond', serif; }
@@ -112,7 +116,7 @@ export default function CatalogPage() {
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)} // Timeout to allow click detection
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Find a piece..."
-                className="bg-transparent border border-cream-300 py-3 pl-12 pr-6 text-[11px] font-sans tracking-wider uppercase focus:border-maroon-700 outline-none w-full md:w-64 transition-colors"
+                className="bg-transparent border py-3 pl-12 pr-6 text-[11px] font-sans tracking-wider uppercase outline-none w-full md:w-64 transition-colors"
                 style={{ borderColor: C.border }}
               />
               
@@ -133,7 +137,7 @@ export default function CatalogPage() {
                         <button 
                           key={item} 
                           onClick={() => setSearch(item)}
-                          className="text-[10px] font-sans border px-3 py-1 hover:bg-maroon-50 transition-colors uppercase tracking-widest"
+                          className="text-[10px] font-sans border px-3 py-1 transition-colors uppercase tracking-widest"
                           style={{ borderColor: C.border, color: C.muted }}
                         >
                           {item}
@@ -146,7 +150,7 @@ export default function CatalogPage() {
             </div>
 
             <div className="relative">
-              <select value={sort} onChange={e => setSort(e.target.value)} className="appearance-none bg-transparent border border-cream-300 py-3 pl-6 pr-12 text-[11px] font-sans tracking-wider uppercase cursor-pointer outline-none w-full" style={{ borderColor: C.border }}>
+              <select value={sort} onChange={e => setSort(e.target.value)} className="appearance-none bg-transparent border py-3 pl-6 pr-12 text-[11px] font-sans tracking-wider uppercase cursor-pointer outline-none w-full" style={{ borderColor: C.border }}>
                 {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
               <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: C.gold }} />
@@ -189,6 +193,22 @@ export default function CatalogPage() {
           )}
         </div>
       </div>
+
+      {/* Floating Action Button for Home Consultation */}
+      <button
+        onClick={() => setIsConsultModalOpen(true)}
+        className="fixed bottom-8 right-8 z-40 px-6 py-4 shadow-xl border font-sans text-[10px] font-bold uppercase tracking-[0.2em] transition-transform hover:scale-105"
+        style={{ backgroundColor: C.parchment, borderColor: C.gold, color: C.ink }}
+      >
+        Book Master Tailor
+      </button>
+
+      {/* The Modal Component */}
+      <ConsultationModal 
+        isOpen={isConsultModalOpen} 
+        onClose={() => setIsConsultModalOpen(false)} 
+      />
+
     </div>
   );
 }

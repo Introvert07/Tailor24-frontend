@@ -44,5 +44,9 @@ API.interceptors.response.use(
     return Promise.reject({ ...error, message });
   }
 );
-
+// POST /api/consultation/book
+export const bookHomeConsultation = async (consultationData) => {
+  const { data } = await API.post('/consultation/book', consultationData);
+  return data;
+};
 export default API;

@@ -2,24 +2,25 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import Navbar       from './components/layout/Navbar';
-import Footer       from './components/layout/Footer';
+import Navbar         from './components/layout/Navbar';
+import Footer         from './components/layout/Footer';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
-import HomePage        from './pages/HomePage';
-import LoginPage       from './pages/LoginPage';
-import RegisterPage    from './pages/RegisterPage';
-import CatalogPage     from './pages/CatalogPage';
+// Import the new combined landing page
+import MainLandingPage   from './pages/MainLandingPage';
+
+// Other imports
+import LoginPage         from './pages/LoginPage';
+import RegisterPage      from './pages/RegisterPage';
+import CatalogPage       from './pages/CatalogPage';
 import ProductDetailPage from './pages/ProductDetailPage';
-import OrdersPage      from './pages/OrdersPage';
-import OrderDetailPage from './pages/OrderDetailPage';
-import ShowroomsPage   from './pages/ShowroomsPage';
-import AdminPage from './pages/AdminPage';
-import ProfilePage from './pages/ProfilePage';
+import OrdersPage         from './pages/OrdersPage';
+import OrderDetailPage   from './pages/OrderDetailPage';
+import ShowroomsPage     from './pages/ShowroomsPage';
+import AdminPage         from './pages/AdminPage';
+import ProfilePage       from './pages/ProfilePage';
+import Contact           from './pages/Contact'; // Imported correctly
 
-
-
-// Pages that hide the Navbar/Footer (auth pages)
 const FULLSCREEN_PAGES = ['/login', '/register'];
 
 function AppLayout() {
@@ -39,17 +40,29 @@ function AppLayout() {
           transition={{ duration: 0.3 }}
         >
           <Routes location={location}>
-            <Route path="/"         element={<HomePage />} />
+            
+            {/* ── Public pages ── */}
+            <Route path="/" element={<MainLandingPage />} />
+            
+            {/* ── Added Contact Route ── */}
+            <Route path="/contact" element={<Contact />} />
+
+            {/* ── Auth pages ── */}
             <Route path="/login"    element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/catalog"  element={<CatalogPage />} />
+
+            {/* ── Catalog ── */}
+            <Route path="/catalog"     element={<CatalogPage />} />
             <Route path="/catalog/:id" element={<ProductDetailPage />} />
+
+            {/* ── Showrooms & Admin ── */}
             <Route path="/showrooms" element={<ShowroomsPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-<Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/admin"     element={<AdminPage />} />
 
-
-            {/* Protected routes */}
+            {/* ── Protected routes ── */}
+            <Route path="/profile" element={
+              <ProtectedRoute><ProfilePage /></ProtectedRoute>
+            } />
             <Route path="/orders" element={
               <ProtectedRoute><OrdersPage /></ProtectedRoute>
             } />
@@ -57,7 +70,7 @@ function AppLayout() {
               <ProtectedRoute><OrderDetailPage /></ProtectedRoute>
             } />
 
-            {/* 404 */}
+            {/* ── 404 ── */}
             <Route path="*" element={
               <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
                 <p className="font-display text-8xl text-cream-300">404</p>
@@ -71,28 +84,14 @@ function AppLayout() {
 
       {!isFullscreen && <Footer />}
 
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            fontFamily: '"DM Sans", sans-serif',
-            fontSize: '13px',
-            borderRadius: 0,
-            border: '1px solid #F3E9D2',
-            background: '#FDFAF5',
-            color: '#1C1917',
-          },
-          success: { iconTheme: { primary: '#8B1A35', secondary: '#FDFAF5' } },
-          error:   { iconTheme: { primary: '#dc3d58', secondary: '#FDFAF5' } },
-        }}
-      />
+      <Toaster position="bottom-right" reverseOrder={false} />
     </div>
   );
 }
 
 export default function App() {
   return (
-<BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AppLayout />
     </BrowserRouter>
   );

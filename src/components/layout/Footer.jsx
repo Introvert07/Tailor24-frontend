@@ -6,7 +6,7 @@ import { FiInstagram, FiTwitter, FiPhone, FiMail, FiChevronUp, FiMapPin } from '
 const C = {
   parchment: '#F4E8D0',
   white:     '#FFFDF5',
-  maroon:    '#6B0F1A',
+  maroon:    '#8d0919',
   maroonL:   '#8B1A28',
   gold:      '#B5892E',
   goldB:     '#D4A017',

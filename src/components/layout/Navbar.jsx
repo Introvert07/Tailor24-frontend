@@ -23,7 +23,7 @@ const C = {
 const NAV_LINKS = [
   { label: 'Collection', to: '/catalog'   },
   { label: 'Showrooms',  to: '/showrooms' },
-  { label: 'My Orders',  to: '/orders'    },
+  { label: 'Connect',  to: '/contact'    },
 ];
 
 /* ─── HELPERS ─────────────────────────────────────────────── */
