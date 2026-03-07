@@ -12,7 +12,7 @@ import {
   Loader2
 } from "lucide-react";
 // Import your central API service
-import { submitContactInquiry } from '../../services/api'; 
+import { submitContactInquiry } from '../services/api'; 
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
