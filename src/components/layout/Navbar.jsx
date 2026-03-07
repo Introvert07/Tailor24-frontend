@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logout } from '../../store/slices/authSlice';
 import { FiUser, FiShoppingBag, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
-import { C } from '../../theme'; // Importing your Unified Royal Palette
+import { C } from '../../theme'; // Using the Ivory/Gold/Ink Palette
 
+// REMOVED 'Home' from NAV array
 const NAV = [
-  { label: 'Home', to: '/' },
   { label: 'Collection', to: '/catalog' },
   { label: 'Showrooms', to: '/showrooms' },
   { label: 'Contact', to: '/contact' },
@@ -22,12 +22,18 @@ export default function Navbar() {
   const location = useLocation();
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 50);
+    const fn = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', fn);
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
+  // Close drawer on route change
   useEffect(() => { setOpen(false); }, [location]);
+
+  // Disable scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : 'unset';
+  }, [open]);
 
   const handleLogout = () => { dispatch(logout()); navigate('/'); };
 
@@ -45,16 +51,19 @@ export default function Navbar() {
           font-weight: 700;
         }
         .nav-link::after {
-          content: ''; position: absolute; bottom: -4px; left: 50%; width: 0;
+          content: ''; position: absolute; bottom: -4px; left: 0; width: 0;
           height: 1px; background: ${C.gold};
-          transition: all 0.3s ease; transform: translateX(-50%);
+          transition: all 0.3s ease;
         }
         .nav-link:hover::after, .nav-link.active::after { width: 100%; }
         
-        .auth-btn-light { 
-          font-family: 'Raleway', sans-serif; font-size: 10px; font-weight: 700; 
-          letter-spacing: 2px; text-transform: uppercase; text-decoration: none;
-          color: ${C.ink}; transition: opacity 0.3s;
+        .mobile-nav-link {
+          font-family: 'Cinzel', serif;
+          font-size: 32px;
+          text-decoration: none;
+          letter-spacing: 4px;
+          color: ${C.ink};
+          transition: color 0.3s;
         }
 
         @media (max-width: 900px) { .desktop-only { display: none !important; } }
@@ -65,117 +74,123 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         style={{
-          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
-          background: scrolled ? `${C.page}E6` : 'transparent', // Translucent on scroll
-          backdropFilter: scrolled ? 'blur(15px)' : 'none',
-          borderBottom: scrolled ? `1px solid ${C.border}44` : '1px solid transparent',
-          transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1100,
+          background: scrolled || open ? `${C.page}` : 'transparent',
+          borderBottom: scrolled ? `1px solid ${C.border}66` : '1px solid transparent',
+          transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)',
         }}
       >
         <div style={{ 
-          maxWidth: 1400, margin: '0 auto', padding: '0 40px',
+          maxWidth: 1400, margin: '0 auto', padding: '0 24px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          height: scrolled ? 70 : 100 
+          height: scrolled ? 70 : 90 
         }}>
           
           {/* LOGO */}
-          <Link to="/" style={{ textDecoration: 'none', zIndex: 1100 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Link to="/" style={{ textDecoration: 'none', zIndex: 1200 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               <span style={{ 
-                fontFamily: 'Cinzel, serif', fontSize: 20, fontWeight: 600, 
-                letterSpacing: 6, color: C.ink, transition: '0.3s' 
+                fontFamily: 'Cinzel, serif', fontSize: scrolled ? 18 : 22, fontWeight: 700, 
+                letterSpacing: 4, color: C.ink, transition: '0.3s' 
               }}>
                 TAILOR<span style={{ color: C.gold }}>24</span>
               </span>
-              <div style={{ width: 40, height: 1, background: C.gold, margin: '4px 0' }} />
-              <span style={{ fontSize: 8, letterSpacing: 4, color: C.muted, textTransform: 'uppercase' }}>Atelier</span>
+              <span style={{ fontSize: 7, letterSpacing: 3, color: C.gold, textTransform: 'uppercase', marginTop: -2 }}>The Atelier</span>
             </div>
           </Link>
 
           {/* DESKTOP MENU */}
-          <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '45px' }}>
+          <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
             {NAV.map((n) => (
               <NavLink key={n.label} to={n.to} className="nav-link"
                 style={({ isActive }) => ({
-                  color: isActive ? C.gold : C.ink,
-                  opacity: isActive ? 1 : 0.6
+                  color: isActive ? C.ink : `${C.ink}99`,
                 })}>
                 {n.label}
               </NavLink>
             ))}
           </div>
 
-          {/* DESKTOP ACTIONS */}
-          <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
-            {user ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
-                <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-                  <FiUser size={16} style={{ color: C.gold }} />
-                  <span style={{ fontFamily: 'Raleway', fontSize: 11, letterSpacing: 1, color: C.ink, fontWeight: 600 }}>
-                    {user.name?.split(' ')[0].toUpperCase()}
-                  </span>
-                </Link>
-                
-                <Link to="/cart" style={{ color: C.ink, position: 'relative' }}>
-                  <FiShoppingBag size={18} />
-                </Link>
+          {/* ACTIONS */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
+              {user ? (
+                <>
+                  <Link to="/profile" style={{ color: C.ink }}><FiUser size={18} /></Link>
+                  <Link to="/cart" style={{ color: C.ink }}><FiShoppingBag size={18} /></Link>
+                  <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: C.ink, cursor: 'pointer' }}>
+                    <FiLogOut size={18} />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="nav-link" style={{ color: C.ink }}>Login</Link>
+                  <Link to="/signup" style={{ 
+                    background: C.ink, color: C.page, padding: '10px 24px', 
+                    fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                    textDecoration: 'none'
+                  }}>Join</Link>
+                </>
+              )}
+            </div>
 
-                <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: C.muted, cursor: 'pointer' }}>
-                  <FiLogOut size={16} />
-                </button>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
-                <Link to="/login" className="auth-btn-light">Login</Link>
-                <Link to="/signup" style={{ 
-                  background: C.maroon, color: C.white, padding: '12px 28px', 
-                  fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
-                  textDecoration: 'none', transition: '0.3s'
-                }}>Join</Link>
-              </div>
-            )}
+            {/* MOBILE TOGGLE */}
+            <button 
+              className="mobile-only"
+              onClick={() => setOpen(!open)}
+              style={{ background: 'none', border: 'none', color: C.ink, cursor: 'pointer', zIndex: 1200, padding: 5 }}
+            >
+              {open ? <FiX size={28} /> : <FiMenu size={28} />}
+            </button>
           </div>
-
-          {/* MOBILE TOGGLE */}
-          <button 
-            className="mobile-only"
-            onClick={() => setOpen(!open)}
-            style={{ background: 'none', border: 'none', color: C.ink, cursor: 'pointer', zIndex: 1100 }}
-          >
-            {open ? <FiX size={24} /> : <FiMenu size={24} />}
-          </button>
         </div>
 
-        {/* MOBILE DRAWER (Light Mode) */}
+        {/* MOBILE DRAWER */}
         <AnimatePresence>
           {open && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               style={{
-                position: 'fixed', top: 0, left: 0, right: 0, height: '100vh',
-                background: C.page, zIndex: 1050, padding: '120px 40px',
-                display: 'flex', flexDirection: 'column', alignItems: 'center'
+                position: 'fixed', top: 0, right: 0, bottom: 0, left: 0,
+                background: C.page, zIndex: 1150, padding: '120px 40px 60px',
+                display: 'flex', flexDirection: 'column'
               }}
             >
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '35px', textAlign: 'center' }}>
-                {NAV.map((n) => (
-                  <NavLink key={n.label} to={n.to} 
-                    style={({ isActive }) => ({
-                      fontFamily: 'Cinzel', fontSize: 24, color: isActive ? C.gold : C.ink,
-                      textDecoration: 'none', letterSpacing: 4
-                    })}>
-                    {n.label}
-                  </NavLink>
+              {/* Decorative Background Element */}
+              <div style={{ position: 'absolute', top: '20%', right: '-10%', fontSize: '15vh', fontFamily: 'Cinzel', color: `${C.gold}11`, pointerEvents: 'none', writingMode: 'vertical-rl' }}>
+                ATELIER
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                {NAV.map((n, i) => (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    key={n.label}
+                  >
+                    <NavLink to={n.to} className="mobile-nav-link"
+                      style={({ isActive }) => ({ color: isActive ? C.gold : C.ink })}>
+                      {n.label}
+                    </NavLink>
+                  </motion.div>
                 ))}
               </div>
 
-              <div style={{ marginTop: 'auto', width: '100%', textAlign: 'center' }}>
+              <div style={{ marginTop: 'auto', borderTop: `1px solid ${C.border}`, paddingTop: '40px' }}>
                 {user ? (
-                   <button onClick={handleLogout} style={{ background: 'none', border: `1px solid ${C.border}`, padding: '15px 40px', color: C.maroon, fontFamily: 'Raleway', fontWeight: 700, letterSpacing: 2 }}>LOGOUT</button>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Link to="/profile" style={{ fontFamily: 'Raleway', fontSize: 16, fontWeight: 700, color: C.ink, textDecoration: 'none' }}>MY PROFILE</Link>
+                      <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: C.gold, fontFamily: 'Raleway', fontWeight: 700 }}>LOGOUT</button>
+                   </div>
                 ) : (
-                  <Link to="/signup" style={{ color: C.maroon, textDecoration: 'none', fontFamily: 'Raleway', fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>CREATE AN ACCOUNT</Link>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <Link to="/login" style={{ fontFamily: 'Raleway', fontSize: 18, fontWeight: 700, color: C.ink, textDecoration: 'none', letterSpacing: 2 }}>LOGIN</Link>
+                    <Link to="/signup" style={{ fontFamily: 'Raleway', fontSize: 18, fontWeight: 700, color: C.gold, textDecoration: 'none', letterSpacing: 2 }}>CREATE ACCOUNT</Link>
+                  </div>
                 )}
               </div>
             </motion.div>
