@@ -7,7 +7,7 @@ const SLIDES = [
     tag: 'New Arrival — 2025',
     title: ['The', 'Maharaja', 'Collection'],
     sub: 'Sherwanis woven with Banarasi silk & hand-embroidered zardozi',
-    cta: 'Explore Men\'s', to: '/catalog?cat=men',
+    cta: "Explore Men's", to: '/catalog?cat=men',
     accent: '#8B1A28',
     category: 'Men',
     img: 'https://images.unsplash.com/photo-1610189020017-7d44682f53d4?w=800&q=80',
@@ -15,13 +15,13 @@ const SLIDES = [
   },
   {
     tag: 'Royal Femininity',
-    title: ['Women\'s', 'Splendour', 'Edit'],
+    title: ["Women's", 'Splendour', 'Edit'],
     sub: 'Anarkalis & gharara sets in Chanderi silk — crafted for the modern queen',
-    cta: 'Shop Women\'s', to: '/catalog?cat=women',
+    cta: "Shop Women's", to: '/catalog?cat=women',
     accent: '#6B2D5E',
     category: 'Women',
     img: 'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800&q=80',
-    imgLabel: 'Women\'s Anarkali',
+    imgLabel: "Women's Anarkali",
   },
   {
     tag: 'Exclusively Crafted',
@@ -35,9 +35,9 @@ const SLIDES = [
   },
   {
     tag: 'Little Royals',
-    title: ['Girls\'', 'Festive', 'Collection'],
+    title: ["Girls'", 'Festive', 'Collection'],
     sub: 'Lehengas & salwar sets in soft pastels — for your little princess',
-    cta: 'Shop Girls\'', to: '/catalog?cat=girls',
+    cta: "Shop Girls'", to: '/catalog?cat=girls',
     accent: '#5C3A1A',
     category: 'Girls',
     img: 'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=800&q=80',
@@ -45,9 +45,9 @@ const SLIDES = [
   },
   {
     tag: 'Mini Maharajas',
-    title: ['Kids\'', 'Royal', 'Wear'],
+    title: ["Kids'", 'Royal', 'Wear'],
     sub: 'Sherwanis & kurta sets for the youngest members of the royal family',
-    cta: 'Shop Kids\'', to: '/catalog?cat=kids',
+    cta: "Shop Kids'", to: '/catalog?cat=kids',
     accent: '#1A4A2E',
     category: 'Kids',
     img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
@@ -85,7 +85,7 @@ export default function HomePage() {
     if (paused) return;
     const t = setInterval(() => setIdx(i => (i + 1) % SLIDES.length), 4000);
     return () => clearInterval(t);
-  }, [paused]);
+  }, [paused, idx]);
 
   const slide = SLIDES[idx];
 
@@ -96,15 +96,34 @@ export default function HomePage() {
         .hero-btn-p:hover { background: #D4A017 !important; letter-spacing: 5px !important; }
         .hero-btn-g:hover { background: rgba(201,151,42,0.1) !important; }
         .cat-dot { transition: all 0.3s ease; cursor: pointer; }
-        .cat-dot:hover { opacity: 1 !important; }
+        
         @keyframes marquee { 0%{ transform:translateX(0); } 100%{ transform:translateX(-50%); } }
         .mq-track { display:flex; animation:marquee 44s linear infinite; width:max-content; }
-        .mq-track:hover { animation-play-state:paused; }
-        @keyframes imgReveal { from{ clip-path:inset(0 100% 0 0); } to{ clip-path:inset(0 0 0 0); } }
-        .img-reveal { animation: imgReveal 0.85s cubic-bezier(0.22,1,0.36,1) forwards; }
+        
         @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.35; } }
-        @media(max-width:900px){ .hero-grid{ grid-template-columns:1fr!important; } .img-col{ display:none!important; } }
-        @media(max-width:600px){ .cat-nav{ bottom:60px!important; gap:8px!important; } }
+        
+        /* RESPONSIVE OVERRIDES */
+        .hero-grid { display: grid; grid-template-columns: 1fr 400px; gap: 56px; align-items: center; width: 100%; max-width: 1280px; margin: 0 auto; padding: 100px 48px 96px; }
+        
+        @media(max-width:1100px) {
+          .hero-grid { grid-template-columns: 1fr 340px; gap: 32px; padding: 80px 32px; }
+        }
+
+        @media(max-width:900px) {
+          .hero-grid { grid-template-columns: 1fr!important; text-align: center; padding: 120px 24px 140px; }
+          .img-col { display: none !important; }
+          .txt-container { display: flex; flex-direction: column; align-items: center; }
+          .sub-text { margin-left: auto; margin-right: auto; }
+          .cta-group { justify-content: center; }
+          .side-progress { display: none !important; }
+        }
+
+        @media(max-width:600px) {
+          .cat-nav { bottom: 85px !important; width: 90% !important; overflow-x: auto; padding-bottom: 10px; }
+          .cat-nav::-webkit-scrollbar { display: none; }
+          .tag-line { gap: 8px !important; }
+          .tag-line div { width: 16px !important; }
+        }
       `}</style>
 
       {/* ── Parallax radial glow ── */}
@@ -116,34 +135,17 @@ export default function HomePage() {
             style={{ position: 'absolute', inset: 0,
               background: `radial-gradient(ellipse 75% 75% at 30% 40%, ${slide.accent}65 0%, transparent 68%)` }} />
         </AnimatePresence>
-        {/* Grain texture */}
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.055,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
       </motion.div>
-
-      {/* ── Geometric ornaments ── */}
-      <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}>
-        <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 1,
-          background: 'linear-gradient(to bottom, transparent, rgba(201,151,42,0.1) 25%, rgba(201,151,42,0.1) 75%, transparent)' }} />
-        <div style={{ position: 'absolute', top: 90, right: 44, width: 52, height: 52,
-          borderTop: '1px solid rgba(201,151,42,0.28)', borderRight: '1px solid rgba(201,151,42,0.28)' }} />
-        <div style={{ position: 'absolute', bottom: 108, left: 44, width: 52, height: 52,
-          borderBottom: '1px solid rgba(201,151,42,0.28)', borderLeft: '1px solid rgba(201,151,42,0.28)' }} />
-      </div>
 
       {/* ── Hero: text + image ── */}
       <motion.div style={{ y: txtY, flex: 1, display: 'flex', alignItems: 'center', position: 'relative', zIndex: 2 }}>
-        <div className="hero-grid"
-          style={{ maxWidth: 1280, margin: '0 auto', padding: '100px 48px 96px', width: '100%',
-            display: 'grid', gridTemplateColumns: '1fr 400px', gap: 56, alignItems: 'center' }}>
+        <div className="hero-grid">
 
           {/* LEFT — text */}
-          <div>
-            {/* Tag line */}
+          <div className="txt-container">
             <AnimatePresence mode="wait">
-              <motion.div key={`tag-${idx}`}
+              <motion.div key={`tag-${idx}`} className="tag-line"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.4 }}
                 style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 26 }}>
                 <div style={{ width: 28, height: 1, background: '#C9972A' }} />
                 <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 5,
@@ -154,7 +156,6 @@ export default function HomePage() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Title — word-by-word slide up */}
             <div style={{ overflow: 'hidden', marginBottom: 22 }}>
               <AnimatePresence mode="wait">
                 <motion.div key={`title-${idx}`} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -165,7 +166,7 @@ export default function HomePage() {
                       exit={{ y: '-20%', opacity: 0 }}
                       transition={{ duration: 0.6, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] }}
                       style={{ fontFamily: 'Cinzel, serif', display: 'block',
-                        fontSize: 'clamp(38px, 6.5vw, 90px)', lineHeight: 1.05,
+                        fontSize: 'clamp(42px, 8vw, 90px)', lineHeight: 1.05,
                         color: i === 1 ? '#C9972A' : '#FFFDF5',
                         fontWeight: i === 1 ? 600 : 400,
                         letterSpacing: i === 1 ? 3 : 7 }}>
@@ -176,9 +177,8 @@ export default function HomePage() {
               </AnimatePresence>
             </div>
 
-            {/* Subtitle */}
             <AnimatePresence mode="wait">
-              <motion.p key={`sub-${idx}`}
+              <motion.p key={`sub-${idx}`} className="sub-text"
                 initial={{ opacity: 0, x: -14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
                 transition={{ duration: 0.45, delay: 0.26 }}
                 style={{ fontFamily: 'Raleway, sans-serif', fontSize: 15, color: 'rgba(244,232,208,0.58)',
@@ -187,21 +187,20 @@ export default function HomePage() {
               </motion.p>
             </AnimatePresence>
 
-            {/* CTAs */}
             <AnimatePresence mode="wait">
-              <motion.div key={`cta-${idx}`}
+              <motion.div key={`cta-${idx}`} className="cta-group"
                 initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                 transition={{ duration: 0.4, delay: 0.34 }}
                 style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
                 <Link to={slide.to} className="hero-btn-p"
-                  style={{ background: '#C9972A', color: '#060201', padding: '13px 34px',
+                  style={{ background: '#C9972A', color: '#060201', padding: '14px 38px',
                     fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 4,
                     fontWeight: 700, textTransform: 'uppercase', textDecoration: 'none' }}>
                   {slide.cta}
                 </Link>
                 <Link to="/showrooms" className="hero-btn-g"
                   style={{ border: '1px solid rgba(201,151,42,0.3)', color: 'rgba(244,232,208,0.72)',
-                    padding: '13px 28px', fontFamily: 'Raleway, sans-serif', fontSize: 10,
+                    padding: '14px 28px', fontFamily: 'Raleway, sans-serif', fontSize: 10,
                     letterSpacing: 4, fontWeight: 400, textTransform: 'uppercase', textDecoration: 'none' }}>
                   Visit Showroom
                 </Link>
@@ -209,46 +208,18 @@ export default function HomePage() {
             </AnimatePresence>
           </div>
 
-          {/* RIGHT — image */}
+          {/* RIGHT — image (Hidden on mobile) */}
           <div className="img-col" style={{ position: 'relative', height: 500 }}>
-            {/* Double frame */}
-            <div style={{ position: 'absolute', inset: 0, border: '1px solid rgba(201,151,42,0.18)', zIndex: 3, pointerEvents: 'none' }} />
-            <div style={{ position: 'absolute', inset: 10, border: '1px solid rgba(201,151,42,0.09)', zIndex: 3, pointerEvents: 'none' }} />
-
+            <div style={{ position: 'absolute', inset: 0, border: '1px solid rgba(201,151,42,0.18)', zIndex: 3 }} />
             <AnimatePresence mode="wait">
-              <motion.div key={`img-${idx}`} className="img-reveal"
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                transition={{ duration: 0.1 }}
-                style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 1 }}>
+              <motion.div key={`img-${idx}`}
+                initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.8 }}
+                style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
                 <img src={slide.img} alt={slide.imgLabel}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center',
-                    filter: 'sepia(12%) brightness(0.86) contrast(1.06)' }} />
-                <div style={{ position: 'absolute', inset: 0,
-                  background: 'linear-gradient(to right, rgba(6,2,1,0.45) 0%, transparent 55%), linear-gradient(to top, rgba(6,2,1,0.55) 0%, transparent 45%)' }} />
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </motion.div>
             </AnimatePresence>
-
-            {/* Category label — top left */}
-            <div style={{ position: 'absolute', top: 20, left: 20, zIndex: 4,
-              background: 'rgba(6,2,1,0.65)', backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(201,151,42,0.25)', padding: '5px 14px' }}>
-              <span style={{ fontFamily: 'Cinzel, serif', fontSize: 9, letterSpacing: 4,
-                color: '#C9972A', textTransform: 'uppercase' }}>{slide.category}</span>
-            </div>
-
-            {/* Counter — top right */}
-            <div style={{ position: 'absolute', top: 20, right: 20, zIndex: 4,
-              fontFamily: 'Cinzel, serif', fontSize: 10, color: 'rgba(201,151,42,0.45)', letterSpacing: 2 }}>
-              0{idx + 1}<span style={{ opacity: 0.4 }}> / 0{SLIDES.length}</span>
-            </div>
-
-            {/* Image label — bottom */}
-            <div style={{ position: 'absolute', bottom: 18, left: 20, zIndex: 4,
-              display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 18, height: 1, background: '#C9972A' }} />
-              <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 4,
-                color: 'rgba(201,151,42,0.65)', textTransform: 'uppercase' }}>{slide.imgLabel}</span>
-            </div>
           </div>
         </div>
       </motion.div>
@@ -256,83 +227,47 @@ export default function HomePage() {
       {/* ── Category nav pills ── */}
       <div className="cat-nav"
         style={{ position: 'absolute', bottom: 72, left: '50%', transform: 'translateX(-50%)',
-          zIndex: 3, display: 'flex', gap: 12, alignItems: 'center' }}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}>
+          zIndex: 3, display: 'flex', gap: 12, alignItems: 'center' }}>
         {SLIDES.map((s, i) => (
           <button key={s.category} onClick={() => goTo(i)} className="cat-dot"
-            style={{ background: 'none', border: 'none', padding: '6px 4px', cursor: 'pointer',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
+            style={{ background: 'none', border: 'none', padding: '8px 4px',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
               opacity: i === idx ? 1 : 0.4 }}>
             <motion.div
-              animate={{ width: i === idx ? 36 : 16, background: i === idx ? '#C9972A' : 'rgba(201,151,42,0.5)' }}
-              transition={{ duration: 0.3 }}
-              style={{ height: 1 }} />
+              animate={{ width: i === idx ? 40 : 12, background: i === idx ? '#C9972A' : 'rgba(201,151,42,0.5)' }}
+              style={{ height: 2 }} />
             <span style={{ fontFamily: 'Cinzel, serif', fontSize: 8, letterSpacing: 3,
-              color: i === idx ? '#C9972A' : 'rgba(255,253,245,0.5)', textTransform: 'uppercase',
-              transition: 'color 0.3s', whiteSpace: 'nowrap' }}>
+              color: i === idx ? '#C9972A' : '#FFFDF5', textTransform: 'uppercase' }}>
               {s.category}
             </span>
           </button>
         ))}
       </div>
 
-      {/* ── Right edge progress bars ── */}
-      <div style={{ position: 'absolute', right: 24, top: '50%', transform: 'translateY(-50%)',
-        zIndex: 3, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {/* ── Right edge progress (Hidden on mobile) ── */}
+      <div className="side-progress" style={{ position: 'absolute', right: 32, top: '50%', transform: 'translateY(-50%)',
+        zIndex: 3, display: 'flex', flexDirection: 'column', gap: 12 }}>
         {SLIDES.map((_, i) => (
-          <button key={i} onClick={() => goTo(i)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 3 }}>
-            <motion.div
-              animate={{ height: i === idx ? 34 : 7, background: i === idx ? '#C9972A' : 'rgba(201,151,42,0.22)' }}
-              transition={{ duration: 0.3 }}
-              style={{ width: 1 }} />
+          <button key={i} onClick={() => goTo(i)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+            <motion.div animate={{ height: i === idx ? 40 : 8, background: i === idx ? '#C9972A' : 'rgba(201,151,42,0.2)' }}
+              style={{ width: 2 }} />
           </button>
         ))}
       </div>
 
       {/* ══ MARQUEE TICKER ══ */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
-        style={{ position: 'relative', zIndex: 2, overflow: 'hidden',
-          borderTop: '1px solid rgba(201,151,42,0.12)',
-          background: 'rgba(6,2,1,0.78)', backdropFilter: 'blur(14px)' }}>
-
-        <div style={{ height: 1, position: 'absolute', top: 0, left: 0, right: 0,
-          background: 'linear-gradient(90deg, transparent, rgba(201,151,42,0.45) 25%, rgba(201,151,42,0.45) 75%, transparent)' }} />
-
-        <div style={{ padding: '13px 0', display: 'flex', alignItems: 'center', position: 'relative' }}>
-          {/* Live badge */}
-          <div style={{ flexShrink: 0, padding: '0 18px', borderRight: '1px solid rgba(201,151,42,0.18)',
-            display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#C9972A', flexShrink: 0,
-              boxShadow: '0 0 8px rgba(201,151,42,0.8)', animation: 'pulse 2s ease-in-out infinite', display: 'inline-block' }} />
-            <span style={{ fontFamily: 'Cinzel, serif', fontSize: 8, letterSpacing: 4,
-              color: '#C9972A', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-              Live Offers
-            </span>
+      <div style={{ position: 'relative', zIndex: 2, background: 'rgba(6,2,1,0.9)', borderTop: '1px solid rgba(201,151,42,0.1)' }}>
+        <div style={{ padding: '14px 0', overflow: 'hidden' }}>
+          <div className="mq-track">
+            {TICKER_DOUBLED.map((item, i) => (
+              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 12,
+                fontFamily: 'Raleway, sans-serif', fontSize: 11, color: 'rgba(244,232,208,0.6)', padding: '0 40px' }}>
+                <span style={{ color: '#C9972A' }}>{item.icon}</span> {item.text}
+              </span>
+            ))}
           </div>
-
-          {/* Scroll track */}
-          <div style={{ overflow: 'hidden', flex: 1 }}>
-            <div className="mq-track">
-              {TICKER_DOUBLED.map((item, i) => (
-                <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 10,
-                  fontFamily: 'Raleway, sans-serif', fontSize: 12, fontWeight: 400,
-                  color: 'rgba(244,232,208,0.72)', whiteSpace: 'nowrap', padding: '0 32px' }}>
-                  <span style={{ color: '#C9972A', fontSize: 10, flexShrink: 0 }}>{item.icon}</span>
-                  {item.text}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Edge fade masks */}
-          <div style={{ position: 'absolute', left: 110, top: 0, bottom: 0, width: 56, pointerEvents: 'none',
-            background: 'linear-gradient(to right, rgba(6,2,1,0.78), transparent)' }} />
-          <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 56, pointerEvents: 'none',
-            background: 'linear-gradient(to left, rgba(6,2,1,0.78), transparent)' }} />
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

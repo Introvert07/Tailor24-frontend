@@ -3,29 +3,26 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logout } from '../../store/slices/authSlice';
-import { FiUser, FiShoppingBag, FiLogOut } from 'react-icons/fi';
-import { C } from '../../theme';
+import { FiUser, FiShoppingBag, FiLogOut, FiMenu, FiX, FiChevronDown } from 'react-icons/fi';
 
 const NAV = [
-  { label: 'Home',       to: '/#home'     },
-  { label: 'About',      to: '/#about'    },
-  { label: 'Collection', to: '/catalog'   },
-  { label: 'Showrooms',  to: '/showrooms' },
-  { label: 'Contact',    to: '/contact'   },
+  { label: 'Home', to: '/' },
+  { label: 'Collection', to: '/catalog' },
+  { label: 'Showrooms', to: '/showrooms' },
+  { label: 'Contact', to: '/contact' },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen]         = useState(false);
-  const [hoveredLink, setHoveredLink] = useState(null);
-  const { user }  = useSelector(st => st.auth);
-  const dispatch  = useDispatch();
-  const navigate  = useNavigate();
-  const location  = useLocation();
+  const [open, setOpen] = useState(false);
+  const { user } = useSelector(st => st.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', fn, { passive: true });
+    const fn = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', fn);
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
@@ -36,178 +33,155 @@ export default function Navbar() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Raleway:wght@300;400;500&display=swap');
-        .nav-link-item { position: relative; }
-        .nav-link-item::after {
-          content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+        .nav-link { position: relative; font-family: 'Raleway', sans-serif; transition: all 0.3s ease; }
+        .nav-link::after {
+          content: ''; position: absolute; bottom: -2px; left: 0; width: 100%;
           height: 1px; background: #C9972A; transform: scaleX(0);
-          transform-origin: center; transition: transform 0.3s ease;
+          transition: transform 0.3s ease;
         }
-        .nav-link-item:hover::after, .nav-link-item.active::after { transform: scaleX(1); }
-        .icon-btn { transition: all 0.2s; }
-        .icon-btn:hover { color: #C9972A !important; transform: translateY(-1px); }
+        .nav-link:hover::after, .nav-link.active::after { transform: scaleX(1); }
+        
+        .auth-btn { 
+          font-family: 'Raleway', sans-serif; font-size: 11px; font-weight: 600; 
+          letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none;
+          transition: all 0.3s;
+        }
+
+        @media (max-width: 900px) {
+          .desktop-only { display: none !important; }
+        }
+        @media (min-width: 901px) {
+          .mobile-only { display: none !important; }
+        }
       `}</style>
 
-      {/* Ornamental top border */}
-      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: 2, zIndex: 60,
-        background: 'linear-gradient(90deg, transparent, #C9972A 20%, #D4A017 50%, #C9972A 80%, transparent)',
-        opacity: scrolled ? 1 : 0, transition: 'opacity 0.4s' }} />
-
       <motion.nav
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
         style={{
-          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-          backdropFilter: scrolled ? 'blur(20px)' : 'none',
-          background: scrolled
-            ? 'rgba(10, 4, 2, 0.92)'
-            : 'linear-gradient(to bottom, rgba(10,4,2,0.7), transparent)',
-          borderBottom: scrolled ? '1px solid rgba(201,151,42,0.2)' : 'none',
-          transition: 'all 0.4s ease',
-          padding: scrolled ? '0' : '0',
-        }}>
-
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 32px',
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+          background: scrolled || open ? '#0A0402' : 'transparent',
+          backdropFilter: scrolled ? 'blur(10px)' : 'none',
+          borderBottom: scrolled ? '1px solid rgba(201,151,42,0.15)' : 'none',
+          transition: 'all 0.4s ease'
+        }}
+      >
+        <div style={{ 
+          maxWidth: 1400, margin: '0 auto', padding: '0 24px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          height: scrolled ? 64 : 80, transition: 'height 0.4s' }}>
-
-          {/* Logo */}
-          <Link to="/" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
-            <span style={{ fontFamily: 'Cinzel, serif', fontSize: 20, fontWeight: 700,
-              letterSpacing: 6, color: '#FFFDF5', lineHeight: 1,
-              textShadow: '0 0 40px rgba(201,151,42,0.4)' }}>
-              Tailor<span style={{ color: '#C9972A' }}>24</span>
-            </span>
-            <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 8, letterSpacing: 5,
-              color: 'rgba(201,151,42,0.7)', textTransform: 'uppercase', marginTop: 3 }}>
-              Royal Attelier
-            </span>
+          height: scrolled ? 70 : 90 
+        }}>
+          
+          {/* LOGO */}
+          <Link to="/" style={{ textDecoration: 'none', zIndex: 110 }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontFamily: 'Cinzel, serif', fontSize: 22, fontWeight: 700, letterSpacing: 4, color: '#FFF' }}>
+                Tailor<span style={{ color: '#C9972A' }}>24</span>
+              </span>
+              <span style={{ fontSize: 9, letterSpacing: 4, color: '#C9972A', textTransform: 'uppercase' }}>Royal Atelier</span>
+            </div>
           </Link>
 
-          {/* Center ornament + nav */}
-          <div className="hidden md:flex" style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-            {/* Left ornament */}
-            <div style={{ width: 40, height: 1, background: 'linear-gradient(to right, transparent, rgba(201,151,42,0.4))', marginRight: 28 }} />
-
-            {NAV.map((n, i) => (
-              <NavLink key={n.label} to={n.to}
-                onMouseEnter={() => setHoveredLink(i)}
-                onMouseLeave={() => setHoveredLink(null)}
-                className={({ isActive }) => `nav-link-item${isActive ? ' active' : ''}`}
-                style={{ fontFamily: 'Raleway, sans-serif', fontSize: 11, letterSpacing: 3,
-                  textTransform: 'uppercase', textDecoration: 'none', fontWeight: 500,
-                  color: hoveredLink === i ? '#C9972A' : 'rgba(255,253,245,0.85)',
-                  padding: '8px 0', margin: '0 18px', transition: 'color 0.25s',
-                }}>
+          {/* DESKTOP MENU */}
+          <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '35px' }}>
+            {NAV.map((n) => (
+              <NavLink key={n.label} to={n.to} className="nav-link"
+                style={({ isActive }) => ({
+                  fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', textDecoration: 'none',
+                  color: isActive ? '#C9972A' : 'rgba(255,255,255,0.7)', fontWeight: 500
+                })}>
                 {n.label}
               </NavLink>
             ))}
-
-            {/* Right ornament */}
-            <div style={{ width: 40, height: 1, background: 'linear-gradient(to left, transparent, rgba(201,151,42,0.4))', marginLeft: 28 }} />
           </div>
 
-          {/* Actions */}
-          <div className="hidden md:flex" style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+          {/* DESKTOP ACTIONS */}
+          <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
             {user ? (
-              <>
-                <Link to="/profile" className="icon-btn" style={{ color: 'rgba(255,253,245,0.7)' }}><FiUser size={17} /></Link>
-                <Link to="/orders"  className="icon-btn" style={{ color: 'rgba(255,253,245,0.7)' }}><FiShoppingBag size={17} /></Link>
-                <div style={{ width: 1, height: 16, background: 'rgba(201,151,42,0.3)' }} />
-                <button onClick={handleLogout} className="icon-btn"
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,253,245,0.5)' }}>
-                  <FiLogOut size={16} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                {/* User Greeting */}
+                <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: '#FFF' }}>
+                  <FiUser size={16} style={{ color: '#C9972A' }} />
+                  <span style={{ fontFamily: 'Cinzel', fontSize: 12, letterSpacing: 1, color: '#FFF' }}>
+                    {user.name || user.username}
+                  </span>
+                </Link>
+                
+                <Link to="/orders" style={{ color: 'rgba(255,255,255,0.8)', transition: '0.3s' }} onMouseEnter={e => e.target.style.color='#C9972A'} onMouseLeave={e => e.target.style.color='#FFF'}>
+                  <FiShoppingBag size={18} />
+                </Link>
+
+                <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                  <FiLogOut size={18} />
                 </button>
-              </>
+              </div>
             ) : (
-              <Link to="/login" style={{
-                fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 3,
-                textTransform: 'uppercase', textDecoration: 'none', fontWeight: 600,
-                color: '#0A0402', background: '#C9972A',
-                padding: '9px 22px', transition: 'all 0.25s',
-              }}
-                onMouseEnter={e => { e.target.style.background = '#D4A017'; e.target.style.letterSpacing = '4px'; }}
-                onMouseLeave={e => { e.target.style.background = '#C9972A'; e.target.style.letterSpacing = '3px'; }}>
-                Enter
-              </Link>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                <Link to="/login" className="auth-btn" style={{ color: '#FFF' }}>Login</Link>
+                <Link to="/signup" className="auth-btn" style={{ 
+                  background: '#C9972A', color: '#000', padding: '10px 20px', borderRadius: '2px'
+                }}>Sign Up</Link>
+              </div>
             )}
           </div>
 
-          {/* Mobile Hamburger */}
-          <button onClick={() => setOpen(o => !o)} className="md:hidden"
-            style={{ background: 'none', border: '1px solid rgba(201,151,42,0.3)', cursor: 'pointer',
-              width: 38, height: 38, display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center', gap: 5, padding: 8 }}>
-            <motion.span animate={{ rotate: open ? 45 : 0, y: open ? 7 : 0 }}
-              style={{ display: 'block', width: 18, height: 1, background: '#C9972A', transformOrigin: 'center' }} />
-            <motion.span animate={{ opacity: open ? 0 : 1, scaleX: open ? 0 : 1 }}
-              style={{ display: 'block', width: 12, height: 1, background: 'rgba(201,151,42,0.6)', alignSelf: 'flex-start', marginLeft: 3 }} />
-            <motion.span animate={{ rotate: open ? -45 : 0, y: open ? -7 : 0 }}
-              style={{ display: 'block', width: 18, height: 1, background: '#C9972A', transformOrigin: 'center' }} />
+          {/* MOBILE TOGGLE */}
+          <button 
+            className="mobile-only"
+            onClick={() => setOpen(!open)}
+            style={{ background: 'none', border: 'none', color: '#C9972A', cursor: 'pointer', zIndex: 110 }}
+          >
+            {open ? <FiX size={26} /> : <FiMenu size={26} />}
           </button>
         </div>
-      </motion.nav>
 
-      {/* Mobile Drawer */}
-      <AnimatePresence>
-        {open && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setOpen(false)}
-              style={{ position: 'fixed', inset: 0, background: 'rgba(10,4,2,0.6)', zIndex: 40, backdropFilter: 'blur(4px)' }} />
-
+        {/* MOBILE DRAWER */}
+        <AnimatePresence>
+          {open && (
             <motion.div
-              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-              style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 280, zIndex: 45,
-                background: '#0A0402', borderLeft: '1px solid rgba(201,151,42,0.2)',
-                padding: '88px 36px 40px', display: 'flex', flexDirection: 'column' }}>
-
-              {/* Ornamental corner */}
-              <div style={{ position: 'absolute', top: 0, left: 0, width: 60, height: 60,
-                borderRight: '1px solid rgba(201,151,42,0.15)', borderBottom: '1px solid rgba(201,151,42,0.15)' }} />
-
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                {NAV.map((n, i) => (
-                  <motion.div key={n.label}
-                    initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.06 + 0.1 }}>
-                    <NavLink to={n.to} style={({ isActive }) => ({
-                      fontFamily: 'Cinzel, serif', fontSize: 13, letterSpacing: 4,
-                      textTransform: 'uppercase', textDecoration: 'none',
-                      color: isActive ? '#C9972A' : 'rgba(255,253,245,0.75)',
-                      display: 'block', padding: '14px 0',
-                      borderBottom: '1px solid rgba(201,151,42,0.08)',
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              style={{
+                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                background: '#0A0402', zIndex: 105, padding: '120px 40px 40px',
+                display: 'flex', flexDirection: 'column'
+              }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                {NAV.map((n) => (
+                  <NavLink key={n.label} to={n.to} 
+                    style={({ isActive }) => ({
+                      fontFamily: 'Cinzel', fontSize: 20, color: isActive ? '#C9972A' : '#FFF',
+                      textDecoration: 'none', letterSpacing: 2
                     })}>
-                      {n.label}
-                    </NavLink>
-                  </motion.div>
+                    {n.label}
+                  </NavLink>
                 ))}
               </div>
 
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
-                style={{ display: 'flex', gap: 16, paddingTop: 24, borderTop: '1px solid rgba(201,151,42,0.15)' }}>
+              <div style={{ marginTop: 'auto', borderTop: '1px solid rgba(201,151,42,0.1)', paddingTop: '30px' }}>
                 {user ? (
-                  <>
-                    <Link to="/profile" style={{ color: 'rgba(201,151,42,0.7)' }}><FiUser size={18} /></Link>
-                    <Link to="/orders"  style={{ color: 'rgba(201,151,42,0.7)' }}><FiShoppingBag size={18} /></Link>
-                    <button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,253,245,0.4)', marginLeft: 'auto' }}>
-                      <FiLogOut size={17} />
-                    </button>
-                  </>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <FiUser color="#C9972A" />
+                        <span style={{ color: '#FFF', fontFamily: 'Cinzel', letterSpacing: 1 }}>{user.name}</span>
+                     </div>
+                    <Link to="/profile" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Account Settings</Link>
+                    <Link to="/orders" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Order History</Link>
+                    <button onClick={handleLogout} style={{ textAlign: 'left', background: 'none', border: 'none', color: '#8B1A28', fontSize: 14, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2 }}>Logout</button>
+                  </div>
                 ) : (
-                  <Link to="/login" style={{ fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 3,
-                    textTransform: 'uppercase', textDecoration: 'none', fontWeight: 600,
-                    color: '#0A0402', background: '#C9972A', padding: '10px 24px' }}>
-                    Sign In
-                  </Link>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                    <Link to="/login" style={{ color: '#FFF', textDecoration: 'none', fontSize: 16 }}>Login</Link>
+                    <Link to="/signup" style={{ color: '#C9972A', textDecoration: 'none', fontSize: 16, fontWeight: 600 }}>Create an Account</Link>
+                  </div>
                 )}
-              </motion.div>
+              </div>
             </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </motion.nav>
     </>
   );
 }
