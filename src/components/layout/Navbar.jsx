@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logout } from '../../store/slices/authSlice';
-import { FiUser, FiShoppingBag, FiLogOut, FiMenu, FiX, FiChevronDown } from 'react-icons/fi';
+import { FiUser, FiShoppingBag, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
 
 const NAV = [
   { label: 'Home', to: '/' },
@@ -60,16 +60,19 @@ export default function Navbar() {
         animate={{ y: 0 }}
         style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-          background: scrolled || open ? '#0A0402' : 'transparent',
-          backdropFilter: scrolled ? 'blur(10px)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(201,151,42,0.15)' : 'none',
-          transition: 'all 0.4s ease'
+          /* Darker Maroon base */
+          background: '#2D0202',
+          backdropFilter: 'blur(10px)',
+          /* Gold accent border */
+          borderBottom: '1px solid rgba(201, 151, 42, 0.25)',
+          transition: 'all 0.4s ease',
+          boxShadow: scrolled ? '0 10px 30px rgba(0,0,0,0.4)' : 'none'
         }}
       >
         <div style={{ 
           maxWidth: 1400, margin: '0 auto', padding: '0 24px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          height: scrolled ? 70 : 90 
+          height: scrolled ? 65 : 85 
         }}>
           
           {/* LOGO */}
@@ -88,7 +91,7 @@ export default function Navbar() {
               <NavLink key={n.label} to={n.to} className="nav-link"
                 style={({ isActive }) => ({
                   fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', textDecoration: 'none',
-                  color: isActive ? '#C9972A' : 'rgba(255,255,255,0.7)', fontWeight: 500
+                  color: isActive ? '#C9972A' : 'rgba(255,255,255,0.75)', fontWeight: 500
                 })}>
                 {n.label}
               </NavLink>
@@ -99,19 +102,18 @@ export default function Navbar() {
           <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
             {user ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                {/* User Greeting */}
-                <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: '#FFF' }}>
+                <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
                   <FiUser size={16} style={{ color: '#C9972A' }} />
                   <span style={{ fontFamily: 'Cinzel', fontSize: 12, letterSpacing: 1, color: '#FFF' }}>
                     {user.name || user.username}
                   </span>
                 </Link>
                 
-                <Link to="/orders" style={{ color: 'rgba(255,255,255,0.8)', transition: '0.3s' }} onMouseEnter={e => e.target.style.color='#C9972A'} onMouseLeave={e => e.target.style.color='#FFF'}>
+                <Link to="/orders" style={{ color: 'rgba(255,255,255,0.8)' }}>
                   <FiShoppingBag size={18} />
                 </Link>
 
-                <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}>
                   <FiLogOut size={18} />
                 </button>
               </div>
@@ -119,7 +121,7 @@ export default function Navbar() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 <Link to="/login" className="auth-btn" style={{ color: '#FFF' }}>Login</Link>
                 <Link to="/signup" className="auth-btn" style={{ 
-                  background: '#C9972A', color: '#000', padding: '10px 20px', borderRadius: '2px'
+                  background: '#C9972A', color: '#000', padding: '10px 22px', borderRadius: '1px'
                 }}>Sign Up</Link>
               </div>
             )}
@@ -139,12 +141,13 @@ export default function Navbar() {
         <AnimatePresence>
           {open && (
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: '100%' }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              exit={{ opacity: 0, x: '100%' }}
+              transition={{ type: 'tween', ease: "circOut", duration: 0.4 }}
               style={{
                 position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                background: '#0A0402', zIndex: 105, padding: '120px 40px 40px',
+                background: '#2D0202', zIndex: 105, padding: '120px 40px 40px',
                 display: 'flex', flexDirection: 'column'
               }}
             >
@@ -160,16 +163,16 @@ export default function Navbar() {
                 ))}
               </div>
 
-              <div style={{ marginTop: 'auto', borderTop: '1px solid rgba(201,151,42,0.1)', paddingTop: '30px' }}>
+              <div style={{ marginTop: 'auto', borderTop: '1px solid rgba(201,151,42,0.15)', paddingTop: '30px' }}>
                 {user ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <FiUser color="#C9972A" />
-                        <span style={{ color: '#FFF', fontFamily: 'Cinzel', letterSpacing: 1 }}>{user.name}</span>
-                     </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <FiUser color="#C9972A" />
+                      <span style={{ color: '#FFF', fontFamily: 'Cinzel', letterSpacing: 1 }}>{user.name}</span>
+                    </div>
                     <Link to="/profile" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Account Settings</Link>
                     <Link to="/orders" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Order History</Link>
-                    <button onClick={handleLogout} style={{ textAlign: 'left', background: 'none', border: 'none', color: '#8B1A28', fontSize: 14, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2 }}>Logout</button>
+                    <button onClick={handleLogout} style={{ textAlign: 'left', background: 'none', border: 'none', color: '#C9972A', fontSize: 14, fontWeight: 700, textTransform: 'uppercase', opacity: 0.8 }}>Logout</button>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
