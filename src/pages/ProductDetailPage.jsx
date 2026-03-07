@@ -198,8 +198,13 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Price */}
-            <div style={{ marginTop:14, background:C.white, borderLeft:`3px solid ${C.maroon}`,
-              border:`1px solid ${C.borderL}`, borderLeft:`3px solid ${C.maroon}`, padding:'18px 22px' }}>
+            <div style={{ 
+  marginTop: 14, 
+  background: C.white, 
+  border: `1px solid ${C.borderL}`, 
+  borderLeft: `3px solid ${C.maroon}`, 
+  padding: '18px 22px' 
+}}>
               <div style={{ marginBottom:3 }}><Label txt="Current Valuation" color={C.gold}/></div>
               <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:40,
                 color:C.maroon, fontWeight:700, lineHeight:1 }}>
