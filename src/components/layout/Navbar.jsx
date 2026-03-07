@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logout } from '../../store/slices/authSlice';
 import { FiUser, FiShoppingBag, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
+import { C } from '../../theme'; // Importing your Unified Royal Palette
 
 const NAV = [
   { label: 'Home', to: '/' },
@@ -21,7 +22,7 @@ export default function Navbar() {
   const location = useLocation();
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
+    const fn = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', fn);
     return () => window.removeEventListener('scroll', fn);
   }, []);
@@ -33,65 +34,71 @@ export default function Navbar() {
   return (
     <>
       <style>{`
-        .nav-link { position: relative; font-family: 'Raleway', sans-serif; transition: all 0.3s ease; }
-        .nav-link::after {
-          content: ''; position: absolute; bottom: -2px; left: 0; width: 100%;
-          height: 1px; background: #C9972A; transform: scaleX(0);
-          transition: transform 0.3s ease;
+        .nav-link { 
+          position: relative; 
+          font-family: 'Raleway', sans-serif; 
+          transition: all 0.4s ease; 
+          font-size: 10px; 
+          letter-spacing: 3px; 
+          text-transform: uppercase; 
+          text-decoration: none;
+          font-weight: 700;
         }
-        .nav-link:hover::after, .nav-link.active::after { transform: scaleX(1); }
+        .nav-link::after {
+          content: ''; position: absolute; bottom: -4px; left: 50%; width: 0;
+          height: 1px; background: ${C.gold};
+          transition: all 0.3s ease; transform: translateX(-50%);
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
         
-        .auth-btn { 
-          font-family: 'Raleway', sans-serif; font-size: 11px; font-weight: 600; 
-          letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none;
-          transition: all 0.3s;
+        .auth-btn-light { 
+          font-family: 'Raleway', sans-serif; font-size: 10px; font-weight: 700; 
+          letter-spacing: 2px; text-transform: uppercase; text-decoration: none;
+          color: ${C.ink}; transition: opacity 0.3s;
         }
 
-        @media (max-width: 900px) {
-          .desktop-only { display: none !important; }
-        }
-        @media (min-width: 901px) {
-          .mobile-only { display: none !important; }
-        }
+        @media (max-width: 900px) { .desktop-only { display: none !important; } }
+        @media (min-width: 901px) { .mobile-only { display: none !important; } }
       `}</style>
 
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         style={{
-          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-          /* Darker Maroon base */
-          background: '#2D0202',
-          backdropFilter: 'blur(10px)',
-          /* Gold accent border */
-          borderBottom: '1px solid rgba(201, 151, 42, 0.25)',
-          transition: 'all 0.4s ease',
-          boxShadow: scrolled ? '0 10px 30px rgba(0,0,0,0.4)' : 'none'
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
+          background: scrolled ? `${C.page}E6` : 'transparent', // Translucent on scroll
+          backdropFilter: scrolled ? 'blur(15px)' : 'none',
+          borderBottom: scrolled ? `1px solid ${C.border}44` : '1px solid transparent',
+          transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
         }}
       >
         <div style={{ 
-          maxWidth: 1400, margin: '0 auto', padding: '0 24px',
+          maxWidth: 1400, margin: '0 auto', padding: '0 40px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          height: scrolled ? 65 : 85 
+          height: scrolled ? 70 : 100 
         }}>
           
           {/* LOGO */}
-          <Link to="/" style={{ textDecoration: 'none', zIndex: 110 }}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontFamily: 'Cinzel, serif', fontSize: 22, fontWeight: 700, letterSpacing: 4, color: '#FFF' }}>
-                Tailor<span style={{ color: '#C9972A' }}>24</span>
+          <Link to="/" style={{ textDecoration: 'none', zIndex: 1100 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <span style={{ 
+                fontFamily: 'Cinzel, serif', fontSize: 20, fontWeight: 600, 
+                letterSpacing: 6, color: C.ink, transition: '0.3s' 
+              }}>
+                TAILOR<span style={{ color: C.gold }}>24</span>
               </span>
-              <span style={{ fontSize: 9, letterSpacing: 4, color: '#C9972A', textTransform: 'uppercase' }}>Royal Atelier</span>
+              <div style={{ width: 40, height: 1, background: C.gold, margin: '4px 0' }} />
+              <span style={{ fontSize: 8, letterSpacing: 4, color: C.muted, textTransform: 'uppercase' }}>Atelier</span>
             </div>
           </Link>
 
           {/* DESKTOP MENU */}
-          <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '35px' }}>
+          <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '45px' }}>
             {NAV.map((n) => (
               <NavLink key={n.label} to={n.to} className="nav-link"
                 style={({ isActive }) => ({
-                  fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', textDecoration: 'none',
-                  color: isActive ? '#C9972A' : 'rgba(255,255,255,0.75)', fontWeight: 500
+                  color: isActive ? C.gold : C.ink,
+                  opacity: isActive ? 1 : 0.6
                 })}>
                 {n.label}
               </NavLink>
@@ -99,30 +106,32 @@ export default function Navbar() {
           </div>
 
           {/* DESKTOP ACTIONS */}
-          <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
+          <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
             {user ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-                  <FiUser size={16} style={{ color: '#C9972A' }} />
-                  <span style={{ fontFamily: 'Cinzel', fontSize: 12, letterSpacing: 1, color: '#FFF' }}>
-                    {user.name || user.username}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
+                <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+                  <FiUser size={16} style={{ color: C.gold }} />
+                  <span style={{ fontFamily: 'Raleway', fontSize: 11, letterSpacing: 1, color: C.ink, fontWeight: 600 }}>
+                    {user.name?.split(' ')[0].toUpperCase()}
                   </span>
                 </Link>
                 
-                <Link to="/orders" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                <Link to="/cart" style={{ color: C.ink, position: 'relative' }}>
                   <FiShoppingBag size={18} />
                 </Link>
 
-                <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}>
-                  <FiLogOut size={18} />
+                <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: C.muted, cursor: 'pointer' }}>
+                  <FiLogOut size={16} />
                 </button>
               </div>
             ) : (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <Link to="/login" className="auth-btn" style={{ color: '#FFF' }}>Login</Link>
-                <Link to="/signup" className="auth-btn" style={{ 
-                  background: '#C9972A', color: '#000', padding: '10px 22px', borderRadius: '1px'
-                }}>Sign Up</Link>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
+                <Link to="/login" className="auth-btn-light">Login</Link>
+                <Link to="/signup" style={{ 
+                  background: C.maroon, color: C.white, padding: '12px 28px', 
+                  fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                  textDecoration: 'none', transition: '0.3s'
+                }}>Join</Link>
               </div>
             )}
           </div>
@@ -131,54 +140,42 @@ export default function Navbar() {
           <button 
             className="mobile-only"
             onClick={() => setOpen(!open)}
-            style={{ background: 'none', border: 'none', color: '#C9972A', cursor: 'pointer', zIndex: 110 }}
+            style={{ background: 'none', border: 'none', color: C.ink, cursor: 'pointer', zIndex: 1100 }}
           >
-            {open ? <FiX size={26} /> : <FiMenu size={26} />}
+            {open ? <FiX size={24} /> : <FiMenu size={24} />}
           </button>
         </div>
 
-        {/* MOBILE DRAWER */}
+        {/* MOBILE DRAWER (Light Mode) */}
         <AnimatePresence>
           {open && (
             <motion.div
-              initial={{ opacity: 0, x: '100%' }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: '100%' }}
-              transition={{ type: 'tween', ease: "circOut", duration: 0.4 }}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
               style={{
-                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                background: '#2D0202', zIndex: 105, padding: '120px 40px 40px',
-                display: 'flex', flexDirection: 'column'
+                position: 'fixed', top: 0, left: 0, right: 0, height: '100vh',
+                background: C.page, zIndex: 1050, padding: '120px 40px',
+                display: 'flex', flexDirection: 'column', alignItems: 'center'
               }}
             >
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '35px', textAlign: 'center' }}>
                 {NAV.map((n) => (
                   <NavLink key={n.label} to={n.to} 
                     style={({ isActive }) => ({
-                      fontFamily: 'Cinzel', fontSize: 20, color: isActive ? '#C9972A' : '#FFF',
-                      textDecoration: 'none', letterSpacing: 2
+                      fontFamily: 'Cinzel', fontSize: 24, color: isActive ? C.gold : C.ink,
+                      textDecoration: 'none', letterSpacing: 4
                     })}>
                     {n.label}
                   </NavLink>
                 ))}
               </div>
 
-              <div style={{ marginTop: 'auto', borderTop: '1px solid rgba(201,151,42,0.15)', paddingTop: '30px' }}>
+              <div style={{ marginTop: 'auto', width: '100%', textAlign: 'center' }}>
                 {user ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <FiUser color="#C9972A" />
-                      <span style={{ color: '#FFF', fontFamily: 'Cinzel', letterSpacing: 1 }}>{user.name}</span>
-                    </div>
-                    <Link to="/profile" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Account Settings</Link>
-                    <Link to="/orders" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>Order History</Link>
-                    <button onClick={handleLogout} style={{ textAlign: 'left', background: 'none', border: 'none', color: '#C9972A', fontSize: 14, fontWeight: 700, textTransform: 'uppercase', opacity: 0.8 }}>Logout</button>
-                  </div>
+                   <button onClick={handleLogout} style={{ background: 'none', border: `1px solid ${C.border}`, padding: '15px 40px', color: C.maroon, fontFamily: 'Raleway', fontWeight: 700, letterSpacing: 2 }}>LOGOUT</button>
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                    <Link to="/login" style={{ color: '#FFF', textDecoration: 'none', fontSize: 16 }}>Login</Link>
-                    <Link to="/signup" style={{ color: '#C9972A', textDecoration: 'none', fontSize: 16, fontWeight: 600 }}>Create an Account</Link>
-                  </div>
+                  <Link to="/signup" style={{ color: C.maroon, textDecoration: 'none', fontFamily: 'Raleway', fontSize: 14, fontWeight: 700, letterSpacing: 2 }}>CREATE AN ACCOUNT</Link>
                 )}
               </div>
             </motion.div>

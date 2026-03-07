@@ -54,7 +54,7 @@ const CITIES = [
 
 function GoldRule() {
   return (
-    <div style={{ height: 1, width: '100%', background: 'linear-gradient(90deg,transparent,rgba(201,151,42,0.4) 25%,rgba(201,151,42,0.4) 75%,transparent)' }} />
+    <div style={{ height: 1, width: '100%', background: 'linear-gradient(90deg,transparent,rgba(184,134,11,0.2) 25%,rgba(184,134,11,0.2) 75%,transparent)' }} />
   );
 }
 
@@ -63,10 +63,10 @@ function SectionLabel({ text }) {
     <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }} transition={{ duration: 0.5 }}
       style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 2vw, 16px)', marginBottom: 'clamp(40px, 6vw, 60px)' }}>
-      <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, rgba(201,151,42,0.28))' }} />
+      <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, rgba(139,26,40,0.15))' }} />
       <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 6,
-        color: '#C9972A', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{text}</span>
-      <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, rgba(201,151,42,0.28))' }} />
+        color: '#8B1A28', textTransform: 'uppercase', whiteSpace: 'nowrap', fontWeight: 600 }}>{text}</span>
+      <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, rgba(139,26,40,0.15))' }} />
     </motion.div>
   );
 }
@@ -76,168 +76,90 @@ export default function AboutPage() {
   const heroY = useTransform(scrollY, [0, 500], [0, 70]);
 
   return (
-    <div style={{ background: '#060201', overflow: 'hidden', width: '100%' }}>
+    <div style={{ background: '#FFFDF5', overflow: 'hidden', width: '100%', color: '#1A0E08' }}>
       <style>{fonts}{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        /* Layout Grids */
         .wrapper { max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); }
-        .ag { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 8vw, 80px); align-items: center; }
+        .ag { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(40px, 8vw, 80px); align-items: center; }
         .kg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; }
-        .cg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+        .cg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .crg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; }
 
-        /* Hover States via CSS (Performant) */
-        .karigar-card { transition: background 0.4s; background: transparent; }
-        .karigar-card:hover { background: rgba(201,151,42,0.06); }
-        .karigar-card .exp-tag { transition: color 0.4s; color: rgba(201,151,42,0.2); }
-        .karigar-card:hover .exp-tag { color: rgba(201,151,42,0.45); }
-        .karigar-card .k-line { transition: width 0.35s, background 0.35s; width: 18px; background: rgba(201,151,42,0.3); }
-        .karigar-card:hover .k-line { width: 48px; background: #C9972A; }
+        /* Card Hover Effects */
+        .karigar-card { transition: all 0.4s; background: #FFFFFF; border: 1px solid #F0EAD6; }
+        .karigar-card:hover { background: #FDF9F0; border-color: #D4AF37; transform: translateY(-4px); }
+        .karigar-card .exp-tag { color: #B8860B; }
+        .karigar-card .k-line { transition: width 0.35s; width: 18px; background: #8B1A28; opacity: 0.3; }
+        .karigar-card:hover .k-line { width: 48px; opacity: 1; }
 
-        .craft-card { transition: background 0.45s cubic-bezier(0.22,1,0.36,1); background: #FAF3E8; }
-        .craft-card:hover { background: #0F0402; }
-        .craft-card .c-glow { opacity: 0; transition: opacity 0.45s; }
-        .craft-card:hover .c-glow { opacity: 1; }
-        .craft-card .c-origin { transition: color 0.45s; color: rgba(139,115,85,0.55); }
-        .craft-card:hover .c-origin { color: rgba(201,151,42,0.4); }
-        .craft-card .c-title { transition: color 0.45s; color: #8B1A28; }
-        .craft-card:hover .c-title { color: #C9972A; }
-        .craft-card .c-desc { transition: color 0.45s; color: rgba(92,74,50,0.65); }
-        .craft-card:hover .c-desc { color: rgba(244,232,208,0.55); }
-        .craft-card .c-line { transition: width 0.35s, background 0.35s; width: 20px; background: rgba(139,26,40,0.35); }
-        .craft-card:hover .c-line { width: 52px; background: #C9972A; }
+        .craft-card { transition: all 0.45s cubic-bezier(0.22,1,0.36,1); background: #F9F7F2; border: 1px solid #EAE5D5; }
+        .craft-card:hover { background: #FFFFFF; box-shadow: 0 20px 40px rgba(0,0,0,0.03); transform: translateY(-4px); }
+        .craft-card .c-origin { color: #8B1A28; opacity: 0.6; }
+        .craft-card .c-title { color: #1A0E08; }
+        .craft-card:hover .c-title { color: #8B1A28; }
 
-        .city-card { cursor: default; }
-        .city-card .city-img { transition: transform 0.7s cubic-bezier(0.22,1,0.36,1); transform: scale(1); }
-        .city-card:hover .city-img { transform: scale(1.06); }
-        .city-card .city-tag { transition: background 0.4s; background: #8B1A28; }
-        .city-card:hover .city-tag { background: #C9972A; }
-        .city-card .city-tag-text { transition: color 0.4s; color: #FAF3E8; }
-        .city-card:hover .city-tag-text { color: #060201; }
-        .city-card .city-title { transition: color 0.4s; color: #FFFDF5; }
-        .city-card:hover .city-title { color: #C9972A; }
-        .city-card .city-panel { transition: background 0.45s; background: #0A0301; }
-        .city-card:hover .city-panel { background: #0F0402; }
-        .city-card .city-glow { opacity: 0; transition: opacity 0.45s; }
-        .city-card:hover .city-glow { opacity: 1; }
-        .city-card .city-line { transition: width 0.35s, background 0.35s; width: 20px; background: rgba(201,151,42,0.25); }
-        .city-card:hover .city-line { width: 52px; background: #C9972A; }
+        .city-card { transition: transform 0.4s ease; }
+        .city-card .city-img { transition: transform 0.8s ease; transform: scale(1); filter: sepia(15%) contrast(90%); }
+        .city-card:hover .city-img { transform: scale(1.08); filter: sepia(0%) contrast(100%); }
+        .city-panel { background: #FFFFFF; border: 1px solid #F0EAD6; border-top: none; }
+        .city-card:hover .city-panel { border-color: #D4AF37; }
 
-        /* Media Queries */
         @media(max-width:1024px) { 
           .kg, .crg { grid-template-columns: repeat(2, 1fr); } 
-          .crg > div { border-right: none !important; border-bottom: 1px solid rgba(212,188,148,0.4) !important; }
+          .cg { grid-template-columns: repeat(2, 1fr); gap: 20px; }
         }
         @media(max-width:900px) { 
-          .ag, .cg { grid-template-columns: 1fr; } 
-          .hero-stats { justify-content: flex-start; }
-          .hero-ornaments { display: none; }
+          .ag { grid-template-columns: 1fr; } 
         }
         @media(max-width:600px) { 
-          .kg, .crg { grid-template-columns: 1fr; } 
-          .kg > div { border-right: none !important; border-bottom: 1px solid rgba(201,151,42,0.06); }
-          .cta-band { flex-direction: column; text-align: center; justify-content: center; }
-          .cta-buttons { justify-content: center; width: 100%; }
+          .kg, .crg, .cg { grid-template-columns: 1fr; } 
+          .cta-band { flex-direction: column; text-align: center; }
         }
       `}</style>
 
-      {/* ═══════════════════════════════════════
-          HERO — split layout, cinematic
-      ═══════════════════════════════════════ */}
-      <div style={{ position: 'relative', padding: 'clamp(80px, 10vw, 130px) 0 clamp(60px, 8vw, 90px)', background: '#060201' }}>
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse 55% 80% at 75% 50%, rgba(139,26,40,0.38) 0%, transparent 65%)' }} />
-
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.025, pointerEvents: 'none',
-          backgroundImage: `repeating-linear-gradient(45deg,#C9972A 0,#C9972A 1px,transparent 1px,transparent 48px),
-                            repeating-linear-gradient(-45deg,#C9972A 0,#C9972A 1px,transparent 1px,transparent 48px)` }} />
-
-        <div className="hero-ornaments">
-          {[
-            { top: 32, right: 44, borderTop: '1px solid rgba(201,151,42,0.25)', borderRight: '1px solid rgba(201,151,42,0.25)' },
-            { bottom: 32, left: 44, borderBottom: '1px solid rgba(201,151,42,0.25)', borderLeft: '1px solid rgba(201,151,42,0.25)' },
-          ].map((s, i) => (
-            <div key={i} style={{ position: 'absolute', width: 56, height: 56, pointerEvents: 'none', ...s }} />
-          ))}
-          <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 1, pointerEvents: 'none',
-            background: 'linear-gradient(to bottom, transparent, rgba(201,151,42,0.08) 20%, rgba(201,151,42,0.08) 80%, transparent)' }} />
-        </div>
-
+      {/* LIGHT HERO SECTION */}
+      <div style={{ position: 'relative', padding: 'clamp(100px, 12vw, 160px) 0 clamp(80px, 10vw, 120px)', background: '#FDF9F0' }}>
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.03, pointerEvents: 'none',
+          backgroundImage: `radial-gradient(#8B1A28 0.5px, transparent 0.5px)`, backgroundSize: '30px 30px' }} />
+        
         <motion.div style={{ y: heroY }}>
           <div className="wrapper">
             <div className="ag">
-              {/* Left */}
-              <motion.div initial={{ opacity: 0, x: -36 }} whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} viewport={{ once: true }}>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 'clamp(20px, 4vw, 32px)' }}>
-                  <div style={{ width: 28, height: 1, background: '#C9972A' }} />
-                  <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 6,
-                    color: '#C9972A', textTransform: 'uppercase', fontWeight: 600 }}>
+              <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+                  <div style={{ width: 30, height: 1, background: '#8B1A28' }} />
+                  <span style={{ fontFamily: 'Raleway', fontSize: 10, letterSpacing: 5, color: '#8B1A28', fontWeight: 700, textTransform: 'uppercase' }}>
                     Est. 2004 · Madhya Pradesh
                   </span>
                 </div>
 
-                <h1 style={{ fontFamily: 'Cinzel, serif', fontSize: 'clamp(42px, 6vw, 68px)',
-                  color: '#FFFDF5', lineHeight: 1.04, fontWeight: 400 }}>
-                  Traditional<br />
-                  <em style={{ color: '#C9972A', fontStyle: 'italic', fontWeight: 600 }}>Craft,</em><br />
+                <h1 style={{ fontFamily: 'Cinzel', fontSize: 'clamp(44px, 7vw, 76px)', color: '#1A0E08', lineHeight: 1.05, fontWeight: 400 }}>
+                  Timeless<br />
+                  <em style={{ color: '#8B1A28', fontStyle: 'italic', fontWeight: 600 }}>Artistry,</em><br />
                   Modern Speed.
                 </h1>
 
-                <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 12, letterSpacing: 4,
-                  color: 'rgba(201,151,42,0.45)', fontStyle: 'italic', fontWeight: 300, marginTop: 20 }}>
-                  — Crafted for You
-                </p>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 36 }}>
-                  <div style={{ height: 1, width: 40, background: 'linear-gradient(to right,#C9972A,transparent)' }} />
-                  <span style={{ color: '#C9972A', fontSize: 10 }}>✦</span>
-                  <div style={{ height: 1, width: 40, background: '#C9972A' }} />
-                  <span style={{ color: '#C9972A', fontSize: 10 }}>✦</span>
-                  <div style={{ height: 1, width: 40, background: 'linear-gradient(to left,#C9972A,transparent)' }} />
-                </div>
-
-                <div className="hero-stats" style={{ display: 'flex', gap: 4, marginTop: 36, flexWrap: 'wrap' }}>
-                  {[
-                    { n: '20+', l: 'Years of Craft' },
-                    { n: '3',   l: 'Showrooms' },
-                    { n: '24h', l: 'Turnaround' },
-                  ].map(s => (
-                    <div key={s.n} style={{ border: '1px solid rgba(201,151,42,0.2)', padding: '12px clamp(12px, 2vw, 20px)', textAlign: 'center', flexGrow: 1, minWidth: '80px' }}>
-                      <p style={{ fontFamily: 'Cinzel, serif', fontSize: 20, fontWeight: 700,
-                        color: '#C9972A', lineHeight: 1 }}>{s.n}</p>
-                      <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 3,
-                        color: 'rgba(201,151,42,0.5)', textTransform: 'uppercase', marginTop: 6 }}>{s.l}</p>
+                <div className="hero-stats" style={{ display: 'flex', gap: 8, marginTop: 48 }}>
+                  {[{ n: '20+', l: 'Years' }, { n: '4k+', l: 'Patrons' }, { n: '24h', l: 'Ready' }].map(s => (
+                    <div key={s.l} style={{ border: '1px solid rgba(139,26,40,0.1)', background: '#FFF', padding: '16px 24px', flex: 1, textAlign: 'center' }}>
+                      <p style={{ fontFamily: 'Cinzel', fontSize: 24, color: '#8B1A28', margin: 0, fontWeight: 700 }}>{s.n}</p>
+                      <p style={{ fontFamily: 'Raleway', fontSize: 8, letterSpacing: 2, color: '#5C4A32', textTransform: 'uppercase', marginTop: 4 }}>{s.l}</p>
                     </div>
                   ))}
                 </div>
               </motion.div>
 
-              {/* Right */}
-              <motion.div initial={{ opacity: 0, x: 36 }} whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }} viewport={{ once: true }}>
-
-                <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 'clamp(15px, 2vw, 17px)', color: 'rgba(244,232,208,0.6)',
-                  lineHeight: 1.9, fontWeight: 300, marginBottom: 36 }}>
-                  Tailor 24 was built on a single conviction: the finest Indian garments should not
-                  require months of waiting. We brought together master karigars — each with 20 to
-                  35 years of classical training — and built a system that honours their craft
-                  while delivering it in 24 hours.
+              <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
+                <p style={{ fontFamily: 'Raleway', fontSize: 'clamp(16px, 2vw, 18px)', color: '#5C4A32', lineHeight: 1.8, fontWeight: 400 }}>
+                  Tailor 24 was born from a singular vision: to preserve the soul of Indian craftsmanship while meeting the demands of a new generation. 
                 </p>
-
-                <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 'clamp(14px, 1.8vw, 15px)', color: 'rgba(244,232,208,0.42)',
-                  lineHeight: 1.9, fontWeight: 300, marginBottom: 40 }}>
-                  The hands are old. The approach is new. Nothing else has changed.
+                <p style={{ fontFamily: 'Raleway', fontSize: '15px', color: 'rgba(92,74,50,0.7)', lineHeight: 1.8, marginTop: 24 }}>
+                  We don't just sew garments; we curate heritage. By empowering our local karigars with optimized workflows, we deliver hand-crafted luxury within 24 hours without compromising a single stitch.
                 </p>
-
-                <div style={{ position: 'relative', paddingLeft: 28 }}>
-                  <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 2,
-                    background: 'linear-gradient(to bottom, #C9972A, rgba(201,151,42,0.05))' }} />
-                  <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 'clamp(14px, 1.8vw, 15px)',
-                    color: 'rgba(201,151,42,0.5)', lineHeight: 1.9, fontStyle: 'italic', fontWeight: 300 }}>
-                    "We are not a fast-fashion house. We are a fast house of slow craft."
+                <div style={{ marginTop: 32, paddingLeft: 20, borderLeft: '2px solid #D4AF37' }}>
+                  <p style={{ fontFamily: 'Cinzel', fontSize: 14, color: '#8B1A28', fontStyle: 'italic' }}>
+                    "Slow craft, delivered fast."
                   </p>
                 </div>
               </motion.div>
@@ -248,53 +170,19 @@ export default function AboutPage() {
 
       <GoldRule />
 
-      {/* ═══════════════════════════════════════
-          THE KARIGARS
-      ═══════════════════════════════════════ */}
-      <div style={{ background: '#0A0301', padding: 'clamp(60px, 8vw, 96px) 0' }}>
-        <div style={{ position: 'absolute', pointerEvents: 'none', width: '100%',
-          background: 'radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,151,42,0.04), transparent 70%)' }} />
-
+      {/* KARIGARS SECTION */}
+      <div style={{ background: '#FFFDF5', padding: '100px 0' }}>
         <div className="wrapper">
-          <SectionLabel text="The Hands Behind the Work" />
-
-          <motion.p initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.6 }}
-            style={{ fontFamily: 'Cinzel, serif', fontSize: 'clamp(20px, 3vw, 28px)',
-              color: 'rgba(255,253,245,0.75)', fontWeight: 400, lineHeight: 1.45,
-              maxWidth: 720, marginBottom: 'clamp(40px, 6vw, 64px)', fontStyle: 'italic' }}>
-            Our karigars are not employees.<br />
-            <span style={{ color: 'rgba(201,151,42,0.6)' }}>They are the reason Tailor 24 exists.</span>
-          </motion.p>
-
-          <div className="kg" style={{ background: 'rgba(201,151,42,0.05)' }}>
+          <SectionLabel text="The Master Hands" />
+          <div className="kg" style={{ background: '#F0EAD6' }}>
             {KARIGARS.map((k, i) => (
-              <motion.div key={k.role} className="karigar-card"
-                initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-                viewport={{ once: true }}
-                style={{ padding: 'clamp(32px, 4vw, 44px) clamp(24px, 3vw, 36px)', position: 'relative', overflow: 'hidden', borderRight: '1px solid rgba(201,151,42,0.06)' }}>
-
-                <span className="exp-tag" style={{ position: 'absolute', top: 20, right: 20,
-                  fontFamily: 'Cinzel, serif', fontSize: 10, letterSpacing: 3 }}>{k.exp}</span>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#C9972A', flexShrink: 0 }} />
-                  <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 4,
-                    color: 'rgba(201,151,42,0.5)', textTransform: 'uppercase' }}>{k.city}</span>
-                </div>
-
-                <p style={{ fontFamily: 'Cinzel, serif', fontSize: 16, color: '#FFFDF5',
-                  fontWeight: 600, letterSpacing: 2, marginBottom: 8, lineHeight: 1.3 }}>{k.role}</p>
-
-                <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 2,
-                  color: 'rgba(201,151,42,0.55)', textTransform: 'uppercase', marginBottom: 20 }}>{k.craft}</p>
-
-                <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 13,
-                  color: 'rgba(212,188,148,0.45)', lineHeight: 1.8, fontWeight: 300, fontStyle: 'italic' }}>
-                  {k.note}
-                </p>
-
+              <motion.div key={k.role} className="karigar-card" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: i * 0.1 }}
+                style={{ padding: '48px 32px', position: 'relative' }}>
+                <span className="exp-tag" style={{ fontFamily: 'Cinzel', fontSize: 10, position: 'absolute', top: 24, right: 24, fontWeight: 700 }}>{k.exp}</span>
+                <p style={{ fontFamily: 'Raleway', fontSize: 9, color: '#8B1A28', textTransform: 'uppercase', letterSpacing: 3, marginBottom: 12 }}>{k.city}</p>
+                <h3 style={{ fontFamily: 'Cinzel', fontSize: 18, color: '#1A0E08', marginBottom: 8, fontWeight: 600 }}>{k.role}</h3>
+                <p style={{ fontFamily: 'Raleway', fontSize: 11, color: '#5C4A32', textTransform: 'uppercase', marginBottom: 20, opacity: 0.7 }}>{k.craft}</p>
+                <p style={{ fontFamily: 'Raleway', fontSize: 13, color: '#5C4A32', fontStyle: 'italic', lineHeight: 1.6 }}>{k.note}</p>
                 <div className="k-line" style={{ height: 1, marginTop: 24 }} />
               </motion.div>
             ))}
@@ -304,55 +192,18 @@ export default function AboutPage() {
 
       <GoldRule />
 
-      {/* ═══════════════════════════════════════
-          THE CRAFT & FABRICS
-      ═══════════════════════════════════════ */}
-      <div style={{ background: '#FAF3E8', padding: 'clamp(60px, 8vw, 96px) 0', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.025, pointerEvents: 'none',
-          backgroundImage: `repeating-linear-gradient(45deg,#8B1A28 0,#8B1A28 1px,transparent 1px,transparent 44px),
-                            repeating-linear-gradient(-45deg,#8B1A28 0,#8B1A28 1px,transparent 1px,transparent 44px)` }} />
-
+      {/* CRAFT SECTION */}
+      <div style={{ background: '#F3EFE0', padding: '100px 0' }}>
         <div className="wrapper">
-          <SectionLabel text="Our Craft" />
-
-          <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            style={{ display: 'flex', flexWrap: 'wrap', gap: 'clamp(30px, 5vw, 80px)', marginBottom: 'clamp(40px, 6vw, 64px)', alignItems: 'flex-end' }}>
-            <h2 style={{ fontFamily: 'Cinzel, serif', fontSize: 'clamp(28px, 4vw, 40px)',
-              color: '#1A0E08', fontWeight: 400, lineHeight: 1.2, flex: '1 1 300px' }}>
-              Six traditions.<br />
-              <em style={{ color: '#8B1A28', fontStyle: 'italic' }}>One house.</em>
-            </h2>
-            <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 14, color: 'rgba(92,74,50,0.7)',
-              lineHeight: 1.9, fontWeight: 300, flex: '1 1 400px' }}>
-              Every technique we practise has a lineage stretching back centuries.
-              Our karigars did not learn these from books — they inherited them, workshop by
-              workshop, hand by hand, across decades of making.
-            </p>
-          </motion.div>
-
-          <div className="crg" style={{ background: 'rgba(212,188,148,0.2)' }}>
+          <SectionLabel text="Our Heritage" />
+          <div className="crg" style={{ background: '#EAE5D5' }}>
             {CRAFTS.map((c, i) => (
-              <motion.div key={c.name} className="craft-card"
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08, duration: 0.6 }} viewport={{ once: true }}
-                style={{ padding: 'clamp(32px, 4vw, 40px) clamp(24px, 3vw, 32px)', position: 'relative', overflow: 'hidden',
-                  borderRight: '1px solid rgba(212,188,148,0.4)', borderBottom: '1px solid rgba(212,188,148,0.4)' }}>
-
-                <div className="c-glow" style={{ position: 'absolute', inset: 0, pointerEvents: 'none',
-                  background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139,26,40,0.25), transparent)' }} />
-
-                <p className="c-origin" style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 4,
-                  textTransform: 'uppercase', marginBottom: 14 }}>
-                  {c.origin}
-                </p>
-
-                <p className="c-title" style={{ fontFamily: 'Cinzel, serif', fontSize: 20, fontWeight: 600,
-                  marginBottom: 16, lineHeight: 1.1 }}>{c.name}</p>
-
-                <p className="c-desc" style={{ fontFamily: 'Raleway, sans-serif', fontSize: 13, lineHeight: 1.8, fontWeight: 300 }}>{c.desc}</p>
-
-                <div className="c-line" style={{ height: 1, marginTop: 24 }} />
+              <motion.div key={c.name} className="craft-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+                style={{ padding: '40px 32px', position: 'relative' }}>
+                <p className="c-origin" style={{ fontFamily: 'Raleway', fontSize: 9, textTransform: 'uppercase', letterSpacing: 3, fontWeight: 700, marginBottom: 12 }}>{c.origin}</p>
+                <h3 className="c-title" style={{ fontFamily: 'Cinzel', fontSize: 22, marginBottom: 16, fontWeight: 600 }}>{c.name}</h3>
+                <p className="c-desc" style={{ fontFamily: 'Raleway', fontSize: 14, lineHeight: 1.7, color: '#5C4A32' }}>{c.desc}</p>
+                <div style={{ height: 1, width: 20, background: '#D4AF37', marginTop: 24 }} />
               </motion.div>
             ))}
           </div>
@@ -361,65 +212,26 @@ export default function AboutPage() {
 
       <GoldRule />
 
-      {/* ═══════════════════════════════════════
-          THE SHOWROOMS
-      ═══════════════════════════════════════ */}
-      <div style={{ background: '#060201', padding: 'clamp(60px, 8vw, 96px) 0 0' }}>
-        <div className="wrapper" style={{ paddingBottom: 'clamp(60px, 8vw, 96px)' }}>
-          <SectionLabel text="Visit Us" />
-
-          <motion.p initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            style={{ fontFamily: 'Cinzel, serif', fontSize: 'clamp(20px, 3vw, 30px)', color: 'rgba(255,253,245,0.7)',
-              fontWeight: 400, lineHeight: 1.4, maxWidth: 620, marginBottom: 'clamp(40px, 6vw, 72px)', fontStyle: 'italic' }}>
-            Three cities. Three spaces.<br />
-            <span style={{ color: 'rgba(201,151,42,0.55)' }}>One standard of craft.</span>
-          </motion.p>
-
+      {/* SHOWROOMS SECTION */}
+      <div style={{ background: '#FFFDF5', padding: '100px 0' }}>
+        <div className="wrapper">
+          <SectionLabel text="Visit Our Ateliers" />
           <div className="cg">
             {CITIES.map((city, i) => (
-              <motion.div key={city.name} className="city-card"
-                initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.13, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                viewport={{ once: true }}
-                style={{ position: 'relative', overflow: 'hidden' }}>
-
-                <div style={{ height: 'clamp(220px, 30vw, 260px)', overflow: 'hidden', position: 'relative' }}>
-                  <img src={city.img} alt={city.name} className="city-img"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover',
-                      objectPosition: 'center', filter: 'brightness(0.5) sepia(20%)', display: 'block' }} />
-                  <div style={{ position: 'absolute', inset: 0,
-                    background: 'linear-gradient(to top, rgba(6,2,1,0.85) 0%, transparent 60%)' }} />
-                  
-                  <div className="city-tag" style={{ position: 'absolute', top: 0, right: 0, padding: '6px 16px' }}>
-                    <span className="city-tag-text" style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 3,
-                      fontWeight: 600, textTransform: 'uppercase' }}>{city.tag}</span>
-                  </div>
-                  
-                  <p className="city-title" style={{ position: 'absolute', bottom: 20, left: 24,
-                    fontFamily: 'Cinzel, serif', fontSize: 26, fontWeight: 600, margin: 0, letterSpacing: 2 }}>{city.name}</p>
+              <motion.div key={city.name} className="city-card" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
+                <div style={{ height: 280, overflow: 'hidden', position: 'relative', border: '1px solid #F0EAD6' }}>
+                  <img src={city.img} alt={city.name} className="city-img" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ position: 'absolute', top: 0, right: 0, background: '#8B1A28', color: '#FFF', padding: '8px 16px', fontSize: 9, fontFamily: 'Raleway', fontWeight: 600, letterSpacing: 2 }}>{city.tag}</div>
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(26,14,8,0.4), transparent)' }} />
+                  <h3 style={{ position: 'absolute', bottom: 20, left: 24, fontFamily: 'Cinzel', fontSize: 28, color: '#FFF', margin: 0 }}>{city.name}</h3>
                 </div>
-
-                <div className="city-panel" style={{ padding: 'clamp(24px, 3vw, 28px) clamp(20px, 3vw, 24px) 32px', position: 'relative' }}>
-                  <div className="city-glow" style={{ position: 'absolute', inset: 0, pointerEvents: 'none',
-                    background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,26,40,0.2), transparent)' }} />
-
-                  <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 2,
-                    textTransform: 'uppercase', color: 'rgba(201,151,42,0.55)', fontWeight: 600, marginBottom: 12 }}>{city.craft}</p>
-
-                  <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 13, fontStyle: 'italic',
-                    color: 'rgba(244,232,208,0.45)', lineHeight: 1.75, marginBottom: 20 }}>{city.desc}</p>
-
-                  <div style={{ borderTop: '1px solid rgba(201,151,42,0.08)', paddingTop: 18, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {[city.addr, city.hours].map((line, j) => (
-                      <div key={j} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <span style={{ width: 4, height: 4, borderRadius: '50%', background: 'rgba(201,151,42,0.4)', flexShrink: 0 }} />
-                        <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 11, color: 'rgba(201,151,42,0.45)', letterSpacing: 1 }}>{line}</span>
-                      </div>
-                    ))}
+                <div className="city-panel" style={{ padding: '32px 24px' }}>
+                  <p style={{ fontFamily: 'Raleway', fontSize: 10, color: '#8B1A28', letterSpacing: 2, marginBottom: 12, fontWeight: 700 }}>{city.craft}</p>
+                  <p style={{ fontFamily: 'Raleway', fontSize: 13, color: '#5C4A32', lineHeight: 1.6, marginBottom: 24 }}>{city.desc}</p>
+                  <div style={{ borderTop: '1px solid #F0EAD6', paddingTop: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <p style={{ fontFamily: 'Raleway', fontSize: 11, color: '#8B1A28', fontWeight: 500 }}>{city.addr}</p>
+                    <p style={{ fontFamily: 'Raleway', fontSize: 11, color: '#5C4A32', opacity: 0.7 }}>{city.hours}</p>
                   </div>
-
-                  <div className="city-line" style={{ height: 1, marginTop: 24 }} />
                 </div>
               </motion.div>
             ))}
@@ -427,49 +239,24 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════
-          CLOSING CTA BAND
-      ═══════════════════════════════════════ */}
-      <div style={{ background: '#0F0402', position: 'relative', overflow: 'hidden' }}>
-        <GoldRule />
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse 50% 100% at 50% 50%, rgba(201,151,42,0.05), transparent 70%)' }} />
-
-        <div className="wrapper cta-band" style={{ padding: 'clamp(40px, 6vw, 80px) clamp(20px, 5vw, 48px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32 }}>
-
-          <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.65 }}>
-            <p style={{ fontFamily: 'Cinzel, serif', fontSize: 'clamp(24px, 4vw, 38px)',
-              color: '#FFFDF5', fontWeight: 400, lineHeight: 1.25, margin: 0 }}>
-              Ready to be<br />
-              <em style={{ color: '#C9972A', fontWeight: 600, fontStyle: 'italic' }}>Crafted for You?</em>
-            </p>
-          </motion.div>
-
-          <motion.div className="cta-buttons" initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.12 }}
-            style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-            <Link to="/catalog"
-              style={{ fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 4, fontWeight: 600,
-                textTransform: 'uppercase', color: '#060201', background: '#C9972A',
-                padding: '16px 32px', textDecoration: 'none', transition: 'background 0.3s', flex: '1 1 auto', textAlign: 'center' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#D4A017'}
-              onMouseLeave={e => e.currentTarget.style.background = '#C9972A'}>
-              Explore Catalogue →
+      {/* LIGHT CTA BAND */}
+      <div style={{ background: '#8B1A28', padding: '100px 0', color: '#FFFDF5' }}>
+        <div className="wrapper cta-band" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h2 style={{ fontFamily: 'Cinzel', fontSize: 'clamp(28px, 4vw, 42px)', color: '#FFF', fontWeight: 400, margin: 0 }}>
+              Begin Your <em style={{ color: '#D4AF37' }}>Custom</em> Journey.
+            </h2>
+            <p style={{ fontFamily: 'Raleway', marginTop: 12, opacity: 0.8, letterSpacing: 1 }}>Crafted in Vidisha. Worn Worldwide.</p>
+          </div>
+          <div className="cta-buttons" style={{ display: 'flex', gap: 20 }}>
+            <Link to="/catalog" style={{ background: '#FFFDF5', color: '#8B1A28', padding: '18px 36px', fontFamily: 'Raleway', fontWeight: 700, fontSize: 11, letterSpacing: 3, textDecoration: 'none', transition: 'all 0.3s' }}>
+              EXPLORE
             </Link>
-            <Link to="/contact"
-              style={{ fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 4, fontWeight: 600,
-                textTransform: 'uppercase', color: 'rgba(201,151,42,0.8)',
-                border: '1px solid rgba(201,151,42,0.3)', padding: '16px 32px',
-                textDecoration: 'none', transition: 'all 0.3s', flex: '1 1 auto', textAlign: 'center' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor='#C9972A'; e.currentTarget.style.color='#C9972A'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(201,151,42,0.3)'; e.currentTarget.style.color='rgba(201,151,42,0.8)'; }}>
-              Book a Visit
+            <Link to="/contact" style={{ border: '1px solid #D4AF37', color: '#D4AF37', padding: '18px 36px', fontFamily: 'Raleway', fontWeight: 700, fontSize: 11, letterSpacing: 3, textDecoration: 'none' }}>
+              APPOINTMENT
             </Link>
-          </motion.div>
+          </div>
         </div>
-        <GoldRule />
       </div>
     </div>
   );

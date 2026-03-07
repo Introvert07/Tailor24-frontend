@@ -9,28 +9,28 @@ const REVIEWS = [
     occasion: 'Wedding Sherwani',
     short: 'An heirloom in the truest sense.',
     text: 'The sherwani crafted for my wedding was beyond imagination. Every guest stopped to ask where I had it made. The zardozi on the neckline alone took two artisans twelve days — and it shows in every stitch.',
-    img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=600&q=80',
+    img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&q=85',
   },
   {
     name: 'Priya Kapoor', city: 'Mumbai', year: '2024', rating: 5,
     occasion: 'Bridal Lehenga',
     short: 'Every thread felt like it was made for me.',
     text: 'I have worn many designer lehengas, but nothing compares to what Tailor 24 created for my wedding. The fabric, the embroidery, the fit — there was not a single compromise. I felt like royalty.',
-    img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80',
+    img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=85',
   },
   {
     name: 'Vikram Singh', city: 'Jaipur', year: '2024', rating: 5,
     occasion: 'Achkan & Churidar',
     short: 'Unmatched in every way.',
     text: 'Tailor 24 turned my vision into reality. The Chanderi achkan drapes like nothing I have worn before — and the collar detailing alone took three karigars a week. I will not go anywhere else.',
-    img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80',
+    img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=85',
   },
   {
     name: 'Rohit Agarwal', city: 'Lucknow', year: '2023', rating: 5,
     occasion: 'Wedding Sherwani',
     short: 'Timeless quality, across generations.',
     text: 'Three generations of my family have been patrons of this craft. The quality is timeless — it carries the weight of tradition and wears like a second skin. My grandfather would have approved.',
-    img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80',
+    img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=85',
   },
 ];
 
@@ -51,7 +51,7 @@ export default function TestimonialsPage() {
       timerRef.current = setInterval(() => {
         setDir(1);
         setIdx(i => (i + 1) % REVIEWS.length);
-      }, 6000);
+      }, 6500);
     }
   };
 
@@ -59,7 +59,7 @@ export default function TestimonialsPage() {
     timerRef.current = setInterval(() => {
       setDir(1);
       setIdx(i => (i + 1) % REVIEWS.length);
-    }, 6000);
+    }, 6500);
     return () => clearInterval(timerRef.current);
   }, []);
 
@@ -69,145 +69,130 @@ export default function TestimonialsPage() {
 
   return (
     <section
-      style={{ background: '#060201', position: 'relative', overflow: 'hidden' }}
+      style={{ background: '#F9F8F3', position: 'relative', overflow: 'hidden', minHeight: '100vh' }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}>
       <style>{fonts}{`
         * { box-sizing: border-box; }
-        .tp-wrapper { max-width: 1280px; margin: 0 auto; padding: 96px 48px 80px; position: relative; z-index: 1; }
-        .tp-inner { display: grid; grid-template-columns: 1fr 340px; gap: 72px; alignItems: center; }
-        .tp-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 64px; flex-wrap: wrap; gap: 24px; }
-        .tp-btn-list { display: flex; flex-wrap: wrap; gap: 2px; }
+        .tp-wrapper { max-width: 1300px; margin: 0 auto; padding: 100px 50px 80px; position: relative; z-index: 1; }
+        .tp-inner { display: grid; grid-template-columns: 1fr 400px; gap: 80px; align-items: center; }
+        .tp-nav-btn { background: none; border: none; cursor: pointer; padding: 12px 20px; transition: all 0.3s; }
+        .tp-photo-container { position: relative; height: 500px; box-shadow: 20px 20px 60px rgba(0,0,0,0.05); }
         
-        @media(max-width: 900px) {
-          .tp-wrapper { padding: 60px 24px 60px; }
-          .tp-inner { grid-template-columns: 1fr; gap: 40px; }
-          .tp-photo { order: -1; height: 300px !important; width: 100%; max-width: 400px; margin: 0 auto; }
-          .tp-photo-frame { display: none !important; }
-          .tp-controls { flex-direction: column; align-items: center; text-align: center; }
-        }
-
-        @media(max-width: 480px) {
-          .tp-wrapper { padding: 40px 16px 40px; }
-          .tp-btn-list { justify-content: center; }
+        @media(max-width: 1024px) {
+          .tp-inner { grid-template-columns: 1fr; gap: 50px; }
+          .tp-photo-container { height: 400px; max-width: 500px; margin: 0 auto; }
+          .tp-nav-row { flex-direction: column; gap: 30px; align-items: center; text-align: center; }
         }
       `}</style>
 
-      {/* Ambient glow */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse 70% 80% at 50% 50%, rgba(139,26,40,0.08) 0%, transparent 70%)' }} />
-      <div style={{ height: 1, background: 'linear-gradient(90deg,transparent,rgba(201,151,42,0.4) 25%,rgba(201,151,42,0.4) 75%,transparent)' }} />
+      {/* Subtle Texture/Background Overlay */}
+      <div style={{ position: 'absolute', inset: 0, opacity: 0.02, pointerEvents: 'none', 
+        backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")' }} />
 
       <div className="tp-wrapper">
-        {/* Section label */}
-        <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginBottom: 72 }}>
-          <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, rgba(201,151,42,0.25))' }} />
-          <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 6, color: '#C9972A', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-            Patron Stories
+        {/* LIGHT SECTION LABEL */}
+        <header style={{ marginBottom: 80, textAlign: 'center' }}>
+          <span style={{ fontFamily: 'Raleway', fontSize: 10, letterSpacing: 5, color: '#B8860B', fontWeight: 600, textTransform: 'uppercase' }}>
+            Patron Chronicles
           </span>
-          <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, rgba(201,151,42,0.25))' }} />
-        </motion.div>
+          <h2 style={{ fontFamily: 'Cinzel', fontSize: 'clamp(32px, 4vw, 48px)', color: '#1A1A1A', marginTop: 15, fontWeight: 400 }}>
+            Voices of <em style={{ fontStyle: 'italic', color: '#B8860B' }}>Heritage</em>
+          </h2>
+        </header>
 
-        {/* Main review area */}
-        <div style={{ position: 'relative', minHeight: 420 }}>
+        {/* MAIN SLIDE */}
+        <div style={{ position: 'relative' }}>
           <AnimatePresence mode="wait" custom={dir}>
-            <motion.div key={idx}
-              custom={dir}
+            <motion.div key={idx} custom={dir}
               variants={{
-                enter: (d) => ({ opacity: 0, x: d > 0 ? 80 : -80, filter: 'blur(6px)' }),
-                center: { opacity: 1, x: 0, filter: 'blur(0px)' },
-                exit: (d) => ({ opacity: 0, x: d > 0 ? -80 : 80, filter: 'blur(6px)' }),
+                enter: (d) => ({ opacity: 0, x: d > 0 ? 50 : -50, scale: 0.98 }),
+                center: { opacity: 1, x: 0, scale: 1 },
+                exit: (d) => ({ opacity: 0, x: d > 0 ? -50 : 50, scale: 0.98 }),
               }}
               initial="enter" animate="center" exit="exit"
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
 
               <div className="tp-inner">
-                {/* Text Content */}
+                {/* TEXT SIDE */}
                 <div>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 32, border: '1px solid rgba(201,151,42,0.2)', padding: '6px 16px' }}>
-                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#C9972A', flexShrink: 0 }} />
-                    <span style={{ fontFamily: 'Raleway, sans-serif', fontSize: 9, letterSpacing: 4, color: 'rgba(201,151,42,0.65)', textTransform: 'uppercase' }}>{r.occasion}</span>
+                  <div style={{ display: 'inline-block', background: '#F0EAD6', padding: '6px 14px', borderRadius: 2, marginBottom: 30 }}>
+                    <span style={{ fontFamily: 'Raleway', fontSize: 9, letterSpacing: 3, color: '#8B1A28', textTransform: 'uppercase', fontWeight: 700 }}>{r.occasion}</span>
                   </div>
 
-                  <div style={{ display: 'flex', gap: 6, marginBottom: 28 }}>
+                  <div style={{ display: 'flex', gap: 4, marginBottom: 25 }}>
                     {Array(r.rating).fill(0).map((_, i) => (
-                      <span key={i} style={{ color: '#C9972A', fontSize: 13 }}>★</span>
+                      <span key={i} style={{ color: '#B8860B', fontSize: 14 }}>★</span>
                     ))}
                   </div>
 
-                  <p style={{ fontFamily: 'Cinzel, serif', fontSize: 'clamp(20px,3vw,34px)', color: '#FFFDF5', fontWeight: 400, lineHeight: 1.25, marginBottom: 28, fontStyle: 'italic' }}>
+                  <p style={{ fontFamily: 'Cinzel', fontSize: 'clamp(24px, 3.5vw, 36px)', color: '#1A1A1A', lineHeight: 1.3, marginBottom: 35, fontStyle: 'italic' }}>
                     "{r.short}"
                   </p>
 
-                  <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 15, color: 'rgba(244,232,208,0.55)', lineHeight: 1.9, fontWeight: 300, marginBottom: 36 }}>
+                  <p style={{ fontFamily: 'Raleway', fontSize: 16, color: '#5C5C5C', lineHeight: 1.8, fontWeight: 400, marginBottom: 40 }}>
                     {r.text}
                   </p>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <div style={{ width: 32, height: 1, background: 'rgba(201,151,42,0.4)' }} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                    <div style={{ width: 40, height: 1, background: '#B8860B' }} />
                     <div>
-                      <p style={{ fontFamily: 'Cinzel, serif', fontSize: 13, color: '#C9972A', letterSpacing: 3, fontWeight: 600, marginBottom: 4 }}>{r.name}</p>
-                      <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 10, letterSpacing: 3, color: 'rgba(201,151,42,0.4)', textTransform: 'uppercase' }}>
-                        {r.city} · {r.year}
+                      <h4 style={{ fontFamily: 'Cinzel', fontSize: 15, color: '#1A1A1A', letterSpacing: 2, margin: 0 }}>{r.name}</h4>
+                      <p style={{ fontFamily: 'Raleway', fontSize: 10, letterSpacing: 3, color: '#B8860B', textTransform: 'uppercase', marginTop: 4 }}>
+                        {r.city} • {r.year}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Portrait Photo */}
-                <div className="tp-photo" style={{ position: 'relative', height: 400 }}>
-                  <div className="tp-photo-frame" style={{ position: 'absolute', top: -10, left: -10, right: 10, bottom: 10, border: '1px solid rgba(201,151,42,0.15)', pointerEvents: 'none' }} />
-                  <div style={{ width: '100%', height: '100%', overflow: 'hidden', position: 'relative' }}>
-                    <img src={r.img} alt={r.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', filter: 'brightness(0.7) sepia(20%)', display: 'block' }} />
-                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(6,2,1,0.6) 0%, transparent 40%, rgba(6,2,1,0.2) 100%)' }} />
+                {/* IMAGE SIDE */}
+                <div className="tp-photo-container">
+                  <div style={{ position: 'absolute', inset: -1, border: '1px solid #EAE8E0', zIndex: -1 }} />
+                  <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+                    <img src={r.img} alt={r.name} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'sepia(5%) contrast(105%)' }} />
                   </div>
-                  <div className="tp-photo-frame" style={{ position: 'absolute', bottom: -10, right: -10, width: 40, height: 40, borderBottom: '1px solid rgba(201,151,42,0.4)', borderRight: '1px solid rgba(201,151,42,0.4)' }} />
+                  {/* Floating Year Tag */}
+                  <div style={{ position: 'absolute', bottom: 20, right: -20, background: '#1A1A1A', color: '#F9F8F3', padding: '10px 20px', fontFamily: 'Cinzel', fontSize: 12 }}>
+                    SINCE {r.year}
+                  </div>
                 </div>
               </div>
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Controls */}
-        <div className="tp-controls">
-          <div className="tp-btn-list">
+        {/* NAVIGATION & CONTROLS */}
+        <div className="tp-nav-row" style={{ marginTop: 80, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #EAE8E0', paddingTop: 40 }}>
+          <div style={{ display: 'flex', gap: 5 }}>
             {REVIEWS.map((rv, i) => (
-              <button key={i} onClick={() => go(i)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '10px 16px', position: 'relative', outline: 'none' }}>
-                <span style={{ fontFamily: 'Cinzel, serif', fontSize: 10, letterSpacing: 2, color: i === idx ? '#C9972A' : 'rgba(201,151,42,0.3)', transition: 'color 0.3s', whiteSpace: 'nowrap' }}>
+              <button key={i} onClick={() => go(i)} className="tp-nav-btn">
+                <span style={{ fontFamily: 'Cinzel', fontSize: 10, letterSpacing: 2, color: i === idx ? '#1A1A1A' : '#A09E94', fontWeight: i === idx ? 700 : 400 }}>
                   {rv.name.split(' ')[0]}
                 </span>
                 {i === idx && (
-                  <motion.div layoutId="reviewer-underline" style={{ position: 'absolute', bottom: 0, left: 16, right: 16, height: 1, background: '#C9972A' }} />
+                  <motion.div layoutId="nav-dot" style={{ width: '100%', height: 2, background: '#B8860B', marginTop: 4 }} />
                 )}
               </button>
             ))}
           </div>
 
-          <div style={{ display: 'flex', gap: 8 }}>
-            {[{ label: '←', fn: () => go((idx - 1 + REVIEWS.length) % REVIEWS.length) }, { label: '→', fn: () => go((idx + 1) % REVIEWS.length) }].map(btn => (
-              <button key={btn.label} onClick={btn.fn}
-                style={{ background: 'none', border: '1px solid rgba(201,151,42,0.22)', cursor: 'pointer', width: 44, height: 44, color: 'rgba(201,151,42,0.55)', fontSize: 16, fontFamily: 'Cinzel, serif', transition: 'all 0.25s', outline: 'none' }}>
-                {btn.label}
-              </button>
-            ))}
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button onClick={() => go((idx - 1 + REVIEWS.length) % REVIEWS.length)}
+              style={{ width: 50, height: 50, border: '1px solid #EAE8E0', background: '#FFF', cursor: 'pointer', color: '#1A1A1A' }}>←</button>
+            <button onClick={() => go((idx + 1) % REVIEWS.length)}
+              style={{ width: 50, height: 50, border: '1px solid #EAE8E0', background: '#FFF', cursor: 'pointer', color: '#1A1A1A' }}>→</button>
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div style={{ marginTop: 32, height: 1, background: 'rgba(201,151,42,0.1)', position: 'relative', overflow: 'hidden' }}>
+        {/* PROGRESS LOADER */}
+        <div style={{ marginTop: 20, height: 2, background: '#EAE8E0', position: 'relative' }}>
           <motion.div
             key={idx}
             initial={{ width: '0%' }}
             animate={{ width: paused ? undefined : '100%' }}
-            transition={{ duration: 6, ease: 'linear' }}
-            style={{ position: 'absolute', left: 0, top: 0, height: '100%', background: 'rgba(201,151,42,0.45)' }} />
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: 48 }}>
-          <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: 11, fontStyle: 'italic', color: 'rgba(201,151,42,0.25)', letterSpacing: 3 }}>
-            10,000+ patrons served across Bhopal, Indore & Vidisha
-          </p>
+            transition={{ duration: 6.5, ease: 'linear' }}
+            style={{ height: '100%', background: '#B8860B', position: 'absolute' }}
+          />
         </div>
       </div>
     </section>
