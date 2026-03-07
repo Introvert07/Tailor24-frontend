@@ -49,4 +49,10 @@ export const bookHomeConsultation = async (consultationData) => {
   const { data } = await API.post('/consultation/book', consultationData);
   return data;
 };
+
+// POST /api/contact/submit
+export const submitContactInquiry = async (formData) => {
+  const { data } = await API.post('/contact/submit', formData);
+  return data;
+};
 export default API;

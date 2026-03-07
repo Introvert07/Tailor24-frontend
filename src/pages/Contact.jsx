@@ -11,6 +11,8 @@ import {
   Scissors,
   Loader2
 } from "lucide-react";
+// Import your central API service
+import { submitContactInquiry } from '../../services/api'; 
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,36 +32,27 @@ export default function Contact() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/contact/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      // Using the service function that pulls from your environment variables
+      await submitContactInquiry(formData);
+
+      toast.success("Message received. Our lead designer will be in touch.");
+      
+      // Reset form on success
+      setFormData({
+        name: '',
+        phone: '',
+        subject: 'General Design Inquiry',
+        message: ''
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success("Message received. Our lead designer will be in touch.");
-        setFormData({
-          name: '',
-          phone: '',
-          subject: 'General Design Inquiry',
-          message: ''
-        });
-      } else {
-        toast.error(data.message || "Something went wrong.");
-      }
     } catch (error) {
-      toast.error("Could not connect to the atelier server.");
+      // Error message is extracted by your Axios interceptor in api.js
+      toast.error(error.message || "Could not connect to the atelier server.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    // Changed background to heritage-plum (Dark Maroon)
     <div className="pt-32 pb-24 min-h-screen bg-heritage-plum text-heritage-sand">
       <div className="max-w-6xl mx-auto px-6">
         
@@ -175,7 +168,6 @@ export default function Contact() {
                     ></textarea>
                   </div>
 
-                  {/* SUBMIT BUTTON SECTION - FIXED VISIBILITY */}
                   <div className="md:col-span-2 pt-4">
                     <button 
                       disabled={isSubmitting}
