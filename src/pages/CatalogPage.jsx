@@ -29,7 +29,7 @@ export default function CatalogPage() {
   const visibleProducts = processedProducts.slice(0, displayLimit);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FBF4E8', color: '#1A1A1A', paddingTop: '80px' }}>
+    <div style={{ minHeight: '100vh', background: '#FBF4E8', color: '#1A1A1A', paddingTop: '100px' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Raleway:wght@300;400;600&display=swap');
         
