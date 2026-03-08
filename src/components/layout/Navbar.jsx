@@ -117,7 +117,6 @@ export default function Navbar() {
               {user ? (
                 <>
                   <Link to="/profile" style={{ color: C.ink }}><FiUser size={18} /></Link>
-                  <Link to="/cart" style={{ color: C.ink }}><FiShoppingBag size={18} /></Link>
                   <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: C.ink, cursor: 'pointer' }}>
                     <FiLogOut size={18} />
                   </button>
@@ -125,7 +124,7 @@ export default function Navbar() {
               ) : (
                 <>
                   <Link to="/login" className="nav-link" style={{ color: C.ink }}>Login</Link>
-                  <Link to="/signup" style={{ 
+                  <Link to="/register" style={{ 
                     background: C.ink, color: C.page, padding: '10px 24px', 
                     fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
                     textDecoration: 'none'
@@ -189,7 +188,7 @@ export default function Navbar() {
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <Link to="/login" style={{ fontFamily: 'Raleway', fontSize: 18, fontWeight: 700, color: C.ink, textDecoration: 'none', letterSpacing: 2 }}>LOGIN</Link>
-                    <Link to="/signup" style={{ fontFamily: 'Raleway', fontSize: 18, fontWeight: 700, color: C.gold, textDecoration: 'none', letterSpacing: 2 }}>CREATE ACCOUNT</Link>
+                    <Link to="/register" style={{ fontFamily: 'Raleway', fontSize: 18, fontWeight: 700, color: C.gold, textDecoration: 'none', letterSpacing: 2 }}>CREATE ACCOUNT</Link>
                   </div>
                 )}
               </div>

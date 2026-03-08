@@ -50,14 +50,16 @@ export default function MainLandingPage() {
       <SectionWrapper id="home">
         <HomePage />
       </SectionWrapper>
+
+       <SectionWrapper id="variety">
+        <VarietyPage />
+      </SectionWrapper>
       
       <SectionWrapper id="about">
         <AboutPage />
       </SectionWrapper>
       
-      <SectionWrapper id="variety">
-        <VarietyPage />
-      </SectionWrapper>
+     
       
       <SectionWrapper id="testimonials">
         <TestimonialsPage />
