@@ -189,11 +189,11 @@ function StatusDrop({order,onUpdate}) {
 
 /* ─── SEARCH BAR ─── */
 const SearchBar = ({val,onChange,ph}) => (
-  <div style={{flex:1,minWidth:200,display:'flex',alignItems:'center',
+  <div style={{flex:1,minWidth:0,display:'flex',alignItems:'center',
     background:C.white,border:`1px solid ${C.border}`,padding:'8px 12px',gap:8}}>
-    <FiSearch size={13} color={C.muted}/>
+    <FiSearch size={13} color={C.muted} style={{flexShrink:0}}/>
     <input value={val} onChange={e=>onChange(e.target.value)} placeholder={ph}
-      style={{background:'none',border:'none',outline:'none',width:'100%',
+      style={{background:'none',border:'none',outline:'none',width:'100%',minWidth:0,
         fontFamily:"'Montserrat',sans-serif",fontSize:11,color:C.ink}}/>
   </div>
 );
@@ -315,7 +315,7 @@ export default function AdminPage() {
 
   if(loading) return (
     <div style={{minHeight:'100vh',background:C.page,display:'flex',flexDirection:'column',
-      alignItems:'center',justifyContent:'center',gap:14}}>
+      alignItems:'center',justifyContent:'center',gap:14,paddingTop:64}}>
       <motion.div animate={{rotate:360}} transition={{duration:3,repeat:Infinity,ease:'linear'}}>
         <Rangoli s={52}/>
       </motion.div>
@@ -326,29 +326,218 @@ export default function AdminPage() {
   );
 
   return (
-    <div style={{minHeight:'100vh',background:C.page,fontFamily:"'Montserrat',sans-serif",color:C.ink}}>
+    <div style={{minHeight:'100vh',background:C.page,fontFamily:"'Montserrat',sans-serif",
+      color:C.ink,
+      /* ── NAVBAR OFFSET: change 64px to match your actual navbar height ── */
+      paddingTop:64}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Montserrat:wght@400;600;700&display=swap');
         *{box-sizing:border-box;}
         .atr:hover{background:${C.parchment}!important;}
-        @media(max-width:900px){.sg{grid-template-columns:repeat(4,1fr)!important;}}
-        @media(max-width:600px){.sg{grid-template-columns:repeat(2,1fr)!important;}.aw{overflow-x:auto;}}
+
+        /* ── STAT GRID ── */
+        .admin-stat-grid{
+          display:grid;
+          grid-template-columns:repeat(8,1fr);
+          gap:10px;
+          margin-bottom:24px;
+        }
+        @media(max-width:1100px){
+          .admin-stat-grid{grid-template-columns:repeat(4,1fr);}
+        }
+        @media(max-width:640px){
+          .admin-stat-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
+        }
+
+        /* ── TABS ── */
+        .admin-tabs{
+          display:flex;
+          border-bottom:2px solid ${C.borderL};
+          margin-bottom:18px;
+          flex-wrap:wrap;
+          overflow-x:auto;
+          -webkit-overflow-scrolling:touch;
+        }
+        .admin-tab-btn{
+          display:flex;
+          align-items:center;
+          gap:6px;
+          padding:10px 16px;
+          background:transparent;
+          border:none;
+          cursor:pointer;
+          border-bottom:2px solid transparent;
+          margin-bottom:-2px;
+          font-family:'Montserrat',sans-serif;
+          font-size:8.5px;
+          letter-spacing:0.3em;
+          font-weight:700;
+          text-transform:uppercase;
+          transition:color .2s;
+          white-space:nowrap;
+          flex-shrink:0;
+        }
+        @media(max-width:480px){
+          .admin-tab-btn{padding:10px 10px;font-size:7.5px;gap:4px;}
+        }
+
+        /* ── TABLE WRAPPER ── */
+        .admin-table-wrap{
+          background:${C.white};
+          border:1px solid ${C.borderL};
+          width:100%;
+          overflow-x:auto;
+          -webkit-overflow-scrolling:touch;
+        }
+        .admin-table-wrap table{
+          width:100%;
+          min-width:600px;
+          border-collapse:collapse;
+        }
+
+        /* ── FILTERS ROW ── */
+        .admin-filters{
+          display:flex;
+          gap:8px;
+          margin-bottom:16px;
+          flex-wrap:wrap;
+          align-items:center;
+        }
+        .admin-filters select{
+          padding:9px 12px;
+          background:${C.white};
+          border:1px solid ${C.border};
+          font-family:'Montserrat',sans-serif;
+          font-size:8.5px;
+          color:${C.ink};
+          cursor:pointer;
+          outline:none;
+          letter-spacing:0.15em;
+          text-transform:uppercase;
+          max-width:100%;
+        }
+        @media(max-width:480px){
+          .admin-filters{gap:6px;}
+          .admin-filters select{font-size:8px;padding:8px 10px;}
+        }
+
+        /* ── HEADER ── */
+        .admin-header-inner{
+          max-width:1280px;
+          margin:0 auto;
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          flex-wrap:wrap;
+          gap:12px;
+          position:relative;
+          z-index:2;
+          padding:0 4px;
+        }
+        @media(max-width:480px){
+          .admin-header-inner{gap:8px;}
+        }
+
+        /* ── CONTENT PAD ── */
+        .admin-content{
+          max-width:1280px;
+          margin:0 auto;
+          padding:20px 24px;
+        }
+        @media(max-width:768px){
+          .admin-content{padding:16px 14px;}
+        }
+        @media(max-width:480px){
+          .admin-content{padding:12px 10px;}
+        }
+
+        /* ── CONSULT SUMMARY STRIP ── */
+        .consult-summary{
+          display:grid;
+          grid-template-columns:repeat(4,1fr);
+          gap:10px;
+          margin-bottom:18px;
+        }
+        @media(max-width:640px){
+          .consult-summary{grid-template-columns:repeat(2,1fr);gap:8px;}
+        }
+
+        /* ── CONSULT CARD FIELDS GRID ── */
+        .consult-fields{
+          padding:16px 20px;
+          display:grid;
+          grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+          gap:0 28px;
+        }
+        @media(max-width:480px){
+          .consult-fields{
+            grid-template-columns:1fr;
+            padding:12px 14px;
+          }
+        }
+
+        /* ── USER TABLE: hide city col on small ── */
+        @media(max-width:640px){
+          .col-city{display:none;}
+        }
+
+        /* ── INQUIRY STATUS FILTER BTNS ── */
+        .inq-filter-btn{
+          padding:8px 12px;
+          border-width:1px;
+          border-style:solid;
+          cursor:pointer;
+          font-family:'Montserrat',sans-serif;
+          font-size:8px;
+          letter-spacing:0.3em;
+          text-transform:uppercase;
+          font-weight:700;
+          white-space:nowrap;
+          flex-shrink:0;
+        }
+        @media(max-width:480px){
+          .inq-filter-btn{padding:7px 8px;font-size:7px;letter-spacing:0.2em;}
+        }
+
+        /* ── ACTION BTNS ── */
+        .action-area{
+          display:flex;
+          gap:6px;
+          flex-wrap:wrap;
+        }
+
+        /* ── HEADER responsive title ── */
+        .admin-title{
+          font-family:'Cormorant Garamond',serif;
+          font-size:clamp(18px,3vw,32px);
+          color:white;
+          font-weight:700;
+          margin:0;
+          line-height:1;
+        }
+        .admin-subtitle{
+          font-size:7px;
+          letter-spacing:0.5em;
+          color:rgba(240,192,64,0.7);
+          text-transform:uppercase;
+          margin-bottom:3px;
+        }
+        @media(max-width:380px){
+          .admin-subtitle{display:none;}
+        }
       `}</style>
 
       {/* ── HEADER ── */}
-      <div style={{background:C.maroon,padding:'22px 24px 18px',position:'relative',overflow:'hidden'}}>
+      <div style={{background:C.maroon,padding:'20px 24px 16px',position:'relative',overflow:'hidden'}}>
         <div style={{position:'absolute',right:-10,bottom:-20,fontFamily:"'Cormorant Garamond',serif",
           fontSize:'12vw',color:'rgba(255,255,255,0.04)',lineHeight:1,fontStyle:'italic',
           userSelect:'none',pointerEvents:'none'}}>Admin</div>
-        <div style={{maxWidth:1280,margin:'0 auto',display:'flex',alignItems:'center',
-          justifyContent:'space-between',flexWrap:'wrap',gap:12,position:'relative',zIndex:2}}>
+        <div className="admin-header-inner">
           <div style={{display:'flex',alignItems:'center',gap:12}}>
-            <Rangoli s={40}/>
+            <Rangoli s={38}/>
             <div>
-              <div style={{fontSize:7,letterSpacing:'0.5em',color:`${C.goldL}70`,
-                textTransform:'uppercase',marginBottom:3}}>Tailor24 · Control Centre</div>
-              <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(20px,3vw,32px)',
-                color:'white',fontWeight:700,margin:0,lineHeight:1}}>
+              <div className="admin-subtitle">Tailor24 · Control Centre</div>
+              <h1 className="admin-title">
                 Admin <em style={{color:C.goldL}}>Dashboard</em>
               </h1>
             </div>
@@ -363,17 +552,18 @@ export default function AdminPage() {
               </div>
             </div>
             <button onClick={load} style={{padding:9,background:'rgba(255,255,255,0.08)',
-              border:`1px solid ${C.goldL}35`,cursor:'pointer',display:'flex',alignItems:'center'}}>
+              border:`1px solid ${C.goldL}35`,cursor:'pointer',display:'flex',alignItems:'center',
+              flexShrink:0}}>
               <FiRefreshCw size={14} color={C.goldL}/>
             </button>
           </div>
         </div>
       </div>
 
-      <div style={{maxWidth:1280,margin:'0 auto',padding:'22px 24px'}}>
+      <div className="admin-content">
 
         {/* ── STAT CARDS ── */}
-        <div className="sg" style={{display:'grid',gridTemplateColumns:'repeat(8,1fr)',gap:10,marginBottom:24}}>
+        <div className="admin-stat-grid">
           {STAT_CARDS.map((s,i)=>(
             <motion.div key={i} initial={{opacity:0,y:14}} animate={{opacity:1,y:0}}
               transition={{delay:i*.05,duration:.4,ease:[.22,1,.36,1]}}
@@ -390,15 +580,15 @@ export default function AdminPage() {
         </div>
 
         {/* ── TABS ── */}
-        <div style={{display:'flex',borderBottom:`2px solid ${C.borderL}`,marginBottom:18,flexWrap:'wrap'}}>
+        <div className="admin-tabs">
           {TABS.map(t=>(
-            <button key={t.id} onClick={()=>{setTab(t.id);setSearch('');setStatusF('All');}}
-              style={{display:'flex',alignItems:'center',gap:6,padding:'10px 20px',
-                background:'transparent',border:'none',cursor:'pointer',
-                borderBottom:`2px solid ${tab===t.id?C.maroon:'transparent'}`,marginBottom:-2,
-                fontFamily:"'Montserrat',sans-serif",fontSize:8.5,letterSpacing:'0.3em',
-                fontWeight:700,textTransform:'uppercase',color:tab===t.id?C.maroon:C.muted,
-                transition:'color .2s'}}>
+            <button key={t.id}
+              className="admin-tab-btn"
+              onClick={()=>{setTab(t.id);setSearch('');setStatusF('All');}}
+              style={{
+                borderBottomColor:tab===t.id?C.maroon:'transparent',
+                color:tab===t.id?C.maroon:C.muted,
+              }}>
               <t.icon size={12}/>
               {t.label}
               <span style={{padding:'1px 6px',background:tab===t.id?`${C.maroon}15`:`${C.muted}10`,
@@ -413,22 +603,20 @@ export default function AdminPage() {
           {tab==='orders' && (
             <motion.div key="orders" initial={{opacity:0,y:8}} animate={{opacity:1,y:0}}
               exit={{opacity:0}} transition={{duration:.3}}>
-              <div style={{display:'flex',gap:10,marginBottom:16,flexWrap:'wrap',alignItems:'center'}}>
+              <div className="admin-filters">
                 <SearchBar val={search} onChange={setSearch} ph="Search ID, patron, email…"/>
-                <select value={statusF} onChange={e=>setStatusF(e.target.value)}
-                  style={{padding:'9px 12px',background:C.white,border:`1px solid ${C.border}`,
-                    fontFamily:"'Montserrat',sans-serif",fontSize:8.5,color:C.ink,
-                    cursor:'pointer',outline:'none',letterSpacing:'0.15em',textTransform:'uppercase'}}>
+                <select value={statusF} onChange={e=>setStatusF(e.target.value)}>
                   <option value="All">All Statuses</option>
                   {ALL_STATUSES.map(s=><option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
                 </select>
                 <div style={{padding:'9px 12px',background:C.parchment,border:`1px solid ${C.borderL}`,
-                  fontSize:8.5,color:C.muted,letterSpacing:'0.2em',textTransform:'uppercase'}}>
+                  fontSize:8.5,color:C.muted,letterSpacing:'0.2em',textTransform:'uppercase',
+                  whiteSpace:'nowrap',flexShrink:0}}>
                   {fOrders.length} result{fOrders.length!==1?'s':''}
                 </div>
               </div>
-              <div className="aw" style={{background:C.white,border:`1px solid ${C.borderL}`}}>
-                <table style={{width:'100%',borderCollapse:'collapse'}}>
+              <div className="admin-table-wrap">
+                <table>
                   <TH cols={['Order ID','Patron','Status','Actions']}/>
                   <tbody>
                     {fOrders.length===0 ? <EmptyRow cols={4} label="No orders found"/>
@@ -455,14 +643,15 @@ export default function AdminPage() {
                             Object.entries(SM).map(([k,v])=>[k,{...v,l:STATUS_LABEL[k]}]))}/>
                         </td>
                         <td style={{padding:'12px 14px'}}>
-                          <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+                          <div className="action-area">
                             {!TERMINAL.includes(o.status)&&<StatusDrop order={o} onUpdate={updateStatus}/>}
                             {!TERMINAL.includes(o.status)&&(
                               <button onClick={()=>{setModal({type:'cancelOrder',id:o._id});setMInput('');}}
                                 style={{display:'flex',alignItems:'center',gap:4,padding:'5px 10px',
                                   background:`${C.red}0D`,border:`1px solid ${C.red}38`,cursor:'pointer',
                                   fontFamily:"'Montserrat',sans-serif",fontSize:7.5,
-                                  letterSpacing:'0.2em',color:C.red,fontWeight:700,textTransform:'uppercase'}}>
+                                  letterSpacing:'0.2em',color:C.red,fontWeight:700,textTransform:'uppercase',
+                                  whiteSpace:'nowrap'}}>
                                 <FiX size={9}/>Cancel
                               </button>
                             )}
@@ -480,11 +669,11 @@ export default function AdminPage() {
           {tab==='users' && (
             <motion.div key="users" initial={{opacity:0,y:8}} animate={{opacity:1,y:0}}
               exit={{opacity:0}} transition={{duration:.3}}>
-              <div style={{display:'flex',gap:10,marginBottom:16,flexWrap:'wrap'}}>
+              <div className="admin-filters">
                 <SearchBar val={search} onChange={setSearch} ph="Search name or email…"/>
               </div>
-              <div className="aw" style={{background:C.white,border:`1px solid ${C.borderL}`}}>
-                <table style={{width:'100%',borderCollapse:'collapse'}}>
+              <div className="admin-table-wrap">
+                <table style={{minWidth:520}}>
                   <TH cols={['Patron','Contact','City','Role','Orders','Action']}/>
                   <tbody>
                     {fUsers.length===0 ? <EmptyRow cols={6} label="No users found"/>
@@ -512,13 +701,14 @@ export default function AdminPage() {
                             <div style={{fontSize:10,color:C.ink}}>{u.email}</div>
                             <div style={{fontSize:9,color:C.muted,marginTop:2}}>{u.phone||'—'}</div>
                           </td>
-                          <td style={{padding:'12px 14px',fontSize:9,color:C.gold,
+                          <td className="col-city" style={{padding:'12px 14px',fontSize:9,color:C.gold,
                             letterSpacing:'0.2em',textTransform:'uppercase'}}>{u.city||'—'}</td>
                           <td style={{padding:'12px 14px'}}>
                             <span style={{padding:'3px 8px',fontSize:7.5,fontWeight:700,
                               letterSpacing:'0.2em',textTransform:'uppercase',
                               background:u.role==='admin'?`${C.maroon}15`:u.role==='staff'?`${C.teal}15`:`${C.gold}15`,
-                              color:u.role==='admin'?C.maroon:u.role==='staff'?C.teal:C.muted}}>
+                              color:u.role==='admin'?C.maroon:u.role==='staff'?C.teal:C.muted,
+                              whiteSpace:'nowrap'}}>
                               {u.role}
                             </span>
                           </td>
@@ -530,7 +720,8 @@ export default function AdminPage() {
                                 style={{display:'flex',alignItems:'center',gap:4,padding:'5px 10px',
                                   background:`${C.red}0D`,border:`1px solid ${C.red}38`,cursor:'pointer',
                                   fontFamily:"'Montserrat',sans-serif",fontSize:7.5,
-                                  letterSpacing:'0.2em',color:C.red,fontWeight:700,textTransform:'uppercase'}}>
+                                  letterSpacing:'0.2em',color:C.red,fontWeight:700,textTransform:'uppercase',
+                                  whiteSpace:'nowrap'}}>
                                 <FiTrash2 size={9}/>Delete
                               </button>}
                           </td>
@@ -547,18 +738,18 @@ export default function AdminPage() {
           {tab==='inquiries' && (
             <motion.div key="inq" initial={{opacity:0,y:8}} animate={{opacity:1,y:0}}
               exit={{opacity:0}} transition={{duration:.3}}>
-              <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap',alignItems:'center'}}>
+              <div className="admin-filters">
                 <SearchBar val={inqSearch} onChange={setInqSearch} ph="Search name, phone, subject…"/>
                 {['All','new','read','replied'].map(f=>(
                   <button key={f} onClick={()=>setInqF(f)}
-                    style={{padding:'8px 14px',border:`1px solid ${inqF===f?C.maroon:C.borderL}`,
-                      background:inqF===f?C.maroon:'transparent',cursor:'pointer',
-                      fontFamily:"'Montserrat',sans-serif",fontSize:8,letterSpacing:'0.3em',
-                      textTransform:'uppercase',fontWeight:700,color:inqF===f?'white':C.muted}}>{f}</button>
+                    className="inq-filter-btn"
+                    style={{borderColor:inqF===f?C.maroon:C.borderL,
+                      background:inqF===f?C.maroon:'transparent',
+                      color:inqF===f?'white':C.muted}}>{f}</button>
                 ))}
               </div>
-              <div className="aw" style={{background:C.white,border:`1px solid ${C.borderL}`}}>
-                <table style={{width:'100%',borderCollapse:'collapse'}}>
+              <div className="admin-table-wrap">
+                <table style={{minWidth:700}}>
                   <TH cols={['Name','Phone','Subject','Message','Status','Date','Actions']}/>
                   <tbody>
                     {fInquiries.length===0 ? <EmptyRow cols={7} label="No inquiries"/>
@@ -574,7 +765,7 @@ export default function AdminPage() {
                             {inq.status==='new'&&<span style={{fontSize:7,color:C.goldB,
                               letterSpacing:'0.3em',fontWeight:700}}>● NEW</span>}
                           </td>
-                          <td style={{padding:'12px 14px',fontSize:11,color:C.muted}}>{inq.phone}</td>
+                          <td style={{padding:'12px 14px',fontSize:11,color:C.muted,whiteSpace:'nowrap'}}>{inq.phone}</td>
                           <td style={{padding:'12px 14px',maxWidth:150}}>
                             <span style={{fontSize:9,color:C.maroon,fontWeight:700,
                               letterSpacing:'0.1em',textTransform:'uppercase'}}>{inq.subject}</span>
@@ -593,7 +784,7 @@ export default function AdminPage() {
                             {new Date(inq.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}
                           </td>
                           <td style={{padding:'12px 14px'}}>
-                            <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
+                            <div className="action-area">
                               {inq.status==='new'&&<button onClick={()=>updateInqStatus(inq._id,'read')}
                                 style={actionBtn(C.teal)}>Read</button>}
                               {inq.status!=='replied'&&<button onClick={()=>updateInqStatus(inq._id,'replied')}
@@ -616,7 +807,7 @@ export default function AdminPage() {
             <motion.div key="cons" initial={{opacity:0,y:8}} animate={{opacity:1,y:0}}
               exit={{opacity:0}} transition={{duration:.3}}>
               {/* Summary strip */}
-              <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10,marginBottom:18}}>
+              <div className="consult-summary">
                 {Object.entries(CONSULT_S).map(([k,m])=>(
                   <div key={k} style={{background:C.white,border:`1px solid ${C.borderL}`,
                     borderTop:`3px solid ${m.c}`,padding:'12px 16px',
@@ -630,18 +821,17 @@ export default function AdminPage() {
                 ))}
               </div>
 
-              <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap',alignItems:'center'}}>
-                <SearchBar val={cSearch} onChange={setCSearch} ph="Search name, mobile, address, time slot…"/>
+              <div className="admin-filters">
+                <SearchBar val={cSearch} onChange={setCSearch} ph="Search name, mobile, address…"/>
                 {['All','Pending','Confirmed','Completed'].map(f=>(
                   <button key={f} onClick={()=>setCF(f)}
-                    style={{padding:'8px 12px',border:`1px solid ${cF===f?C.maroon:C.borderL}`,
-                      background:cF===f?C.maroon:'transparent',cursor:'pointer',
-                      fontFamily:"'Montserrat',sans-serif",fontSize:8,letterSpacing:'0.25em',
-                      textTransform:'uppercase',fontWeight:700,color:cF===f?'white':C.muted}}>{f}</button>
+                    className="inq-filter-btn"
+                    style={{borderColor:cF===f?C.maroon:C.borderL,
+                      background:cF===f?C.maroon:'transparent',
+                      color:cF===f?'white':C.muted}}>{f}</button>
                 ))}
               </div>
 
-              {/* Consultation cards */}
               {fConsults.length===0 ? (
                 <div style={{padding:'48px',textAlign:'center',background:C.white,border:`1px solid ${C.borderL}`}}>
                   <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:10}}>
@@ -652,7 +842,7 @@ export default function AdminPage() {
               ) : (
                 <div style={{display:'flex',flexDirection:'column',gap:10}}>
                   {fConsults.map((c,i)=>{
-                    const sm=CONSULT_S[c.status]||CONSULT_S.pending;
+                    const sm=CONSULT_S[c.status]||CONSULT_S.Pending;
                     return (
                       <motion.div key={c._id} initial={{opacity:0,y:6}} animate={{opacity:1,y:0}}
                         transition={{delay:i*.04}}
@@ -661,7 +851,8 @@ export default function AdminPage() {
                         {/* Card header */}
                         <div style={{padding:'14px 20px',background:C.parchment,
                           borderBottom:`1px solid ${C.borderL}`,
-                          display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:10}}>
+                          display:'flex',justifyContent:'space-between',alignItems:'center',
+                          flexWrap:'wrap',gap:10}}>
                           <div style={{display:'flex',alignItems:'center',gap:12}}>
                             <div style={{width:36,height:36,borderRadius:'50%',
                               background:`${C.maroon}10`,border:`1px solid ${C.border}`,
@@ -676,7 +867,7 @@ export default function AdminPage() {
                                 {c.name||'—'}
                               </div>
                               <div style={{fontSize:9,color:C.muted,marginTop:3,
-                                display:'flex',alignItems:'center',gap:5}}>
+                                display:'flex',alignItems:'center',gap:5,flexWrap:'wrap'}}>
                                 <FiPhone size={9}/>{c.mobileNumber}
                                 &nbsp;·&nbsp;
                                 {new Date(c.createdAt).toLocaleDateString('en-IN',
@@ -688,31 +879,27 @@ export default function AdminPage() {
                             <span style={{display:'inline-flex',alignItems:'center',padding:'3px 9px',
                               background:`${sm.c}15`,fontSize:7.5,letterSpacing:'0.2em',
                               color:sm.c,fontWeight:700,textTransform:'uppercase'}}>{sm.l}</span>
-                            {/* Status change */}
                             {Object.entries(CONSULT_S).filter(([k])=>k!==c.status).map(([k,m])=>(
                               <button key={k} onClick={()=>updateConsultStatus(c._id,k)}
                                 style={{padding:'3px 9px',border:`1px solid ${m.c}40`,
                                   background:`${m.c}08`,cursor:'pointer',
                                   fontFamily:"'Montserrat',sans-serif",fontSize:7,
                                   letterSpacing:'0.25em',textTransform:'uppercase',
-                                  fontWeight:700,color:m.c}}>
+                                  fontWeight:700,color:m.c,whiteSpace:'nowrap'}}>
                                 {m.l}
                               </button>
                             ))}
                             <button onClick={()=>setModal({type:'deleteConsult',id:c._id,name:c.name||c.mobileNumber})}
                               style={{padding:'5px 8px',background:`${C.red}0D`,
                                 border:`1px solid ${C.red}35`,cursor:'pointer',
-                                display:'flex',alignItems:'center',color:C.red}}>
+                                display:'flex',alignItems:'center',color:C.red,flexShrink:0}}>
                               <FiTrash2 size={12}/>
                             </button>
                           </div>
                         </div>
 
                         {/* All form fields */}
-                        <div style={{padding:'16px 20px',display:'grid',
-                          gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:'0 28px'}}>
-
-                          {/* Name */}
+                        <div className="consult-fields">
                           <div style={{padding:'10px 0',borderBottom:`1px solid ${C.borderL}`,
                             display:'flex',gap:10,alignItems:'flex-start'}}>
                             <FiUsers size={13} color={C.gold} style={{marginTop:3,flexShrink:0}}/>
@@ -725,7 +912,6 @@ export default function AdminPage() {
                             </div>
                           </div>
 
-                          {/* Mobile Number */}
                           <div style={{padding:'10px 0',borderBottom:`1px solid ${C.borderL}`,
                             display:'flex',gap:10,alignItems:'flex-start'}}>
                             <FiPhone size={13} color={C.gold} style={{marginTop:3,flexShrink:0}}/>
@@ -738,7 +924,6 @@ export default function AdminPage() {
                             </div>
                           </div>
 
-                          {/* Time Slot */}
                           <div style={{padding:'10px 0',borderBottom:`1px solid ${C.borderL}`,
                             display:'flex',gap:10,alignItems:'flex-start'}}>
                             <FiClock size={13} color={C.gold} style={{marginTop:3,flexShrink:0}}/>
@@ -751,20 +936,19 @@ export default function AdminPage() {
                             </div>
                           </div>
 
-                          {/* Address — full width */}
                           <div style={{gridColumn:'1/-1',padding:'10px 0',
                             borderBottom:`1px solid ${C.borderL}`,
                             display:'flex',gap:10,alignItems:'flex-start'}}>
                             <FiMapPin size={13} color={C.gold} style={{marginTop:3,flexShrink:0}}/>
-                            <div style={{flex:1}}>
+                            <div style={{flex:1,minWidth:0}}>
                               <div style={{marginBottom:3}}><Lbl t="Home Address"/></div>
                               <div style={{fontFamily:"'Cormorant Garamond',serif",
-                                fontSize:16,color:C.ink,fontWeight:600,lineHeight:1.6}}>
+                                fontSize:16,color:C.ink,fontWeight:600,lineHeight:1.6,
+                                wordBreak:'break-word'}}>
                                 {c.address||'—'}
                               </div>
                             </div>
                           </div>
-
                         </div>
                       </motion.div>
                     );
@@ -814,5 +998,5 @@ const actionBtn = (c) => ({
   background:`${c}0D`,border:`1px solid ${c}35`,cursor:'pointer',
   fontFamily:"'Montserrat',sans-serif",fontSize:7.5,
   letterSpacing:'0.2em',color:c,fontWeight:700,textTransform:'uppercase',
-  whiteSpace:'nowrap',
+  whiteSpace:'nowrap',flexShrink:0,
 });
