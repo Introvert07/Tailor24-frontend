@@ -8,7 +8,6 @@ import Footer         from './components/layout/Footer';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { InlineLoader } from './components/ui/Atoms';
 
-// Lazy-load pages for performance
 const MainLandingPage   = lazy(() => import('./pages/MainLandingPage'));
 const LoginPage         = lazy(() => import('./pages/LoginPage'));
 const RegisterPage      = lazy(() => import('./pages/RegisterPage'));
@@ -20,12 +19,6 @@ const ShowroomsPage     = lazy(() => import('./pages/ShowroomsPage'));
 const AdminPage         = lazy(() => import('./pages/AdminPage'));
 const ProfilePage       = lazy(() => import('./pages/ProfilePage'));
 const Contact           = lazy(() => import('./pages/Contact'));
-
-/**
- * New Category Pages
- * Note: Imports match the specific file casing shown in your project structure:
- * Mens.jsx, Womens.jsx, and kids.jsx
- */
 const MensPage          = lazy(() => import('./pages/Mens'));
 const WomensPage        = lazy(() => import('./pages/Womens'));
 const KidsPage          = lazy(() => import('./pages/kids'));
@@ -33,87 +26,58 @@ const KidsPage          = lazy(() => import('./pages/kids'));
 const AUTH_PAGES = ['/login', '/register'];
 
 function AppLayout() {
-  const location     = useLocation();
-  const isAuthPage   = AUTH_PAGES.includes(location.pathname);
+  const location   = useLocation();
+  const isAuthPage = AUTH_PAGES.includes(location.pathname);
 
   return (
     <div className="grain-overlay">
       {!isAuthPage && <Navbar />}
 
-      <Suspense fallback={<InlineLoader />}>
-        <AnimatePresence mode="wait">
-          <motion.div key={location.pathname}
-            initial={{ opacity: 0, y: 8 }} 
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }} 
-            transition={{ duration: 0.25 }}>
-            
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.25 }}
+        >
+          <Suspense fallback={<InlineLoader />}>
             <Routes location={location}>
-              {/* Core Pages */}
               <Route path="/"            element={<MainLandingPage />} />
               <Route path="/contact"     element={<Contact />} />
               <Route path="/catalog"     element={<CatalogPage />} />
               <Route path="/catalog/:id" element={<ProductDetailPage />} />
               <Route path="/showrooms"   element={<ShowroomsPage />} />
-
-              {/* Dedicated Category Routes */}
               <Route path="/mens"        element={<MensPage />} />
               <Route path="/womens"      element={<WomensPage />} />
               <Route path="/kids"        element={<KidsPage />} />
-
-              {/* Auth & Admin */}
               <Route path="/login"       element={<LoginPage />} />
               <Route path="/register"    element={<RegisterPage />} />
               <Route path="/admin"       element={<AdminPage />} />
-              
-              {/* Protected User Routes */}
               <Route path="/profile"     element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/orders"      element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
               <Route path="/orders/:id"  element={<ProtectedRoute><OrderDetailPage /></ProtectedRoute>} />
-
-              {/* 404 Fallback */}
               <Route path="*" element={
-                <div style={{ 
-                  minHeight: '100vh', 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  textAlign: 'center', 
-                  padding: 24, 
-                  background: '#FBF4E8' 
-                }}>
-                  <p style={{ fontFamily: 'serif', fontSize: 96, color: '#D4BC94', lineHeight: 1 }}>404</p>
-                  <p style={{ fontFamily: 'serif', fontSize: 26, color: '#8B7355', marginTop: 8, fontStyle: 'italic' }}>Page not found</p>
-                  <a href="/" style={{ 
-                    marginTop: 32, 
-                    background: '#6B0F1A', 
-                    color: '#FFFDF5', 
-                    padding: '12px 28px', 
-                    fontSize: 11, 
-                    letterSpacing: 2, 
-                    textDecoration: 'none', 
-                    fontWeight: 700, 
-                    textTransform: 'uppercase' 
-                  }}>
-                    Go Home
-                  </a>
+                <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', textAlign:'center', padding:24, background:'#FBF4E8' }}>
+                  <p style={{ fontFamily:'serif', fontSize:96, color:'#D4BC94', lineHeight:1 }}>404</p>
+                  <p style={{ fontFamily:'serif', fontSize:26, color:'#8B7355', marginTop:8, fontStyle:'italic' }}>Page not found</p>
+                  <a href="/" style={{ marginTop:32, background:'#6B0F1A', color:'#FFFDF5', padding:'12px 28px', fontSize:11, letterSpacing:2, textDecoration:'none', fontWeight:700, textTransform:'uppercase' }}>Go Home</a>
                 </div>
               } />
             </Routes>
-          </motion.div>
-        </AnimatePresence>
-      </Suspense>
+          </Suspense>
+        </motion.div>
+      </AnimatePresence>
 
       {!isAuthPage && <Footer />}
-      <Toaster position="bottom-right" toastOptions={{ style: { fontFamily: 'sans-serif', fontSize: 13 } }} />
+      <Toaster position="bottom-right" toastOptions={{ style: { fontFamily:'sans-serif', fontSize:13 } }} />
     </div>
   );
 }
 
 export default function App() {
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
       <AppLayout />
     </BrowserRouter>
   );

@@ -11,6 +11,7 @@ import ConsultationModal from '../components/ui/ConsultationModal';
 import { InlineLoader } from '../components/ui/Loader';
 import toast from 'react-hot-toast';
 import { FiArrowLeft, FiArrowRight, FiCheck, FiShoppingBag, FiMapPin, FiClock, FiScissors, FiInfo, FiPhone, FiUser } from 'react-icons/fi';
+import { safeImg } from '../utils/imgUrl';
 
 const C = {
   maroon: '#6B0F1A', maroonL: '#8B1A28', maroonXL: '#A82030',
@@ -329,8 +330,9 @@ export default function ProductDetailPage() {
                 </div>
                 <AnimatePresence mode="wait">
                   <motion.img key={product.image} initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}
-                    src={product.image || 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=600'}
-                    alt={product.name} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', display: 'block' }}/>
+src={safeImg(product.image, 'men')}
+  onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=600'; }}
+  alt={product.name} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', display: 'block' }}/>
                 </AnimatePresence>
               </div>
 

@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getProducts } from '../services/catalogService';
 import { InlineLoader } from '../components/ui/Loader';
 import { FiPercent, FiChevronLeft, FiChevronRight, FiEye, FiStar } from 'react-icons/fi';
+import { safeImg } from '../utils/imgUrl';
+
 
 const C = {
   maroon: '#6B0F1A', gold: '#B5892E', goldL: '#D4AF37',
@@ -147,11 +149,12 @@ export default function KidswearPage() {
              onClick={() => navigate(`/catalog/${product._id}`)}
             >
               <div style={{ position: 'relative', overflow: 'hidden', background: C.white, aspectRatio: '3/4', border: `1px solid ${C.border}40` }}>
-                <motion.img 
-                  whileHover={{ scale: 1.05 }} 
-                  src={product.image || 'https://images.unsplash.com/photo-1503919919749-640141b1d9b2'} 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                />
+              <motion.img 
+  whileHover={{ scale: 1.05 }} 
+src={safeImg(product.image, 'kids')}
+  onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1503919919749-640141b1d9b2'; }}
+  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+/>
                 
                 {/* Age Range Badge */}
                 <div style={{ position: 'absolute', top: 15, left: 15, background: C.white, padding: '5px 12px', fontSize: 9, fontWeight: 700, color: C.maroon, boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>

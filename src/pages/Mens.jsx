@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getProducts } from '../services/catalogService';
 import { InlineLoader } from '../components/ui/Loader';
 import { FiArrowRight, FiPercent, FiChevronLeft, FiChevronRight, FiEye } from 'react-icons/fi';
+import { safeImg } from '../utils/imgUrl';
+
 
 const C = {
   maroon: '#6B0F1A', gold: '#B5892E', goldL: '#D4AF37',
@@ -167,12 +169,13 @@ export default function MenswearPage() {
             >
               {/* Card Image Container */}
               <div style={{ position: 'relative', overflow: 'hidden', background: '#F9F9F9', aspectRatio: '3/4', borderRadius: '2px' }}>
-                <motion.img 
-                  whileHover={{ scale: 1.08 }} 
-                  transition={{ duration: 0.8 }}
-                  src={product.image || 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35'} 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                />
+               <motion.img 
+  whileHover={{ scale: 1.08 }} 
+  transition={{ duration: 0.8 }}
+src={safeImg(product.image, 'men')}
+  onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35'; }}
+  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+/>
                 
                 {/* Hover Overlay */}
                 <motion.div 

@@ -5,6 +5,7 @@ import { Phone, Mail, MapPin, Instagram, Clock, Send, ShieldCheck } from 'lucide
 import { contactService } from '../services/api'; 
 import { RoyalInput, RoyalBtn } from '../components/ui/Atoms';
 
+
 const INFO = [
   { Icon: Phone,     label: 'Phone',     value: '+91 98765 43210' },
   { Icon: Mail,      label: 'Email',     value: 'care@shahikar.com' },
